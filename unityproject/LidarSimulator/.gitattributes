@@ -1,0 +1,7 @@
+# .gitattributes
+
+*.unity binary
+*.prefab binary
+*.asset binary
+
+# etc.
