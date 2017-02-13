@@ -6,36 +6,55 @@ public class LidarSensor : MonoBehaviour {
     private Ray ray;
     private RaycastHit hit;
     private bool isHit;
+    private float lastUpdate = 0;
+    public float rotationSpeedHz = 1.0f;
+    public float rotationAnglePerStep = 45.0f;
+    public float rayDistance = 100f;
+    public float simulationSpeed = 1;
 
     // Use this for initialization
     private void Start () {
+        Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
+        Time.fixedDeltaTime = 0.002f;
         Vector3 direction = transform.TransformDirection(Vector3.back);
 		ray = new Ray(transform.position, direction);
     }
-	
-	// Update is called once per frame
-	private void Update () {
-        float distance = 100f;
+
+    // Update is called once per frame
+    private void Update () {
+        // For debugging, shows visible ray in real time.
+        float distance = rayDistance;
         if (isHit)
         {
             distance = hit.distance;
         }
-        // For debugging, shows visible ray in real time.
-        Debug.DrawRay(ray.origin, ray.direction * distance, Color.red, 0.2f);
+        Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
     }
 
     private void FixedUpdate()
     {
-        ray.direction = transform.TransformDirection(Vector3.back);
-        ray.origin = transform.position;
-        isHit = Physics.Raycast(ray, out hit, 100.0f);
-        if (isHit)
+        if (Time.fixedTime - lastUpdate > 1/(360/rotationAnglePerStep)/rotationSpeedHz)
         {
-            print("Found object at distance: " + hit.distance);
-        }
-        else
-        {
-            print("No hit");
+            // Update the time
+            lastUpdate = Time.fixedTime;
+
+            // Perform rotation
+            transform.Rotate(0, rotationAnglePerStep, 0);
+
+            // Update the ray
+            ray.direction = transform.TransformDirection(Vector3.back);
+            ray.origin = transform.position;
+
+            // Perform raycast
+            isHit = Physics.Raycast(ray, out hit, rayDistance);
+            if (isHit)
+            {
+                //print("Found object at distance: " + hit.distance);
+            }
+            else
+            {
+                //print("No hit");
+            }
         }
     }
 }
