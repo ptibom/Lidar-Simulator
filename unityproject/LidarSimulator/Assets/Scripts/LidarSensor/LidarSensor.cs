@@ -7,7 +7,8 @@ public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-    private List<RaycastHit> hits = new List<RaycastHit>();
+    private Dictionary<float, List<SpericalCoordinates>> hitList; 
+    //private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 2;
     public float rotationSpeedHz = 1.0f;
@@ -15,11 +16,13 @@ public class LidarSensor : MonoBehaviour {
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
     public float verticalFOV = 30f;
+    public GameObject originSensor;
     private Stopwatch stopWatch;
 
 
     // Use this for initialization
     private void Start () {
+        this.hitList = new Dictionary<float, List<SpericalCoordinates>>();
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
         stopWatch = new Stopwatch();
@@ -57,19 +60,25 @@ public class LidarSensor : MonoBehaviour {
 
             // Execute lasers.
             stopWatch.Stop();
+            List<SphericalCoordinates> hits = new List<SphericalCoordinates>();
             foreach (Laser laser in lasers)
             {
-                hits.Add(laser.ShootRay());
+                hits.Add(convertHit(laser.ShootRay));
+                //hits.Add(laser.ShootRay());
             }
+
+            hitList[(stopWatch.ElapsedMilliseconds / 1000)] = hits;
+
+            stopWatch.Start();
         }
     }
 
     /**
      * Converts the hit to spherical Coordinates.  
      * */ 
-    private void convertHit(RaycastHit hit)
+    private SpericalCoordinates convertHit(RaycastHit hit)
     {
-
+        return new SpericalCoordinates(hit.point - originSensor.transform.position);
     }
 
     /**
