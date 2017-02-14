@@ -6,6 +6,7 @@ public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
+    private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 2;
     public float rotationSpeedHz = 1.0f;
@@ -53,7 +54,7 @@ public class LidarSensor : MonoBehaviour {
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
-                laser.ShootRay();
+                hits.Add(laser.ShootRay());
             }
         }
     }

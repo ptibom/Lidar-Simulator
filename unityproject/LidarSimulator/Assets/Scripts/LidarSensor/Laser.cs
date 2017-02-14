@@ -32,7 +32,7 @@ public class Laser {
     }
 
     // Should be called from FixedUpdate(), for best performance.
-    public void ShootRay()
+    public RaycastHit ShootRay()
     {
         // Perform raycast
         UpdateRay();
@@ -41,8 +41,9 @@ public class Laser {
         // For future reference
         if (isHit)
         {
-            // Save the new hit.
+            return hit;
         }
+        return new RaycastHit();
     }
 
     // Update existing ray. Don't create 'new' ray object, that is heavy.
