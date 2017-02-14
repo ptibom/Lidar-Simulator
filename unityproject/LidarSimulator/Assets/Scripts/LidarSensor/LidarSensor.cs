@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,12 +15,14 @@ public class LidarSensor : MonoBehaviour {
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
     public float verticalFOV = 30f;
+    private Stopwatch stopWatch;
 
 
     // Use this for initialization
     private void Start () {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
+        stopWatch = new Stopwatch();
 
         // Initialize number of lasers, based on user selection.
         float completeAngle = verticalFOV/2;
@@ -28,6 +31,7 @@ public class LidarSensor : MonoBehaviour {
             lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
             completeAngle -= angle;
         }
+        stopWatch.Start();
     }
 
     // Update is called once per frame
@@ -52,10 +56,69 @@ public class LidarSensor : MonoBehaviour {
             transform.Rotate(0, rotationAnglePerStep, 0);
 
             // Execute lasers.
+            stopWatch.Stop();
             foreach (Laser laser in lasers)
             {
                 hits.Add(laser.ShootRay());
             }
         }
     }
+
+    /**
+     * Converts the hit to spherical Coordinates.  
+     * */ 
+    private void convertHit(RaycastHit hit)
+    {
+
+    }
+
+    /**
+     * A class representing spherical coordinates.  
+     */
+      
+    private class SpericalCoordinates
+    {
+        private float radius;
+        private float inclination;
+        private float azimuth;
+
+        public SpericalCoordinates(float radius, float inclination, float azimuth)
+        {
+            this.radius = radius;
+            this.inclination = inclination;
+            this.azimuth = azimuth;
+        }
+
+        // Constructor based on cartesian coordinates
+        public SpericalCoordinates(Vector3 coordinates)
+        {
+            this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
+
+            if (radius == 0)
+            {
+                inclination = 0;
+                azimuth = 0;
+            }
+            this.inclination = Mathf.Atan(coordinates.z / radius);
+            this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+
+
+
+        }
+
+        private float getRadius()
+        {
+            return this.radius;
+        }
+        private float getInclination()
+        {
+            return this.radius;
+        }
+        private float getAzimuth()
+        {
+            return this.azimuth;
+        }
+
+    }
+
 }
