@@ -17,7 +17,8 @@ public class LidarSensor : MonoBehaviour {
     public float simulationSpeed = 1;
     public float verticalFOV = 30f;
     public GameObject originSensor;
-    private Stopwatch stopWatch;
+    private float startTime;
+    
 
 
     // Use this for initialization
@@ -25,7 +26,7 @@ public class LidarSensor : MonoBehaviour {
         this.hitList = new Dictionary<float, List<SpericalCoordinates>>();
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
-        stopWatch = new Stopwatch();
+        
 
         // Initialize number of lasers, based on user selection.
         float completeAngle = verticalFOV/2;
@@ -34,7 +35,7 @@ public class LidarSensor : MonoBehaviour {
             lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
             completeAngle -= angle;
         }
-        stopWatch.Start();
+        startTime = Time.time;
     }
 
     // Update is called once per frame
@@ -67,18 +68,17 @@ public class LidarSensor : MonoBehaviour {
                 //hits.Add(laser.ShootRay());
             }
 
-            hitList[(stopWatch.ElapsedMilliseconds / 1000)] = hits;
-
-            stopWatch.Start();
+            hitList[(Time.time - startTime)] = hits;
+            
         }
     }
 
     /**
      * Converts the hit to spherical Coordinates.  
      * */ 
-    private SpericalCoordinates convertHit(RaycastHit hit)
+    private SpericalCoordinates ConvertHit(RaycastHit hit)
     {
-        return new SpericalCoordinates(hit.point - originSensor.transform.position);
+        return new SpericalCoordinates(hit.distance,hit.vertical);
     }
 
     /**
