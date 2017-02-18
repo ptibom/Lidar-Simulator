@@ -3,11 +3,12 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-    private Dictionary<float, List<SpericalCoordinates>> hitList; 
+	private Dictionary<float, List<SphericalCoordinates>> hitList; 
     //private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 2;
@@ -23,7 +24,7 @@ public class LidarSensor : MonoBehaviour {
 
     // Use this for initialization
     private void Start () {
-        this.hitList = new Dictionary<float, List<SpericalCoordinates>>();
+        this.hitList = new Dictionary<float, List<SphericalCoordinates>>();
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
         
@@ -59,12 +60,11 @@ public class LidarSensor : MonoBehaviour {
             // Perform rotation.
             transform.Rotate(0, rotationAnglePerStep, 0);
 
-            // Execute lasers.
-            stopWatch.Stop();
+            // Execute lasers and add the corresponding coordinates oof the hiists to the hitlist.
             List<SphericalCoordinates> hits = new List<SphericalCoordinates>();
             foreach (Laser laser in lasers)
             {
-                hits.Add(convertHit(laser.ShootRay));
+                hits.Add(new SphericalCoordinates(laser.ShootRay().point));
                 //hits.Add(laser.ShootRay());
             }
 
@@ -72,62 +72,6 @@ public class LidarSensor : MonoBehaviour {
             
         }
     }
-
-    /**
-     * Converts the hit to spherical Coordinates.  
-     * */ 
-    private SpericalCoordinates ConvertHit(RaycastHit hit)
-    {
-        return new SpericalCoordinates(hit.distance,hit.vertical);
-    }
-
-    /**
-     * A class representing spherical coordinates.  
-     */
-      
-    private class SpericalCoordinates
-    {
-        private float radius;
-        private float inclination;
-        private float azimuth;
-
-        public SpericalCoordinates(float radius, float inclination, float azimuth)
-        {
-            this.radius = radius;
-            this.inclination = inclination;
-            this.azimuth = azimuth;
-        }
-
-        // Constructor based on cartesian coordinates
-        public SpericalCoordinates(Vector3 coordinates)
-        {
-            this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
-
-            if (radius == 0)
-            {
-                inclination = 0;
-                azimuth = 0;
-            }
-            this.inclination = Mathf.Atan(coordinates.z / radius);
-            this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
-
-
-
-        }
-
-        private float getRadius()
-        {
-            return this.radius;
-        }
-        private float getInclination()
-        {
-            return this.radius;
-        }
-        private float getAzimuth()
-        {
-            return this.azimuth;
-        }
-
-    }
+   
 
 }
