@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ namespace AssemblyCSharp
 	/**
 	 * A class for parsing and serializing the lidar data into a JSON stream.
 	 * */
-	public class JSONParser
+/*	public class JSONParser
 	{
 		
 		OpenFileDialog openDialog;
@@ -24,7 +24,7 @@ namespace AssemblyCSharp
         /**
 		 * Serializes lidar data.
 		 * */
-        public String serializeLidarData(Dictionary<float, List<SphericalCoordinates>> hitList)
+  /*      public String serializeLidarData(Dictionary<float, List<SphericalCoordinates>> hitList)
         {
             return JsonConvert.SerializeObject(hitList);
         }
@@ -32,7 +32,7 @@ namespace AssemblyCSharp
         /**
 		 * Parses lidar data.
 		 * */
-        public Dictionary<float, List<SphericalCoordinates>> parseLidarData(String data)
+   /*     public Dictionary<float, List<SphericalCoordinates>> parseLidarData(String data)
         {
             return JsonConvert.DeserializeObject<Dictionary<float, List<SphericalCoordinates>>>(data);
         }
@@ -40,7 +40,7 @@ namespace AssemblyCSharp
         /**
          * Saves the generated data into a file.
          * */
-        public Boolean saveLidarData(Dictionary<float, List<SphericalCoordinates>> data)
+   /*   	public Boolean saveLidarData(Dictionary<float, List<SphericalCoordinates>> data)
         {
             SaveFileDialog save = new SaveFileDialog();
             save.FileName = "lidar.lidardata";
@@ -63,7 +63,7 @@ namespace AssemblyCSharp
         /**
          * Opens a file and returns the data
          * */
-        public Dictionary<float, List<SphericalCoordinates>> openData()
+   /*     public Dictionary<float, List<SphericalCoordinates>> openData()
         {
             OpenFileDialog open = new OpenFileDialog();
 
@@ -84,4 +84,5 @@ namespace AssemblyCSharp
 
     }
 }
+*/
 
