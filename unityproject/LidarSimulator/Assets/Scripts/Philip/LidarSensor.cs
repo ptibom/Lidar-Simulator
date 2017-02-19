@@ -1,12 +1,15 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-    private List<RaycastHit> hits = new List<RaycastHit>();
+	private Dictionary<float, List<SphericalCoordinates>> hitList; 
+    //private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 2;
     public float rotationSpeedHz = 1.0f;
@@ -14,12 +17,17 @@ public class LidarSensor : MonoBehaviour {
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
     public float verticalFOV = 30f;
+    public GameObject originSensor;
+    private float startTime;
+    
 
 
     // Use this for initialization
     private void Start () {
+        this.hitList = new Dictionary<float, List<SphericalCoordinates>>();
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
+        
 
         // Initialize number of lasers, based on user selection.
         float completeAngle = verticalFOV/2;
@@ -28,6 +36,7 @@ public class LidarSensor : MonoBehaviour {
             lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
             completeAngle -= angle;
         }
+        startTime = Time.time;
     }
 
     // Update is called once per frame
@@ -51,11 +60,18 @@ public class LidarSensor : MonoBehaviour {
             // Perform rotation.
             transform.Rotate(0, rotationAnglePerStep, 0);
 
-            // Execute lasers.
+            // Execute lasers and add the corresponding coordinates oof the hiists to the hitlist.
+            List<SphericalCoordinates> hits = new List<SphericalCoordinates>();
             foreach (Laser laser in lasers)
             {
-                hits.Add(laser.ShootRay());
+                hits.Add(new SphericalCoordinates(laser.ShootRay().point));
+                //hits.Add(laser.ShootRay());
             }
+
+            hitList[(Time.time - startTime)] = hits;
+            
         }
     }
+   
+
 }
