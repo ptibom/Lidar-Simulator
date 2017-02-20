@@ -17,8 +17,6 @@ public class MenuControllerScript : MonoBehaviour {
 		
 	}
 
-
-
 	public void PlayButton(){
 		sensor.playSimulation = !sensor.playSimulation;
 	}

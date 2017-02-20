@@ -12,7 +12,7 @@ public class LidarSensor : MonoBehaviour {
     //private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 4;
-	public float rotationSpeedHz = 1.0f;
+	public float rotationSpeedHz = 1.0f; //Done
     public float rotationAnglePerStep = 45.0f;
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
@@ -21,8 +21,8 @@ public class LidarSensor : MonoBehaviour {
     private float startTime;
     
 	//Variablerna nedan bör implementeras i scriptet, de styrs av GUIn
-	public int lasersPerSet = 16;
-	public int rowsOfLasers = 2;
+	public int lasersPerSet = 16; 
+	public int rowsOfLasers = 2; //Done
 
 
 
