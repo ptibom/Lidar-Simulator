@@ -26,9 +26,6 @@ public class SphericalCoordinates
         }
         this.inclination = Mathf.Atan(coordinates.z / radius);
         this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
-
-
-
     }
 
     private float GetRadius()
