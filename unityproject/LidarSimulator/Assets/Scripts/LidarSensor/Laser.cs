@@ -9,10 +9,12 @@ public class Laser {
     private float rayDistance;
     private float verticalAngle;
     private GameObject parentObject;
+    private float offset;
 
-    public Laser(GameObject parent, float verticalAngle, float distance)
+    public Laser(GameObject parent, float verticalAngle, float distance, float offset)
     {
         parentObject = parent;
+        this.offset = offset;
         this.verticalAngle = verticalAngle;
         rayDistance = distance;
         ray = new Ray();
@@ -51,7 +53,7 @@ public class Laser {
     {
         Quaternion q = Quaternion.AngleAxis(verticalAngle, Vector3.right);
         Vector3 direction = parentObject.transform.TransformDirection(q * Vector3.forward);
-        ray.origin = parentObject.transform.position;
+        ray.origin = parentObject.transform.position + (parentObject.transform.right * offset);
         ray.direction = direction;
     }
 

@@ -14,24 +14,34 @@ public class LidarSensor : MonoBehaviour {
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
     public float verticalFOV = 30f;
+    public float offset = 0.001f;
 
 
     // Use this for initialization
-    private void Start () {
+    private void Start ()
+    {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
         // Initialize number of lasers, based on user selection.
         float completeAngle = verticalFOV/2;
         float angle = verticalFOV / numberOfLasers;
-        for (int i = 0; i < numberOfLasers; i++) {
-            lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
+        int setOfLasers = numberOfLasers / 4;
+        for (int i = 0; i < numberOfLasers; i++)
+        {
+            float rayOffset = offset;
+            if (i < setOfLasers || i >= setOfLasers * 2 && i < setOfLasers * 3)
+            {
+                rayOffset = -offset;
+            }
+            lasers.Add(new Laser(gameObject, completeAngle, rayDistance, rayOffset));
             completeAngle -= angle;
         }
     }
 
     // Update is called once per frame
-    private void Update () {
+    private void Update ()
+    {
         // For debugging, shows visible ray in real time.
         foreach (Laser laser in lasers)
         {
