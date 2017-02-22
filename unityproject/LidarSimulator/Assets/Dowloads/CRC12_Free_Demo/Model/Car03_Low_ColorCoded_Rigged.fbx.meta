@@ -1,0 +1,102 @@
+fileFormatVersion: 2
+guid: 136752fc9055fc14cbfe083362788924
+timeCreated: 1429438030
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: BackL
+    100002: BackR
+    100004: //RootNode
+    100006: car_carBody
+    100008: car_chrome
+    100010: FrontL
+    100012: FrontR
+    100014: Root
+    100016: tireBackL_low
+    100018: tireBackR_low
+    100020: tireFrontL_low
+    100022: tireFrontR_low
+    400000: BackL
+    400002: BackR
+    400004: //RootNode
+    400006: car_carBody
+    400008: car_chrome
+    400010: FrontL
+    400012: FrontR
+    400014: Root
+    400016: tireBackL_low
+    400018: tireBackR_low
+    400020: tireFrontL_low
+    400022: tireFrontR_low
+    4300000: car_chrome
+    4300002: car_carBody
+    4300004: tireFrontL_low
+    4300006: tireBackL_low
+    4300008: tireBackR_low
+    4300010: tireFrontR_low
+    9500000: //RootNode
+    13700000: car_carBody
+    13700002: car_chrome
+    13700004: tireBackL_low
+    13700006: tireBackR_low
+    13700008: tireFrontL_low
+    13700010: tireFrontR_low
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
