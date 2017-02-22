@@ -61,4 +61,9 @@ public class Laser {
     {
         return ray;
     }
+
+    public float GetVerticalAngle()
+    {
+        return verticalAngle;
+    }
 }

@@ -7,7 +7,8 @@ public class LidarSensor : MonoBehaviour {
 
     private List<Laser> lasers = new List<Laser>();
     private List<RaycastHit> hits = new List<RaycastHit>();
-
+    private float horizontalAngle = 0;
+   
     public int numberOfLasers = 2;
     public float rotationSpeedHz = 1.0f;
     public float rotationAnglePerStep = 45.0f;
@@ -60,11 +61,19 @@ public class LidarSensor : MonoBehaviour {
 
             // Perform rotation.
             transform.Rotate(0, rotationAnglePerStep, 0);
+            horizontalAngle += rotationAnglePerStep; // Keep track of our current rotation.
+            if (horizontalAngle >= 360)
+            {
+                horizontalAngle -= 360;
+            }
 
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
-                hits.Add(laser.ShootRay());
+                RaycastHit hit = laser.ShootRay();
+                float distance = hit.distance;
+                float verticalAngle = laser.GetVerticalAngle();
+                // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
             }
         }
     }
