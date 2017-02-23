@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LidarSensor : MonoBehaviour {
+public class LidarSensorV1 : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
@@ -67,7 +67,7 @@ public class LidarSensor : MonoBehaviour {
 		float completeAngle = verticalFOV/2;
 		float angle = verticalFOV / numberOfLasers;
 		for (int i = 0; i < numberOfLasers; i++) {
-			lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
+			lasers.Add(new Laser(gameObject, completeAngle, rayDistance, 0f));
 			completeAngle -= angle;
 		}
 		startTime = Time.time;

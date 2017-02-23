@@ -9,13 +9,13 @@ public class LidarSensor : MonoBehaviour {
     private List<RaycastHit> hits = new List<RaycastHit>();
     private float horizontalAngle = 0;
    
-    public int numberOfLasers = 2;
-    public float rotationSpeedHz = 1.0f;
-    public float rotationAnglePerStep = 45.0f;
-    public float rayDistance = 100f;
+	public int numberOfLasers = 2; //(Skrivet som Lasers per set i UI't)
+	public float rotationSpeedHz = 1.0f; //(Kopplat till UI'n)
+    public float rotationAnglePerStep = 5.0f; //(Kopplat till UI'n)
+	public float rayDistance = 100f; //(Kopplat till UI'n)
     public float simulationSpeed = 1;
-    public float verticalFOV = 30f;
-    public float offset = 0.001f;
+	public float verticalFOV = 30f; //(Funktion skriven, UI ej skapat)
+	public float offset = 0.001f;	//(Funktion skriven, UI ej skapat)
 
 
     // Use this for initialization
