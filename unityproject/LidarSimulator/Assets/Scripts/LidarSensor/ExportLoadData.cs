@@ -33,12 +33,12 @@ namespace AssemblyCSharp
         // TODO: Saves the generated data into a file.        
         public Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinates>> data)
         {
-
+            throw new NotImplementedException();
         }
         // TODO: Opens a file and, parses and returns the data         
         public Dictionary<float, List<SphericalCoordinates>> OpenData()
         {
-
+            throw new NotImplementedException();
         }
     }
 }
