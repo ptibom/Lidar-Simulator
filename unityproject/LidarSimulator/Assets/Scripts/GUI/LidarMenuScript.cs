@@ -61,4 +61,10 @@ public class LidarMenuScript : MonoBehaviour {
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 
 	}
+
+	public void SimulationSpeed(Slider slider){
+		//sensor.simulationSpeed = slider.value;
+		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
+
+	}
 }
