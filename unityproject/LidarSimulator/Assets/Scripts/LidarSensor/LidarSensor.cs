@@ -8,7 +8,7 @@ public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-	private Dictionary<float, List<SphericalCoordinates>> hitList; 
+	private Dictionary<float, List<SphericalCoordinates>> hitList;
     //private List<RaycastHit> hits = new List<RaycastHit>();
 
     public int numberOfLasers = 2;
@@ -19,7 +19,7 @@ public class LidarSensor : MonoBehaviour {
     public float verticalFOV = 30f;
     public GameObject originSensor;
     private float startTime;
-    
+
 
 
     // Use this for initialization
@@ -27,7 +27,7 @@ public class LidarSensor : MonoBehaviour {
         this.hitList = new Dictionary<float, List<SphericalCoordinates>>();
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
-        
+
 
         // Initialize number of lasers, based on user selection.
         float completeAngle = verticalFOV/2;
@@ -69,9 +69,9 @@ public class LidarSensor : MonoBehaviour {
             }
 
             hitList[(Time.time - startTime)] = hits;
-            
+
         }
     }
-   
+
 
 }
