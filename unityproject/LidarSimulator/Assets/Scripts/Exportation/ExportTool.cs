@@ -17,48 +17,41 @@ namespace AssemblyCSharp
         {
         }
 
-        // Serializes the collected lidar data.
-        private String SerializeLidarData(Dictionary<float, List<SphericalCoordinates>> hitList)
-        {
-            return JsonUtility.ToJson(hitList);
-        }
-
-
-        // Parses lidar data.
-        private Dictionary<float, List<SphericalCoordinates>> ParseLidarData(String data)
-        {
-            return JsonUtility.FromJson<Dictionary<float, List<SphericalCoordinates>>>(data);
-        }
-
-
         // Saves the generated data into a file.
-        public Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinates>> data)
+        public static Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinates>> data, String fileName)
         {
-			// Opens a file selection dialog for a PNG file and overwrites any
-			// selected texture with the contents.
-
-
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Create(Application.persistentDataPath + "/lidarData.lidar");
-            bf.Serialize(JsonUtility.ToJson(data));
+			FileStream file = File.Create(Application.persistentDataPath + "/"+fileName+".lidar");
+			bf.Serialize(file, (JsonUtility.ToJson(data)));
             file.Close();
-            return true;
+			return File.Exists (Application.persistentDataPath + "/" + fileName + ".lidar"); 
         }
         //  Opens a file and, parses and returns the data
-        public Dictionary<float, List<SphericalCoordinates>> OpenData()
+		public static Dictionary<float, List<SphericalCoordinates>> OpenData(String fileName)
         {
-          if (File.Exists(Application.persistentDataPath + "/lidarData.lidar")) {
+			if (File.Exists(Application.persistentDataPath + "/" + fileName + ".lidar")) {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "lidarData.lidar", FileMode.Open);
-            Dictionary<float,List<SphericalCoordinates>> data = (Dictionary<float,List<SphericalCoordinates>>) bf.Deserialize();
+			FileStream file = File.Open(Application.persistentDataPath + "/" + fileName + ".lidar", FileMode.Open);
+            Dictionary<float,List<SphericalCoordinates>> data = (Dictionary<float,List<SphericalCoordinates>>) bf.Deserialize(file);
             file.Close();
-
-
             return data;
+
           } else {
             throw new FileNotFoundException();
           }
 
         }
+
+		// Returns all the files that can be loaded
+		public static List<String> GetFiles() 
+		{
+			Path path = new DirectoryInfo (Application.persistentDataPath);
+			List<String> files = new List<string> ();
+			foreach (string file in System.IO.Directory.GetFiles(path))
+			{ 
+				files.Add (file);
+			}
+			return files;
+		}
     }
 }
