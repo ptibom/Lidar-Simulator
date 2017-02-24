@@ -57,11 +57,10 @@ namespace AssemblyCSharp
 		/// <returns>The files.</returns>
 		public static List<String> GetFiles() 
 		{
-			Path path = new DirectoryInfo (Application.persistentDataPath);
 			List<String> files = new List<string> ();
-			foreach (string file in System.IO.Directory.GetFiles(path))
+			foreach (var file in System.IO.Directory.GetFiles(Application.persistentDataPath))
 			{ 
-				files.Add (file);
+				files.Add(file);
 			}
 			return files;
 		}
