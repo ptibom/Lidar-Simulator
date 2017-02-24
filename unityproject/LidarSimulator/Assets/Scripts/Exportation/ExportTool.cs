@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace AssemblyCSharp
 {
@@ -33,6 +34,10 @@ namespace AssemblyCSharp
         // Saves the generated data into a file.
         public Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinates>> data)
         {
+			// Opens a file selection dialog for a PNG file and overwrites any
+			// selected texture with the contents.
+
+
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Create(Application.persistentDataPath + "/lidarData.lidar");
             bf.Serialize(JsonUtility.ToJson(data));
