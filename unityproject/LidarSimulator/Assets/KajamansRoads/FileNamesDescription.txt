@@ -1,0 +1,27 @@
+Road names description
+---------------------------
+
+Road files have somewhat cumbersome file names. On positive side, these names provide their both unique and descriptive identifiers.
+
+For example:
+
+Road_l10km_rw12m_wh15m_RsBtW_cc4_sl69_t(1212029).asset
+
+l10km   ..  the length of the road is 10 km (10000m) along its center line
+rw12m   ..  the road width (just the tarmac) is 12 meters
+wh15m   ..  the height of the "wall", for example the treeline along the road is 15 meters
+
+RsBtW
+The road profile can consist of up to 5 sub meshes. They are (from the center outwards) road, shoulder, banking, terrain and wall. 
+Not all parts are always present. Skipped (zero sized) parts are omitted which keeps the number of polygons down. 
+Capital letters indicate that corresponding part is present, small letters mean that it is deprecated. The road in the example consists of road, banking and wall.  
+
+cc4     ..  centering coefficient, doesn't have any obvious intuitive meaning other than that two roads only differing in this parameter will have different shapes.
+
+sl69    ..  segment length coefficient. generally, the smaller, the finer mesh, the bigger the less polygons, but the shape changes as well
+
+t(1212029) .. some more parameters controlling the pseudo-random shape generator.   
+
+Update 1:
+
+The naming convention has been slightly changed. The same data and meaning, but because of architectural changes in the generator they have been reshuffled. The data pertaining to where the road goes (length, segment length coeff...) are at the start. THe data describing the road profile (e.g. width) follow.  
