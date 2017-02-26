@@ -1,0 +1,18 @@
+C:/Prog/Unity5/Generation01/Assets/KajamansRoads/Free/Meshes/l10km_cc4_sl20_t(12123025)_A87113010_Alley.text
+MaxHeightSpread = 0.00
+SegmentLengthCoef = 0.20
+RequestedLength = 10000.00
+CenteringCoef = 4.00
+TurnRandomPoint = 12.2000 , 12.2000
+TurnRandomDir = 30.00
+TurnRandomDT = 0.02500
+HeightRandomPoint = 12.5000 , 12.5000
+HeightRandomDir = 90.00
+
+TreeHeight = 8.00
+TreeWidth = 7.00
+SideOffset = 11.00
+Spacing = 30.00
+FacingDistance = 30.00
+StartDist = 10.00
+
