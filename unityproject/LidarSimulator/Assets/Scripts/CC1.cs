@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 public class CC1 : MonoBehaviour
 {
@@ -20,7 +19,7 @@ public class CC1 : MonoBehaviour
 	public float accelerationCof = 10f;
 	public float mTorque = 1000f;
 	private bool isBraked = false;
-	public GameObject BrakeLight;
+	//public GameObject BrakeLight;
 
 
 	void MoveMent()
@@ -48,7 +47,7 @@ public class CC1 : MonoBehaviour
 	void Start()
 	{
 		GetComponent<Rigidbody>().centerOfMass = new Vector3(0.0f, -0.9f, 0.2f);
-		BrakeLight.SetActive(false);
+		//BrakeLight.SetActive(false);
 
 	}
 
@@ -104,7 +103,7 @@ public class CC1 : MonoBehaviour
 		//Brake
 
 		if (Input.GetKey (KeyCode.Space)) {
-			BrakeLight.SetActive (true);
+			//BrakeLight.SetActive (true);
 			isBraked = true;
 
 			WBR.brakeTorque = Mathf.Infinity;
@@ -116,7 +115,7 @@ public class CC1 : MonoBehaviour
 
 		} else {
 			isBraked = false;
-			BrakeLight.SetActive (false);
+			//BrakeLight.SetActive (false);
 		}
 
 	}
