@@ -15,8 +15,12 @@ public class LidarSensor : MonoBehaviour {
     public float rotationAnglePerStep = 45.0f;
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
-    public float verticalFOV = 30f;
+    public float upperFOV = 30f;
+    public float lowerFOV = 30f;
     public float offset = 0.001f;
+    public float upperNormal = 30f;
+    public float lowerNormal = 30f;
+
 
 
     // Use this for initialization
@@ -26,18 +30,24 @@ public class LidarSensor : MonoBehaviour {
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
         // Initialize number of lasers, based on user selection.
-        float completeAngle = verticalFOV/2;
-        float angle = verticalFOV / numberOfLasers;
-        int setOfLasers = numberOfLasers / 4;
+        float upperTotalAngle = upperFOV / 2;
+        float lowerTotalAngle = lowerFOV / 2;
+        float upperAngle = upperFOV / (numberOfLasers / 2);
+        float lowerAngle = lowerFOV / (numberOfLasers / 2);
         for (int i = 0; i < numberOfLasers; i++)
         {
-            float rayOffset = offset;
-            if (i < setOfLasers || i >= setOfLasers * 2 && i < setOfLasers * 3)
+            if (i < numberOfLasers/2)
             {
-                rayOffset = -offset;
+                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset));
+
+                lowerTotalAngle -= lowerAngle;
             }
-            lasers.Add(new Laser(gameObject, completeAngle, rayDistance, rayOffset));
-            completeAngle -= angle;
+            else
+            {
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0));
+                upperTotalAngle -= upperAngle;
+            }
+            
         }
     }
 

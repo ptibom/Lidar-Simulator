@@ -53,7 +53,7 @@ public class Laser {
     {
         Quaternion q = Quaternion.AngleAxis(verticalAngle, Vector3.right);
         Vector3 direction = parentObject.transform.TransformDirection(q * Vector3.forward);
-        ray.origin = parentObject.transform.position + (parentObject.transform.right * offset);
+        ray.origin = parentObject.transform.position + (parentObject.transform.up * offset);
         ray.direction = direction;
     }
 

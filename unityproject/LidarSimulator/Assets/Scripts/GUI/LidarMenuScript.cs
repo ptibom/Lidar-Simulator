@@ -47,7 +47,7 @@ public class LidarMenuScript : MonoBehaviour {
 	}
 
 	public void TopVerticalFOV(Slider slider){
-		sensor.verticalFOV = slider.value;
+		//sensor.verticalFOV = slider.value;
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 	}
 
