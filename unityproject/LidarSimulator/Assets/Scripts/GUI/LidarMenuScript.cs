@@ -5,16 +5,44 @@ using UnityEngine.UI;
 
 public class LidarMenuScript : MonoBehaviour {
 
-	LidarSensor sensor;
+	private LidarSensor sensor;
+
+	public Slider numberOfLasers;
+	public Slider rotationSpeedHz;
+	public Slider rotationAnglePerStep;
+	public Slider rayDistance;
+	public Slider simulationSpeed;
+	public Slider upperFOV;
+	public Slider lowerFOV;
+	public Slider offset;
+	public Slider upperNormal;
+	public Slider lowerNormal;
+
 
 	// Use this for initialization
 	void Start () {
 		sensor = GameObject.FindGameObjectWithTag ("Lidar").GetComponent<LidarSensor> ();
+		UpdateGUIValues ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	void UpdateGUIValues(){
+		numberOfLasers.value = sensor.numberOfLasers;
+		SetSliderText (numberOfLasers);
+		rotationSpeedHz.value = sensor.rotationSpeedHz;
+		SetSliderText(rotationSpeedHz);
+		rotationAnglePerStep.value = sensor.rotationAnglePerStep;
+		SetSliderText (rotationAnglePerStep);
+
+		//Skall fortsätta implementeras för alla parametrar
+	}
+
+	public void SetSliderText(Slider slider){
+		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 	}
 
 	public void RowsOfLasers(Toggle toggle){
@@ -24,12 +52,12 @@ public class LidarMenuScript : MonoBehaviour {
 		//	sensor.rowsOfLasers = 1;
 		}
 	}
-
+	/*
 	public void RotationSpeed(Slider slider){
-		sensor.rotationSpeedHz = slider.value;
+		//sensor.rotationSpeedHz = slider.value;
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 	}
-
+		
 	public void LasersPerSet(Slider slider){
 		sensor.rotationSpeedHz = slider.value;
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
@@ -67,4 +95,5 @@ public class LidarMenuScript : MonoBehaviour {
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 
 	}
+	*/
 }
