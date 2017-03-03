@@ -5,9 +5,9 @@ using UnityEngine;
 public class PointCloud : MonoBehaviour
 {
     ParticleSystem.Particle[] particleCloud;
-    public ParticleSystem particleSystem;
-    public List<SphericalCoordinates> points;
-    bool pointsUpdate = true;
+    public Component particleSystem;
+    List<SphericalCoordinates> points;
+    bool pointsUpdate = false;
 
     // Use this for initialization
     void Start()
@@ -20,16 +20,18 @@ public class PointCloud : MonoBehaviour
     {
         if (pointsUpdate)
         {
+            Debug.Log("Update");
             SetParticles(points);
-            particleSystem.SetParticles(particleCloud, particleCloud.Length);
-            pointsUpdate = false;
+            ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);
         }
     }
 
 
-    public void SetParticles(List<SphericalCoordinates> positions)
+    private void SetParticles(List<SphericalCoordinates> positions)
     {
+        Debug.Log("position: " + positions.Count);
         particleCloud = new ParticleSystem.Particle[positions.Count];
+        Debug.Log("Cloud length: " + positions.Count);
 
         for (int i = 0; i < positions.Count; i++)
         {
@@ -40,6 +42,11 @@ public class PointCloud : MonoBehaviour
             particleCloud[i] = particle;
 
         }
+    }
+
+    public void UpdatePoints(List<SphericalCoordinates> points)
+    {
+        this.points = points;
         pointsUpdate = true;
     }
 }
