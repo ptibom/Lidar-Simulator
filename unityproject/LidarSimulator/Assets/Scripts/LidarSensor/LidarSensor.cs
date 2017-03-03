@@ -8,6 +8,8 @@ public class LidarSensor : MonoBehaviour {
 
     private List<Laser> lasers = new List<Laser>();
     private List<RaycastHit> hits = new List<RaycastHit>();
+
+    private Dictionary<float, List<SphericalCoordinates>> hitList;
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -28,6 +30,8 @@ public class LidarSensor : MonoBehaviour {
     {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
+        this.hitList = new Dictionary<float, List<SphericalCoordinates>>(); // Data structure for storing points
+
 
         // Initialize number of lasers, based on user selection.
         float upperTotalAngle = upperFOV / 2;
@@ -78,14 +82,28 @@ public class LidarSensor : MonoBehaviour {
                 horizontalAngle -= 360;
             }
 
+
+            List<SphericalCoordinates> hits = new List<SphericalCoordinates>();
+
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
+                hits.Add(new SphericalCoordinates(distance, horizontalAngle, verticalAngle));
                 // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
             }
+
+            hitList[Time.fixedTime] = hits;
         }
+    }
+
+    public List<SphericalCoordinates> GetLastHits()
+    {
+        List<SphericalCoordinates> list;
+        
+        hitList.TryGetValue(lastUpdate , out list);
+        return list;
     }
 }
