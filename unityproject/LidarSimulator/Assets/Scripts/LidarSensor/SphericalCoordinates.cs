@@ -35,6 +35,19 @@ public class SphericalCoordinates
         this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
     }
 
+    /// <summary>
+    /// Converts a spherical coordinate to a cartesian equivalent. 
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 ToCartesian()
+    {
+        Vector3 cartesian = new Vector3();
+        cartesian.x = ((float)(radius * Math.Sin(inclination) * Math.Cos(azimuth)));
+        cartesian.y = ((float)(radius * Math.Sin(inclination) * Math.Sin(azimuth)));
+        cartesian.z = ((float)(radius * Math.Cos(inclination)));
+        return cartesian;
+    }
+
 	/// <summary>
 	/// Gets the radius.
 	/// </summary>
