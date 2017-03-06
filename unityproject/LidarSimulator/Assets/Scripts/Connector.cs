@@ -6,6 +6,7 @@ public class Connector : MonoBehaviour {
 
     public GameObject pointCloudBase;
     public GameObject Lidar;
+    private List<SphericalCoordinates> prev;
 
     private PointCloud pointCloud;
     private LidarSensor lidarSensor;
@@ -20,9 +21,10 @@ public class Connector : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         List<SphericalCoordinates> hits = lidarSensor.GetLastHits();
-        if (hits != null)
+        if (hits != null && hits != prev)
         {
             pointCloud.UpdatePoints((hits));
+            prev = hits;
 
         }
         else
