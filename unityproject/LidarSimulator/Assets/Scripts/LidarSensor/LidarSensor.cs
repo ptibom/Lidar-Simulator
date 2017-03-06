@@ -8,8 +8,7 @@ public class LidarSensor : MonoBehaviour {
 
     private List<Laser> lasers = new List<Laser>();
     private List<RaycastHit> hits = new List<RaycastHit>();
-
-    private Dictionary<float, List<SphericalCoordinates>> hitList;
+    private DataStructure dataStructure;
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -22,6 +21,7 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
+    float prev;
 
 
 
@@ -30,7 +30,7 @@ public class LidarSensor : MonoBehaviour {
     {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
-        this.hitList = new Dictionary<float, List<SphericalCoordinates>>(); // Data structure for storing points
+        this.dataStructure = new DataStructure(); // Data structure for storing points
 
 
         // Initialize number of lasers, based on user selection.
@@ -83,7 +83,6 @@ public class LidarSensor : MonoBehaviour {
             }
 
 
-            List<SphericalCoordinates> hits = new List<SphericalCoordinates>();
 
             // Execute lasers.
             foreach (Laser laser in lasers)
@@ -91,19 +90,23 @@ public class LidarSensor : MonoBehaviour {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
-                hits.Add(new SphericalCoordinates(distance, horizontalAngle, verticalAngle));
+
+                dataStructure.AddHit(new SphericalCoordinates(hit.point));
+                //points.Add(new SphericalCoordinates(distance, horizontalAngle, verticalAngle));
                 // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
             }
 
-            hitList[Time.fixedTime] = hits;
+            if(Time.fixedTime - prev > 0.25) {
+                dataStructure.UpdatePoints(Time.fixedTime);
+                prev = Time.fixedTime;
+            }
+           
         }
     }
 
     public List<SphericalCoordinates> GetLastHits()
     {
-        List<SphericalCoordinates> list;
-        
-        hitList.TryGetValue(lastUpdate , out list);
-        return list;
+
+        return dataStructure.GetLatestHits ();
     }
 }

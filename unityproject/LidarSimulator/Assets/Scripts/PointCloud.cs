@@ -20,18 +20,20 @@ public class PointCloud : MonoBehaviour
     {
         if (pointsUpdate)
         {
-            Debug.Log("Update");
             SetParticles(points);
-            ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);
+            if(particleCloud.Length != 0)
+            {
+               ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);
+                //pointsUpdate = false;
+
+            }
         }
     }
 
 
     private void SetParticles(List<SphericalCoordinates> positions)
     {
-        Debug.Log("position: " + positions.Count);
         particleCloud = new ParticleSystem.Particle[positions.Count];
-        Debug.Log("Cloud length: " + positions.Count);
 
         for (int i = 0; i < positions.Count; i++)
         {

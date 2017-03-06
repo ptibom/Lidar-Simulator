@@ -26,13 +26,24 @@ public class SphericalCoordinates
     {
         this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
 
+
         if (radius == 0)
         {
             inclination = 0;
             azimuth = 0;
         }
-        this.inclination = Mathf.Atan(coordinates.z / radius);
-        this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+        else
+        {
+            this.inclination = Mathf.Acos(coordinates.z / radius);
+            if (coordinates.x != 0)
+            {
+                this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+            }
+            else
+            {
+                this.azimuth = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -71,5 +82,14 @@ public class SphericalCoordinates
     private float GetAzimuth()
     {
         return this.azimuth;
+    }
+
+    /// <summary>
+    /// Clones this instance of the class
+    /// </summary>
+    /// <returns></returns>
+    public SphericalCoordinates Clone()
+    {
+        return new SphericalCoordinates(this.radius,this.inclination,this.azimuth);
     }
 }
