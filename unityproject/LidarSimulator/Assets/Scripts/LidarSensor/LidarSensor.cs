@@ -2,36 +2,58 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
     private List<RaycastHit> hits = new List<RaycastHit>();
-
+    private float horizontalAngle = 0;
+   
     public int numberOfLasers = 2;
     public float rotationSpeedHz = 1.0f;
     public float rotationAnglePerStep = 45.0f;
     public float rayDistance = 100f;
     public float simulationSpeed = 1;
-    public float verticalFOV = 30f;
+    public float upperFOV = 30f;
+    public float lowerFOV = 30f;
+    public float offset = 0.001f;
+    public float upperNormal = 30f;
+    public float lowerNormal = 30f;
+
 
 
     // Use this for initialization
-    private void Start () {
+    private void Start ()
+    {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
         // Initialize number of lasers, based on user selection.
-        float completeAngle = verticalFOV/2;
-        float angle = verticalFOV / numberOfLasers;
-        for (int i = 0; i < numberOfLasers; i++) {
-            lasers.Add(new Laser(gameObject, completeAngle, rayDistance));
-            completeAngle -= angle;
+        float upperTotalAngle = upperFOV / 2;
+        float lowerTotalAngle = lowerFOV / 2;
+        float upperAngle = upperFOV / (numberOfLasers / 2);
+        float lowerAngle = lowerFOV / (numberOfLasers / 2);
+        for (int i = 0; i < numberOfLasers; i++)
+        {
+            if (i < numberOfLasers/2)
+            {
+                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset));
+
+                lowerTotalAngle -= lowerAngle;
+            }
+            else
+            {
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0));
+                upperTotalAngle -= upperAngle;
+            }
+            
         }
     }
 
     // Update is called once per frame
-    private void Update () {
+    private void Update ()
+    {
         // For debugging, shows visible ray in real time.
         foreach (Laser laser in lasers)
         {
@@ -50,11 +72,19 @@ public class LidarSensor : MonoBehaviour {
 
             // Perform rotation.
             transform.Rotate(0, rotationAnglePerStep, 0);
+            horizontalAngle += rotationAnglePerStep; // Keep track of our current rotation.
+            if (horizontalAngle >= 360)
+            {
+                horizontalAngle -= 360;
+            }
 
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
-                hits.Add(laser.ShootRay());
+                RaycastHit hit = laser.ShootRay();
+                float distance = hit.distance;
+                float verticalAngle = laser.GetVerticalAngle();
+                // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
             }
         }
     }
