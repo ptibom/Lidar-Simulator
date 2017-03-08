@@ -12,6 +12,7 @@ public class SceneEditor : MonoBehaviour {
     private bool moveGameObject;
     private bool rotateGameObject;
     private float previousMousePos;
+    private float lastClick;
 
 	// Use this for initialization
 	void Start ()
@@ -34,6 +35,7 @@ public class SceneEditor : MonoBehaviour {
                 go.transform.position = hit.point + new Vector3(0, bounds.size.y / 2);
                 if (Input.GetMouseButtonDown(0))
                 {
+                    lastClick = Time.time;
                     moveGameObject = false;
                     rotateGameObject = true;
                 }
@@ -44,7 +46,6 @@ public class SceneEditor : MonoBehaviour {
                 }
             }
         }
-
         else if (rotateGameObject)
         {
             if (previousMousePos != 0)
@@ -55,8 +56,9 @@ public class SceneEditor : MonoBehaviour {
 
             if (Input.GetMouseButtonDown(0))
             {
+                lastClick = Time.time;
                 SetAlpha(1f);
-                ActivateColliders();
+                ActivateColliders(true);
                 previousMousePos = 0;
                 rotateGameObject = false;
             }
@@ -67,6 +69,21 @@ public class SceneEditor : MonoBehaviour {
                 rotateGameObject = false;
             }
         }
+        else if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButton(0) && lastClick + 0.2 < Time.time)
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject.CompareTag("EditableObject"))
+                {
+                    lastClick = Time.time;
+                    GameObject o = FindParentEditableObject(hit.collider.gameObject);
+                    MoveObject(o);
+                }
+            }
+        }
 	}
 
     public void PlaceObject(GameObject prefab)
@@ -74,11 +91,12 @@ public class SceneEditor : MonoBehaviour {
         MoveObject(Instantiate(prefab));
     }
 
-    public void MoveObject(GameObject obj)
+    private void MoveObject(GameObject obj)
     {
         go = obj;
         SetAlpha(0.33f);
         moveGameObject = true;
+        ActivateColliders(false);
     }
 
     private void SetAlpha(float value)
@@ -92,12 +110,21 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
-    private void ActivateColliders()
+    private void ActivateColliders(bool isEnabled)
     {
         Collider[] colliders = go.GetComponentsInChildren<Collider>();
         foreach (Collider collider in colliders)
         {
-            collider.enabled = true;
+            collider.enabled = isEnabled;
         }
+    }
+
+    private GameObject FindParentEditableObject(GameObject o)
+    {
+        if (o.transform.parent != null && o.transform.parent.gameObject.CompareTag("EditableObject"))
+        {
+            return FindParentEditableObject(o.transform.parent.gameObject);
+        }
+        return o;
     }
 }
