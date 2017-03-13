@@ -8,7 +8,6 @@ public class LidarSensor : MonoBehaviour {
 
     private List<Laser> lasers = new List<Laser>();
     private List<RaycastHit> hits = new List<RaycastHit>();
-    private DataStructure dataStructure;
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -21,7 +20,8 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
-    float prev;
+	public DataStructure dataStructure;
+	private float previousUpdate;
 
 
 
@@ -30,7 +30,6 @@ public class LidarSensor : MonoBehaviour {
     {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
-        this.dataStructure = new DataStructure(); // Data structure for storing points
 
 
         // Initialize number of lasers, based on user selection.
