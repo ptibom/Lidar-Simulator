@@ -26,7 +26,6 @@ public class SphericalCoordinates
     {
         this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
 
-
         if (radius == 0)
         {
             inclination = 0;
@@ -92,4 +91,20 @@ public class SphericalCoordinates
     {
         return new SphericalCoordinates(this.radius,this.inclination,this.azimuth);
     }
+
+    /// <summary>
+    /// Overriding the equals method to be able to avoid float pooint errors.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        double eps = 0.1;
+        SphericalCoordinates other = (SphericalCoordinates)obj;
+        return (Math.Abs(this.azimuth - other.azimuth) < eps
+            && Math.Abs(this.inclination - other.inclination) < eps
+            && Math.Abs(this.radius - other.radius) < eps);
+    }
+
+
 }
