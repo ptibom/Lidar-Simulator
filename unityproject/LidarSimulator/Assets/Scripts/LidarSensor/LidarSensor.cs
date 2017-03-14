@@ -24,6 +24,8 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
+	public DataStructure dataStructure;
+	private float previousUpdate;
 
 
 
@@ -32,6 +34,7 @@ public class LidarSensor : MonoBehaviour {
     {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
+
 
         // Initialize number of lasers, based on user selection.
         float upperTotalAngle = upperFOV / 2;
@@ -82,14 +85,28 @@ public class LidarSensor : MonoBehaviour {
                 horizontalAngle -= 360;
             }
 
+
+
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
-                // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
+
+                dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
+
+            if(Time.fixedTime - previousUpdate > 0.25) {
+                dataStructure.UpdatePoints(Time.fixedTime);
+                previousUpdate = Time.fixedTime;
+            }
+           
         }
+    }
+
+    public List<SphericalCoordinates> GetLastHits()
+    {
+        return dataStructure.GetLatestHits ();
     }
 }

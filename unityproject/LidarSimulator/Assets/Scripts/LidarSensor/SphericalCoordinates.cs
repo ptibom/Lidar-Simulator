@@ -3,6 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// A class representing spherical coordinates. These are created by the lidar sensor.
+/// @author: Tobias Alldén
 /// </summary>
 public class SphericalCoordinates
 {
@@ -31,8 +32,31 @@ public class SphericalCoordinates
             inclination = 0;
             azimuth = 0;
         }
-        this.inclination = Mathf.Atan(coordinates.z / radius);
-        this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+        else
+        {
+            this.inclination = Mathf.Acos(coordinates.z / radius);
+            if (coordinates.x != 0)
+            {
+                this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+            }
+            else
+            {
+                this.azimuth = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Converts a spherical coordinate to a cartesian equivalent. 
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 ToCartesian()
+    {
+        Vector3 cartesian = new Vector3();
+        cartesian.x = ((float)(radius * Math.Sin(inclination) * Math.Cos(azimuth)));
+        cartesian.y = ((float)(radius * Math.Sin(inclination) * Math.Sin(azimuth)));
+        cartesian.z = ((float)(radius * Math.Cos(inclination)));
+        return cartesian;
     }
 
 	/// <summary>
@@ -59,4 +83,29 @@ public class SphericalCoordinates
     {
         return this.azimuth;
     }
+
+    /// <summary>
+    /// Clones this instance of the class
+    /// </summary>
+    /// <returns></returns>
+    public SphericalCoordinates Clone()
+    {
+        return new SphericalCoordinates(this.radius,this.inclination,this.azimuth);
+    }
+
+    /// <summary>
+    /// Overriding the equals method to be able to avoid float pooint errors.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        double eps = 0.1;
+        SphericalCoordinates other = (SphericalCoordinates)obj;
+        return (Math.Abs(this.azimuth - other.azimuth) < eps
+            && Math.Abs(this.inclination - other.inclination) < eps
+            && Math.Abs(this.radius - other.radius) < eps);
+    }
+
+
 }
