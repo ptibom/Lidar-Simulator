@@ -56,6 +56,11 @@ public class LidarSensor : MonoBehaviour {
             }
             
         }
+
+        if(dataStructure == null)
+        {
+            dataStructure = GetComponent<DataStructure>();
+        }
     }
 
     // Update is called once per frame
