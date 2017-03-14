@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 public class DataStructure : MonoBehaviour {
@@ -15,11 +15,6 @@ public class DataStructure : MonoBehaviour {
 		this.data = new Dictionary<float, List<SphericalCoordinates>>();
 		this.currentHits = new List<SphericalCoordinates>();
 	}
-
-
-
-
-
 
 	/// <summary>
 	/// Adds a coorninate to the current hits list. 
@@ -48,18 +43,27 @@ public class DataStructure : MonoBehaviour {
 		}
 		else
 		{
-			MergeLists(newTime,prevList);
+            new Thread(delegate ()
+            {
+                Merge(newTime, currentHits, prevList, data);
+            }).Start();
+            prevTime = newTime;
 		}
 	}
 
-
-	IEnumerator MergeLists(float newTime, List<SphericalCoordinates> prevList) {
-		List<SphericalCoordinates> diffList = new List<SphericalCoordinates>();
-
-		List<SphericalCoordinates> mergedList = prevList.Union (currentHits).ToList ();
-		data[Time.fixedTime] = mergedList;
-		yield return null;
-	}
+    /// <summary>
+    /// Function for merging two lists and insert them into a data structure.
+    /// </summary>
+    /// <param name="newTime"></param>
+    /// <param name="newCoordinates"></param>
+    /// <param name="previousCoordinates"></param>
+    /// <param name="dataStructure"></param>
+    public static void Merge(float newTime, List<SphericalCoordinates> newCoordinates, List<SphericalCoordinates> previousCoordinates, Dictionary<float,List<SphericalCoordinates>> dataStructure) 
+    {
+        List<SphericalCoordinates> diffList = new List<SphericalCoordinates>();
+        List<SphericalCoordinates> mergedList = previousCoordinates.Union(newCoordinates).ToList();
+        dataStructure[newTime] = mergedList;
+    }
 
 	/// <summary>
 	/// Returns the last set of coordinates gathered. 

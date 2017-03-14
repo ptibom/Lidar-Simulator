@@ -2,34 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Connector class for connecting the point cloud to the lidar sensor, should be a component in the sensor.
+/// </summary>
 public class Connector : MonoBehaviour {
 
-    public GameObject pointCloudBase;
-    public GameObject Lidar;
-    private List<SphericalCoordinates> prev;
-
+    public GameObject pointCloudBaseGameObject;
+    public GameObject lidarGameObject;
     private PointCloud pointCloud;
     private LidarSensor lidarSensor;
 
 
 	// Use this for initialization
 	void Start () {
-        pointCloud = pointCloudBase.GetComponent<PointCloud>();
-        lidarSensor = Lidar.GetComponent<LidarSensor>();
+        pointCloudBaseGameObject = GameObject.FindGameObjectWithTag("PointCloudBase");
+        pointCloud = pointCloudBaseGameObject.GetComponent<PointCloud>();
+        lidarGameObject = GameObject.FindGameObjectWithTag("Lidar");
+        lidarSensor = lidarGameObject.GetComponent<LidarSensor>();
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+    /// Update method runs every iteration, tells the point cloud to update it's points.
+    /// </summary>
 	void Update () {
         List<SphericalCoordinates> hits = lidarSensor.GetLastHits();
-        if (hits != null && hits != prev)
+        if (hits != null)
         {
             pointCloud.UpdatePoints((hits));
-            prev = hits;
-
         }
         else
         {
-            Debug.Log("Is null");
+            Debug.Log("No new points to visualize");
         }
     }
 }

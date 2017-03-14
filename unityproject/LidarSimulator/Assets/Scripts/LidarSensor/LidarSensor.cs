@@ -91,13 +91,11 @@ public class LidarSensor : MonoBehaviour {
                 float verticalAngle = laser.GetVerticalAngle();
 
                 dataStructure.AddHit(new SphericalCoordinates(hit.point));
-                //points.Add(new SphericalCoordinates(distance, horizontalAngle, verticalAngle));
-                // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
             }
 
-            if(Time.fixedTime - prev > 0.25) {
+            if(Time.fixedTime - previousUpdate > 0.25) {
                 dataStructure.UpdatePoints(Time.fixedTime);
-                prev = Time.fixedTime;
+                previousUpdate = Time.fixedTime;
             }
            
         }
@@ -105,7 +103,6 @@ public class LidarSensor : MonoBehaviour {
 
     public List<SphericalCoordinates> GetLastHits()
     {
-
         return dataStructure.GetLatestHits ();
     }
 }
