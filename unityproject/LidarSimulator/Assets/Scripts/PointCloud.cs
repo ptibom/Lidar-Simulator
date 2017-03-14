@@ -2,38 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script for updating a particle system.
+/// </summary>
 public class PointCloud : MonoBehaviour
 {
-    ParticleSystem.Particle[] particleCloud;
-    public Component particleSystem;
-    List<SphericalCoordinates> points;
-    bool pointsUpdate = false;
+    public GameObject particleGameObject;
 
-    // Use this for initialization
+    private Component particleSystem;
+    private List<SphericalCoordinates> points;
+    private bool pointsUpdate = false;
+
+    /// <summary>
+    /// Initialization
+    /// </summary>
     void Start()
     {
-        particleSystem = GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.FindGameObjectWithTag("pSystem");
+        particleSystem = particleGameObject.GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Updates the particle systems particles if there is new points. 
+    /// </summary>
     void Update()
     {
         if (pointsUpdate)
         {
-            SetParticles(points);
-            if(particleCloud.Length != 0)
-            {
-               ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);
-                //pointsUpdate = false;
+            ParticleSystem.Particle[] particleCloud = CreateParticles(points);
 
+            if (particleCloud.Length != 0)
+            {
+               ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);                 
             }
         }
     }
 
-
-    private void SetParticles(List<SphericalCoordinates> positions)
+    /// <summary>
+    /// Creates an array of Shuriken Particles for the lidar sensor hits.
+    /// </summary>
+    /// <param name="positions"></param>
+    /// <returns></returns>
+    private ParticleSystem.Particle[] CreateParticles(List<SphericalCoordinates> positions)
     {
-        particleCloud = new ParticleSystem.Particle[positions.Count];
+        ParticleSystem.Particle[] particleCloud = new ParticleSystem.Particle[positions.Count];
 
         for (int i = 0; i < positions.Count; i++)
         {
@@ -42,10 +54,14 @@ public class PointCloud : MonoBehaviour
             particle.startColor = Color.green;
             particle.startSize = 0.1f;
             particleCloud[i] = particle;
-
         }
+          return particleCloud;
     }
 
+    /// <summary>
+    /// Updates the points to be added to the point cloud (the latest from the lidar sensor)
+    /// </summary>
+    /// <param name="points"></param>
     public void UpdatePoints(List<SphericalCoordinates> points)
     {
         this.points = points;
