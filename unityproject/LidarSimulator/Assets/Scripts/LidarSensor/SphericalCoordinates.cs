@@ -3,6 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// A class representing spherical coordinates. These are created by the lidar sensor.
+/// @author: Tobias Alldén
 /// </summary>
 public class SphericalCoordinates
 {

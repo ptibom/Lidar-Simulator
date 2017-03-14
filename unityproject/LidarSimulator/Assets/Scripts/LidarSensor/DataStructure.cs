@@ -3,6 +3,10 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// The data structure in which to save the lidar data.
+///  @author: Tobias Alldén
+/// </summary>
 public class DataStructure : MonoBehaviour {
 
 	private Dictionary<float, List<SphericalCoordinates>> data;

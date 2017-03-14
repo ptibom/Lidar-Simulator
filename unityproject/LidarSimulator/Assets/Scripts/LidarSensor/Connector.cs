@@ -4,6 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// Connector class for connecting the point cloud to the lidar sensor, should be a component in the sensor.
+///  @author: Tobias Alldén
 /// </summary>
 public class Connector : MonoBehaviour {
 

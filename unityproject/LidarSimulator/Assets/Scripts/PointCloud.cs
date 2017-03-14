@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+///
+
+
 
 /// <summary>
 /// Script for updating a particle system.
+/// @author: Tobias Alldén
 /// </summary>
 public class PointCloud : MonoBehaviour
 {
