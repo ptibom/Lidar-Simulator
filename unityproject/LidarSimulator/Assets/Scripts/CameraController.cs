@@ -7,10 +7,10 @@ public class CameraController : MonoBehaviour {
 
 	public int scrollPixelMargin = 10;
 
-	public float behindDistance;
-	public float aboveheight;
-	public float roamingSpeed = 70;
-	public float roamingHeight = 30;
+	public float behindDistance = 10f;
+	public float aboveheight = 5f;
+	public float roamingSpeed = 70f;
+	public float roamingHeight = 30f;
 	public float smoothingSpeed = 0.045f; // Ska vara runt 0.045 kör 2
 
 	float distancetoObject;
@@ -72,6 +72,7 @@ public class CameraController : MonoBehaviour {
 	void Roam(){
 		Vector3 moveDirection = new Vector3 (0, 0, 0);
 		//Scrolla om muspekaren är i kanten av skärmen eller om piltangenterna tryckks ner.
+		//skapa en summavektor som bestämmer vart kameran ska gå och normalisera den
 		if (/*Input.GetKey (KeyCode.UpArrow) ||*/ Input.mousePosition.y >= Screen.height - scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (0, 1, 0);
 		}
@@ -91,6 +92,7 @@ public class CameraController : MonoBehaviour {
 			moveDirection = moveDirection + new Vector3 (0, 0, -1);
 		}
 		moveDirection = moveDirection.normalized;
+		//använd den normaliserade summavektorn för att translata kameran, deltaTime gör att det blir samma fart oavsett framerate, förhoppningsvis
 		transform.Translate((moveDirection * roamingSpeed*Time.deltaTime));
 	
 
