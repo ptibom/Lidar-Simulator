@@ -1,38 +1,24 @@
 fileFormatVersion: 2
-guid: 5e685afd430110c4e802b1b9891a849f
+guid: a30a9bb6b608d1f469d6b4efe4063a50
+timeCreated: 1489534064
+licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: LampPost_A
-    100002: LampPost_B
-    100004: LampPost_C
-    100006: LampPost_D
-    100008: LampPost_E
-    100010: //RootNode
-    400000: LampPost_A
-    400002: LampPost_B
-    400004: LampPost_C
-    400006: LampPost_D
-    400008: LampPost_E
-    400010: //RootNode
-    2300000: LampPost_A
-    2300002: LampPost_B
-    2300004: LampPost_C
-    2300006: LampPost_D
-    2300008: LampPost_E
-    3300000: LampPost_A
-    3300002: LampPost_B
-    3300004: LampPost_C
-    3300006: LampPost_D
-    3300008: LampPost_E
-    4300000: LampPost_D
-    4300002: LampPost_B
-    4300004: LampPost_A
-    4300006: LampPost_E
-    4300008: LampPost_C
-    9500000: //RootNode
+    100000: Camera
+    100002: Humon
+    100004: Lamp
+    100006: //RootNode
+    400000: Camera
+    400002: Humon
+    400004: Lamp
+    400006: //RootNode
+    2300000: Humon
+    3300000: Humon
+    4300000: Humon
+    6400000: Humon
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -55,25 +41,25 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.01
-    meshCompression: 0
-    addColliders: 0
-    importBlendShapes: 0
-    swapUVChannels: 0
-    generateSecondaryUV: 1
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 1
+    generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 0
+    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
-    secondaryUVAreaDistortion: 15
+    secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
-    tangentImportMode: 4
+    normalImportMode: 1
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -91,9 +77,9 @@ ModelImporter:
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
-    skeletonHasParents: 0
+    skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
