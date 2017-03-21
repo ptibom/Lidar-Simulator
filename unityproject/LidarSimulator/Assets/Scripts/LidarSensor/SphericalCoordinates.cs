@@ -100,11 +100,20 @@ public class SphericalCoordinates
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        double eps = 0.1;
+        double eps = 0.01;
         SphericalCoordinates other = (SphericalCoordinates)obj;
         return (Math.Abs(this.azimuth - other.azimuth) < eps
             && Math.Abs(this.inclination - other.inclination) < eps
             && Math.Abs(this.radius - other.radius) < eps);
+    }
+
+    /// <summary>
+    /// Override hash code
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return  (int)Math.Floor(azimuth * 3 + inclination * 13 + radius * 11);
     }
 
 
