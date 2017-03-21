@@ -26,7 +26,7 @@ public class Connector : MonoBehaviour {
     /// Update method runs every iteration, tells the point cloud to update it's points.
     /// </summary>
 	void Update () {
-        List<SphericalCoordinates> hits = lidarSensor.GetLastHits();
+        LinkedList<SphericalCoordinates> hits = lidarSensor.GetLastHits();
         if (hits != null)
         {
             pointCloud.UpdatePoints((hits));

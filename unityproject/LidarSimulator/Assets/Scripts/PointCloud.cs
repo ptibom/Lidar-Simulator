@@ -14,7 +14,7 @@ public class PointCloud : MonoBehaviour
     public GameObject particleGameObject;
 
     private Component particleSystem;
-    private List<SphericalCoordinates> points;
+    private LinkedList<SphericalCoordinates> points;
     private bool pointsUpdate = false;
 
     /// <summary>
@@ -47,17 +47,19 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(List<SphericalCoordinates> positions)
+    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
     {
         ParticleSystem.Particle[] particleCloud = new ParticleSystem.Particle[positions.Count];
 
-        for (int i = 0; i < positions.Count; i++)
+        int i = 0;
+        foreach(SphericalCoordinates sc in positions)
         {
             ParticleSystem.Particle particle = new ParticleSystem.Particle();
-            particle.position = positions[i].ToCartesian();
+            particle.position = sc.ToCartesian();
             particle.startColor = Color.green;
             particle.startSize = 0.1f;
             particleCloud[i] = particle;
+            i++;
         }
           return particleCloud;
     }
@@ -66,7 +68,7 @@ public class PointCloud : MonoBehaviour
     /// Updates the points to be added to the point cloud (the latest from the lidar sensor)
     /// </summary>
     /// <param name="points"></param>
-    public void UpdatePoints(List<SphericalCoordinates> points)
+    public void UpdatePoints(LinkedList<SphericalCoordinates> points)
     {
         this.points = points;
         pointsUpdate = true;

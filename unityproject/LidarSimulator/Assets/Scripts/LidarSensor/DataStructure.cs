@@ -9,23 +9,23 @@ using UnityEngine;
 /// </summary>
 public class DataStructure : MonoBehaviour {
 
-	private Dictionary<float, List<SphericalCoordinates>> data;
-	private List<SphericalCoordinates> currentHits;
+	private Dictionary<float, LinkedList<SphericalCoordinates>> data;
+	private LinkedList<SphericalCoordinates> currentHits;
 	private float prevTime; // Timestamp for previous data entry.
 
 
 	public DataStructure()
 	{
-		this.data = new Dictionary<float, List<SphericalCoordinates>>();
-		this.currentHits = new List<SphericalCoordinates>();
+		this.data = new Dictionary<float, LinkedList<SphericalCoordinates>>();
+		this.currentHits = new LinkedList<SphericalCoordinates>();
 	}
 
 	/// <summary>
-	/// Adds a coorninate to the current hits list. 
+	/// Adds a coorninate to the current hits LinkedList. 
 	/// </summary>
 	public void AddHit(SphericalCoordinates hit)
 	{
-		currentHits.Add(hit);
+		currentHits.AddLast(hit);
 
 	}
 
@@ -36,50 +36,69 @@ public class DataStructure : MonoBehaviour {
 	public void UpdatePoints(float newTime)
 	{
 
-		List<SphericalCoordinates> prevList;
-		data.TryGetValue(prevTime, out prevList);
+		LinkedList<SphericalCoordinates> prevLinkedList;
+		data.TryGetValue(prevTime, out prevLinkedList);
 
-		if (prevList == null && currentHits.Count != 0)
+		if (prevLinkedList == null && currentHits.Count != 0)
 		{
 			data[Time.fixedTime] = currentHits;
 			prevTime = newTime;
-			currentHits = new List<SphericalCoordinates>();
+			currentHits = new LinkedList<SphericalCoordinates>();
 		}
 		else
 		{
             new Thread(delegate ()
             {
-                Merge(newTime, currentHits, prevList, data);
+                Merge(newTime, currentHits, prevLinkedList, data);
             }).Start();
             prevTime = newTime;
 		}
 	}
 
     /// <summary>
-    /// Function for merging two lists and insert them into a data structure.
+    /// Function for merging two LinkedLists and insert them into a data structure.
     /// </summary>
     /// <param name="newTime"></param>
     /// <param name="newCoordinates"></param>
     /// <param name="previousCoordinates"></param>
     /// <param name="dataStructure"></param>
-    public static void Merge(float newTime, List<SphericalCoordinates> newCoordinates, List<SphericalCoordinates> previousCoordinates, Dictionary<float,List<SphericalCoordinates>> dataStructure) 
+    public static void Merge(float newTime, LinkedList<SphericalCoordinates> newCoordinates, LinkedList<SphericalCoordinates> previousCoordinates, Dictionary<float,LinkedList<SphericalCoordinates>> dataStructure) 
     {
-        List<SphericalCoordinates> diffList = new List<SphericalCoordinates>();
-        List<SphericalCoordinates> mergedList = previousCoordinates.Union(newCoordinates).ToList();
-        dataStructure[newTime] = mergedList;
+        LinkedList<SphericalCoordinates> diffList = new LinkedList<SphericalCoordinates>();
+        foreach(SphericalCoordinates sc in newCoordinates)
+        {
+            if(!previousCoordinates.Contains(sc))
+            {
+                diffList.AddLast(sc);
+            }
+        }
+        LinkedList<SphericalCoordinates> newList = new LinkedList<SphericalCoordinates>();
+        foreach(SphericalCoordinates sc in previousCoordinates)
+        {
+            if(newCoordinates.Contains(sc))
+            {
+                newList.AddLast(sc);
+            }
+        }
+        foreach(SphericalCoordinates sc in diffList)
+        {
+            newList.AddLast(sc);
+        }
+
+        dataStructure[newTime] = newList;
     }
 
 	/// <summary>
 	/// Returns the last set of coordinates gathered. 
 	/// </summary>
 	/// <returns></returns>
-	public List<SphericalCoordinates> GetLatestHits()
+	public LinkedList<SphericalCoordinates> GetLatestHits()
 	{
-		List<SphericalCoordinates> list;
+		LinkedList<SphericalCoordinates> LinkedList;
 
-		data.TryGetValue(prevTime, out list);
+		data.TryGetValue(prevTime, out LinkedList);
 
-		return list;
+		return LinkedList;
 	}
 
 

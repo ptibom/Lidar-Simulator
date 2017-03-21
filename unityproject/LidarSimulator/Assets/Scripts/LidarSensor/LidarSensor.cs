@@ -110,7 +110,7 @@ public class LidarSensor : MonoBehaviour {
         }
     }
 
-    public List<SphericalCoordinates> GetLastHits()
+    public LinkedList<SphericalCoordinates> GetLastHits()
     {
         return dataStructure.GetLatestHits ();
     }
