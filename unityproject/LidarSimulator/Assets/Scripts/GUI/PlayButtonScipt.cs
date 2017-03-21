@@ -3,23 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuControllerScript : MonoBehaviour {
+public class PlayButtonScipt : MonoBehaviour {
 
 	public GameObject editorMenu;
-	LidarSensor sensor;
 
 	// Use this for initialization
 	void Start () {
-		sensor = GameObject.FindGameObjectWithTag ("Lidar").GetComponent<LidarSensor> ();
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-	}
-
-	public void PlayButton(){
-		//sensor.playSimulation = !sensor.playSimulation;
 	}
 
 	void OnGUI(){
@@ -30,4 +25,5 @@ public class MenuControllerScript : MonoBehaviour {
 			editorMenu.SetActive (true);
 		}
 	}
+
 }
