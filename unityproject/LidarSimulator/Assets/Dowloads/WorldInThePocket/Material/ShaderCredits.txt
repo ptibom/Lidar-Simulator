@@ -1,0 +1,5 @@
+Standard shader with vertex colors provided by Defaxer.
+
+Please, follow this link to get latest version or write a feedback:
+
+http://forum.unity3d.com/threads/standard-shader-with-vertex-colors.316529/
