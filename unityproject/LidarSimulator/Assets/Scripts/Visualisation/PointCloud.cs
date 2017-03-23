@@ -13,7 +13,7 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
 
-    private Component particleSystem;
+    private Component particalusSystem;
     private LinkedList<SphericalCoordinates> points;
     private bool pointsUpdate = false;
 
@@ -23,7 +23,7 @@ public class PointCloud : MonoBehaviour
     void Start()
     {
         particleGameObject = GameObject.FindGameObjectWithTag("pSystem");
-        particleSystem = particleGameObject.GetComponent<ParticleSystem>();
+        particalusSystem = particleGameObject.GetComponent<ParticleSystem>();
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class PointCloud : MonoBehaviour
 
             if (particleCloud.Length != 0)
             {
-               ((ParticleSystem)(particleSystem)).SetParticles(particleCloud, particleCloud.Length);                 
+               ((ParticleSystem)(particalusSystem)).SetParticles(particleCloud, particleCloud.Length);                 
             }
         }
     }

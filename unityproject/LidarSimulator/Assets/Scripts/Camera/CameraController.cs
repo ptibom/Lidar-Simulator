@@ -93,8 +93,6 @@ public class CameraController : MonoBehaviour {
 
 		targetPosition = new Vector3(0,0,0);
 
-		Vector3 DeltaPos;
-
 		Vector3 smoothVelocity;
 		if (followThis.GetComponent<Rigidbody> () != null) {
 			smoothVelocity = followThis.GetComponent<Rigidbody> ().velocity;

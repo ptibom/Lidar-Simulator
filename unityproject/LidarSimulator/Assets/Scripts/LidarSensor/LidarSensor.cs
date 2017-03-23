@@ -11,7 +11,6 @@ public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-    private List<RaycastHit> hits = new List<RaycastHit>();
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -94,7 +93,8 @@ public class LidarSensor : MonoBehaviour {
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
 
-                dataStructure.AddHit(new SphericalCoordinates(hit.point));
+                dataStructure.AddHit(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
+                //dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
 
             if(Time.fixedTime - previousUpdate > 0.25) {
