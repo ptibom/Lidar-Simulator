@@ -7,7 +7,7 @@ using UnityEngine;
 /// The data structure in which to save the lidar data.
 ///  @author: Tobias Alldén
 /// </summary>
-public class DataStructure : MonoBehaviour {
+public class DataStructure {
 
 	private Dictionary<float, LinkedList<SphericalCoordinates>> data;
 	private LinkedList<SphericalCoordinates> currentHits;

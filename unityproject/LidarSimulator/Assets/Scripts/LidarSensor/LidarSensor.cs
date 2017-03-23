@@ -24,7 +24,7 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
-	public DataStructure dataStructure;
+	private DataStructure dataStructure = new DataStructure();
 	private float previousUpdate;
 
 
@@ -55,11 +55,6 @@ public class LidarSensor : MonoBehaviour {
                 upperTotalAngle -= upperAngle;
             }
             
-        }
-
-        if(dataStructure == null)
-        {
-            dataStructure = GetComponent<DataStructure>();
         }
     }
 
