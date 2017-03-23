@@ -2,7 +2,7 @@
 ### Bachelor Thesis project at Chalmers University of Technology and University of Gothenburg
 Group number: DATX02-17-10
 
-####Group members  
+#### Group members  
 Tobias Alldén
 Martin Chemander  
 Sherry Davar  
@@ -18,8 +18,10 @@ This is a bachelors thesis witten during spring 2017 at Chalmers University of T
 This project is implemented using the Unity game engine, with the different scripts written in C#. The various graphical entities that exist in the scenes are taken from the unity asset store. 
 
 ## How to Compile
-The project is not yet compiled, thus, in order to run the user will have to openm the project folder in the unity game engine
+Use unity build tool.
+
 ## How to Install and Run
-Not yet reached 
+TBA
+
 ### Dependencies
-- Not applicable
+Unity Engine 5.3
