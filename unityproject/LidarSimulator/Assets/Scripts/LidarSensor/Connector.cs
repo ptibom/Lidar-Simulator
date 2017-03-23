@@ -26,6 +26,7 @@ public class Connector : MonoBehaviour {
     /// Update method runs every iteration, tells the point cloud to update it's points.
     /// </summary>
 	void Update () {
+        
         LinkedList<SphericalCoordinates> hits = lidarSensor.GetLastHits();
         if (hits != null)
         {
@@ -33,7 +34,9 @@ public class Connector : MonoBehaviour {
         }
         else
         {
+            //TODO - Fixa detta
             Debug.Log("No new points to visualize");
         }
+        
     }
 }

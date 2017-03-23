@@ -93,11 +93,12 @@ public class LidarSensor : MonoBehaviour {
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
 
+                //Vi ändrade till korrekt variabler här
                 dataStructure.AddHit(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
                 //dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
 
-            if(Time.fixedTime - previousUpdate > 0.25) {
+            if (Time.fixedTime - previousUpdate > 0.25) {
                 dataStructure.UpdatePoints(Time.fixedTime);
                 previousUpdate = Time.fixedTime;
             }

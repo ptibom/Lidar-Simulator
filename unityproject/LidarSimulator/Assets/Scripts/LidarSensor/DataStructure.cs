@@ -26,7 +26,6 @@ public class DataStructure {
 	public void AddHit(SphericalCoordinates hit)
 	{
 		currentHits.AddLast(hit);
-
 	}
 
 	/// <summary>

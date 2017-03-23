@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 ///
 
 
@@ -13,7 +14,7 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
 
-    private Component particalusSystem;
+    private ParticleSystem particalusSystem;
     private LinkedList<SphericalCoordinates> points;
     private bool pointsUpdate = false;
 
@@ -37,8 +38,9 @@ public class PointCloud : MonoBehaviour
 
             if (particleCloud.Length != 0)
             {
-               ((ParticleSystem)(particalusSystem)).SetParticles(particleCloud, particleCloud.Length);                 
+                particalusSystem.SetParticles(particleCloud, particleCloud.Length);
             }
+            pointsUpdate = false;
         }
     }
 
@@ -52,7 +54,7 @@ public class PointCloud : MonoBehaviour
         ParticleSystem.Particle[] particleCloud = new ParticleSystem.Particle[positions.Count];
 
         int i = 0;
-        foreach(SphericalCoordinates sc in positions)
+        foreach (SphericalCoordinates sc in positions)
         {
             ParticleSystem.Particle particle = new ParticleSystem.Particle();
             particle.position = sc.ToCartesian();
@@ -61,7 +63,7 @@ public class PointCloud : MonoBehaviour
             particleCloud[i] = particle;
             i++;
         }
-          return particleCloud;
+        return particleCloud;
     }
 
     /// <summary>

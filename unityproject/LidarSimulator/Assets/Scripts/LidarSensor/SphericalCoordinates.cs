@@ -14,8 +14,8 @@ public class SphericalCoordinates
     public SphericalCoordinates(float radius, float inclination, float azimuth)
     {
         this.radius = radius;
-        this.inclination = inclination;
-        this.azimuth = azimuth;
+        this.inclination = (90 + inclination)*(2*Mathf.PI/360);
+        this.azimuth = (azimuth-90) * (2 * Mathf.PI / 360);
     }
 
     // Constructor based on cartesian coordinates
@@ -25,6 +25,11 @@ public class SphericalCoordinates
 	/// <param name="coordinates">Coordinates.</param>
     public SphericalCoordinates(Vector3 coordinates)
     {
+
+
+        //Det här är fel
+
+
         this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
 
         if (radius == 0)
@@ -53,9 +58,9 @@ public class SphericalCoordinates
     public Vector3 ToCartesian()
     {
         Vector3 cartesian = new Vector3();
-        cartesian.x = ((float)(radius * Math.Sin(inclination) * Math.Cos(azimuth)));
-        cartesian.y = ((float)(radius * Math.Sin(inclination) * Math.Sin(azimuth)));
-        cartesian.z = ((float)(radius * Math.Cos(inclination)));
+        cartesian.z = radius * Mathf.Sin(inclination) * Mathf.Cos(azimuth);
+        cartesian.x = radius * Mathf.Sin(inclination) * Mathf.Sin(azimuth);
+        cartesian.y = radius * Mathf.Cos(inclination);
         return cartesian;
     }
 
