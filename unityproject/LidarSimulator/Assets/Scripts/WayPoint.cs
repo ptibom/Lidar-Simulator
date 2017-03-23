@@ -5,6 +5,8 @@ using UnityEngine;
 public class WayPoint : MonoBehaviour {
 	public GameObject next;
 	public GameObject previous;
+	//med denna tredje referensen slipper jag listorna.... tror jag.
+	public GameObject previousBranch;
 
 	public int path;
 	public int pathIndex;
@@ -32,30 +34,46 @@ public class WayPoint : MonoBehaviour {
 	}
 
 
-	/*Lägger in waypoiten på sista platsen i en path lista och fixar waypointens */
-	public void AddToPath(int pathNumber) {
-		
+	/*Lägger in waypoiten på sista platsen i en path lista och fixar waypointens [Nope, obsolete, tror inte det blir bra med listor] */
+
+
+	public void AddToPath(GameObject previousWayPoint) {
+		WayPoint previousWayPointScript = previousWayPoint.GetComponent<WayPoint>();
+		if (previousWayPointScript != null) {
+			previousWayPointScript.next = this.GameObject;
+			previous = previousWayPointScript.GetGameObject();
+		}
 	
 	}
 
-	/*tar bort waypointen från path listan och fixar till next och previous referenserna*/
+	/*tar bort waypointen från path listan och fixar till next och previous referenserna och förstör gameobjectet*/
 	public void RemoveFromPath() {
-	
-	
+		/*int i = 0;
+		while (true) {
+			
+		
+		}
+		Destroy (gameObject);*/
+
+		//Skippa listorna och bara använda next och previus referenserna???? Kan funka!!!!! Var försiktig med specialfallet med en sluten väg med svans dock!
 	}
 
 	/*skapar en ny path lista i listan över paths*/
-	public static void StartPath() {
-		paths.Add (new List<WayPoint> ());
+	/*public static void StartPath() {
+		//paths.Add (new List<WayPoint> ());
 	
-	}
+	}*/
 
 	public static void removePath() {
 	
 	
 	}
 
-	public void ClosePath(WayPoint otherWayPoint) {
+	public void ClosePath(GameObject otherWayPoint, GameObject previousWayPoint) {
 	
+	}
+
+	public GameObject GetGameObject() {
+		return this.GameObject;
 	}
 }
