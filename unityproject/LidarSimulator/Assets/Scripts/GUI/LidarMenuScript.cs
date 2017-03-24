@@ -88,4 +88,5 @@ public class LidarMenuScript : MonoBehaviour {
 		sensor.lowerNormal = lowerNormal.value;
 	}
 
+
 }
