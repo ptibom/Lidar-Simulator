@@ -40,7 +40,7 @@ public class WayPoint : MonoBehaviour {
 	public void AddToPath(GameObject previousWayPoint) {
 		WayPoint previousWayPointScript = previousWayPoint.GetComponent<WayPoint>();
 		if (previousWayPointScript != null) {
-			previousWayPointScript.next = this.GameObject;
+			previousWayPointScript.next = this.gameObject;
 			previous = previousWayPointScript.GetGameObject();
 		}
 	
@@ -74,6 +74,6 @@ public class WayPoint : MonoBehaviour {
 	}
 
 	public GameObject GetGameObject() {
-		return this.GameObject;
+		return this.gameObject;
 	}
 }
