@@ -25,6 +25,8 @@ public class LidarSensor : MonoBehaviour {
     public float lowerNormal = 30f;
 	private DataStructure dataStructure = new DataStructure();
 	private float previousUpdate;
+    public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
+    public static event NewPoints OnScanned;
 
 
 
@@ -85,7 +87,7 @@ public class LidarSensor : MonoBehaviour {
             }
 
 
-
+            LinkedList<SphericalCoordinates> hits = new LinkedList<SphericalCoordinates>();
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
@@ -94,20 +96,20 @@ public class LidarSensor : MonoBehaviour {
                 float verticalAngle = laser.GetVerticalAngle();
 
                 //Vi ändrade till korrekt variabler här
-                dataStructure.AddHit(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
+                hits.AddLast(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
                 //dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
 
+            if(OnScanned != null)
+            {
+                OnScanned(hits);
+            }
+            
             if (Time.fixedTime - previousUpdate > 0.25) {
-                dataStructure.UpdatePoints(Time.fixedTime);
+               dataStructure.UpdatePoints(Time.fixedTime);
                 previousUpdate = Time.fixedTime;
             }
            
         }
-    }
-
-    public LinkedList<SphericalCoordinates> GetLastHits()
-    {
-        return dataStructure.GetLatestHits ();
     }
 }

@@ -11,6 +11,7 @@ public class DataStructure {
 
 	private Dictionary<float, LinkedList<SphericalCoordinates>> data;
 	private LinkedList<SphericalCoordinates> currentHits;
+    private LinkedList<SphericalCoordinates> prevList;
 	private float prevTime; // Timestamp for previous data entry.
 
 
@@ -18,38 +19,47 @@ public class DataStructure {
 	{
 		this.data = new Dictionary<float, LinkedList<SphericalCoordinates>>();
 		this.currentHits = new LinkedList<SphericalCoordinates>();
+        LidarSensor.OnScanned += AddHits;
 	}
 
 	/// <summary>
-	/// Adds a coorninate to the current hits LinkedList. 
+	/// Adds a single coorninate to the current hits LinkedList. 
 	/// </summary>
 	public void AddHit(SphericalCoordinates hit)
 	{
 		currentHits.AddLast(hit);
 	}
 
-	/// <summary>
-	/// Updates the points of the data structure
-	/// </summary>
-	/// <param name="newTime"></param>
-	public void UpdatePoints(float newTime)
+    /// <summary>
+    /// Adds a coorninate to the current hits LinkedList. 
+    /// </summary>
+    public void AddHits(LinkedList<SphericalCoordinates> hits)
+    {
+        currentHits = hits;
+    }
+
+    /// <summary>
+    /// Updates the points of the data structure
+    /// </summary>
+    /// <param name="newTime"></param>
+    public void UpdatePoints(float newTime)
 	{
-
-		LinkedList<SphericalCoordinates> prevLinkedList;
-		data.TryGetValue(prevTime, out prevLinkedList);
-
-		if (prevLinkedList == null && currentHits.Count != 0)
+		if (prevList == null && currentHits.Count != 0)
 		{
-			data[Time.fixedTime] = currentHits;
+			data[newTime] = currentHits;
 			prevTime = newTime;
+            prevList = currentHits;
 			currentHits = new LinkedList<SphericalCoordinates>();
 		}
 		else
 		{
-            new Thread(delegate ()
-            {
-                Merge(newTime, currentHits, prevLinkedList, data);
-            }).Start();
+            //new Thread(delegate ()
+            //{
+            //    Merge(newTime, currentHits, prevList, data);
+            //}).Start();
+            data[newTime] = currentHits;
+            prevList = currentHits;
+            currentHits = new LinkedList<SphericalCoordinates>();
             prevTime = newTime;
 		}
 	}
@@ -93,11 +103,7 @@ public class DataStructure {
 	/// <returns></returns>
 	public LinkedList<SphericalCoordinates> GetLatestHits()
 	{
-		LinkedList<SphericalCoordinates> LinkedList;
-
-		data.TryGetValue(prevTime, out LinkedList);
-
-		return LinkedList;
+		return currentHits;
 	}
 
 
