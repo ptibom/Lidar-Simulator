@@ -7,7 +7,7 @@ using UnityEngine;
 /// The data structure in which to save the lidar data.
 ///  @author: Tobias Alldén
 /// </summary>
-public class DataStructure {
+public class LidarStorage {
 
 	private Dictionary<float, LinkedList<SphericalCoordinates>> data;
 	private LinkedList<SphericalCoordinates> currentHits;
@@ -15,7 +15,7 @@ public class DataStructure {
 	private float prevTime; // Timestamp for previous data entry.
 
 
-	public DataStructure()
+	public LidarStorage()
 	{
 		this.data = new Dictionary<float, LinkedList<SphericalCoordinates>>();
 		this.currentHits = new LinkedList<SphericalCoordinates>();
