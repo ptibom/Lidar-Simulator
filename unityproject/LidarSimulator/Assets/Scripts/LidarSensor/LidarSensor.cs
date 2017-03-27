@@ -6,7 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// Author: Philip Tibom
+/// Simulates the lidar sensor by using ray casting.
+/// </summary>
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
@@ -26,6 +29,8 @@ public class LidarSensor : MonoBehaviour {
 	private DataStructure dataStructure = new DataStructure();
 	private float previousUpdate;
 
+    public GameObject lineDrawerPrefab;
+
 
 
     // Use this for initialization
@@ -42,15 +47,17 @@ public class LidarSensor : MonoBehaviour {
         float lowerAngle = lowerFOV / (numberOfLasers / 2);
         for (int i = 0; i < numberOfLasers; i++)
         {
+            GameObject lineDrawer = Instantiate(lineDrawerPrefab);
+            lineDrawer.transform.parent = gameObject.transform; // Set parent of drawer to this gameObject.
             if (i < numberOfLasers/2)
             {
-                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset));
+                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset, lineDrawer));
 
                 lowerTotalAngle -= lowerAngle;
             }
             else
             {
-                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0));
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer));
                 upperTotalAngle -= upperAngle;
             }
             
@@ -63,8 +70,8 @@ public class LidarSensor : MonoBehaviour {
         // For debugging, shows visible ray in real time.
         foreach (Laser laser in lasers)
         {
-            // Uncomment this line to disable drawing
-            laser.DrawRay();
+            // Comment this line to disable DEBUG drawing
+            //laser.DebugDrawRay();
         }
     }
 
@@ -92,10 +99,8 @@ public class LidarSensor : MonoBehaviour {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
-
-                //Vi ändrade till korrekt variabler här
+                
                 dataStructure.AddHit(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
-                //dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
 
             if (Time.fixedTime - previousUpdate > 0.25) {
