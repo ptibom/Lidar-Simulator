@@ -7,10 +7,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Author: Philip Tibom
+/// Creates drag and drop functionality.
+/// </summary>
 public class SceneEditor : MonoBehaviour {
     private GameObject go;
-    private bool moveGameObject;
-    private bool rotateGameObject;
+    private bool moveGameObject = false;
+    private bool rotateGameObject = false;
     private float previousMousePos;
     private float lastClick;
 
@@ -46,7 +50,7 @@ public class SceneEditor : MonoBehaviour {
                 }
             }
         }
-        else if (rotateGameObject)
+        else if (rotateGameObject && !EventSystem.current.IsPointerOverGameObject())
         {
             if (previousMousePos != 0)
             {
@@ -88,15 +92,21 @@ public class SceneEditor : MonoBehaviour {
 
     public void PlaceObject(GameObject prefab)
     {
-        MoveObject(Instantiate(prefab));
+        if (!moveGameObject && !rotateGameObject)
+        {
+            MoveObject(Instantiate(prefab));
+        }
     }
 
     private void MoveObject(GameObject obj)
     {
-        go = obj;
-        SetAlpha(0.33f);
-        moveGameObject = true;
-        ActivateColliders(false);
+        if (!moveGameObject && !rotateGameObject)
+        {
+            go = obj;
+            SetAlpha(0.33f);
+            moveGameObject = true;
+            ActivateColliders(false);
+        }
     }
 
     private void SetAlpha(float value)
