@@ -2,8 +2,6 @@
 * @author: Philip Tibom
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -90,6 +88,10 @@ public class SceneEditor : MonoBehaviour {
         }
 	}
 
+    /// <summary>
+    /// Instantiates selected prefab.
+    /// </summary>
+    /// <param name="prefab">A game object prefab</param>
     public void PlaceObject(GameObject prefab)
     {
         if (!moveGameObject && !rotateGameObject)
@@ -98,6 +100,10 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Enables movement of game object. Following the mouse.
+    /// </summary>
+    /// <param name="obj">A game object.</param>
     private void MoveObject(GameObject obj)
     {
         if (!moveGameObject && !rotateGameObject)
@@ -109,6 +115,10 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Sets transparency of game object and child objects.
+    /// </summary>
+    /// <param name="value">Alpha value 0 to 1</param>
     private void SetAlpha(float value)
     {
         MeshRenderer[] allParts = go.GetComponentsInChildren<MeshRenderer>();
@@ -120,6 +130,10 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Activates colliders of object and child objects.
+    /// </summary>
+    /// <param name="isEnabled">Enabled or not</param>
     private void ActivateColliders(bool isEnabled)
     {
         Collider[] colliders = go.GetComponentsInChildren<Collider>();
@@ -129,6 +143,11 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Finds parent object tagged with "EditableObject".
+    /// </summary>
+    /// <param name="o">A game object</param>
+    /// <returns></returns>
     private GameObject FindParentEditableObject(GameObject o)
     {
         if (o.transform.parent != null && o.transform.parent.gameObject.CompareTag("EditableObject"))
