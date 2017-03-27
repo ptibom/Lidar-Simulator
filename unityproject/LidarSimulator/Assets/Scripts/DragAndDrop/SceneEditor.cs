@@ -33,8 +33,8 @@ public class SceneEditor : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit))
             {
-                Bounds bounds = go.GetComponent<MeshRenderer>().bounds;
-                go.transform.position = hit.point + new Vector3(0, bounds.size.y / 2);
+                go.transform.position = hit.point;
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     lastClick = Time.time;
