@@ -2,26 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class WidthAsChildrenScript : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
+        Invoke("setPreferedWidthAsChildren", 0.01f);
+	}
+
+	void setPreferedWidthAsChildren()
+    {
         float maxWidth = 0;
-        for(int i =0; i< transform.childCount; i++)
+
+        foreach (RectTransform childRect in transform.GetComponentsInChildren<RectTransform>())
         {
-            Debug.Log("HEj" + transform.GetChild(i).GetComponent<RectTransform>().sizeDelta.y);
-            //if (childRectT.sizeDelta.x > maxWidth)
+            if (!childRect.name.Equals(transform.name) && childRect.rect.width > maxWidth)
             {
-              //  maxWidth = childRectT.sizeDelta.x;
+                maxWidth = childRect.rect.width;
             }
         }
 
-        gameObject.GetComponent<LayoutElement>().preferredWidth = maxWidth;
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        gameObject.GetComponent<LayoutElement>().preferredWidth = Mathf.Abs(maxWidth);
+    }
 }
