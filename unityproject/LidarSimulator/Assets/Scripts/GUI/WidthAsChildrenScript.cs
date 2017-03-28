@@ -17,12 +17,12 @@ public class WidthAsChildrenScript : MonoBehaviour {
 
         foreach (RectTransform childRect in transform.GetComponentsInChildren<RectTransform>())
         {
-            if (!childRect.name.Equals(transform.name) && childRect.rect.width > maxWidth)
+            if (!childRect.name.Equals(transform.name) && childRect.rect.width + childRect.localPosition.x > maxWidth)
             {
-                maxWidth = childRect.rect.width;
+                maxWidth = childRect.rect.width + childRect.localPosition.x;
             }
         }
-
+        
         gameObject.GetComponent<LayoutElement>().preferredWidth = Mathf.Abs(maxWidth);
     }
 }
