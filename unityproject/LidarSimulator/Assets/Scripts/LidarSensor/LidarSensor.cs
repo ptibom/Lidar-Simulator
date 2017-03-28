@@ -23,10 +23,16 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
-	private DataStructure dataStructure = new DataStructure();
-	private float previousUpdate;
-    public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
     public static event NewPoints OnScanned;
+    public static event StorePoints StoreEvent;
+    public delegate void StorePoints(float timeStamp);
+    public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
+    public float storeInterval = 0.25f; // How often do we want to update the data structure
+
+    private LidarStorage dataStructure = new LidarStorage();
+	private float previousUpdate;
+
+
 
 
 
@@ -94,20 +100,22 @@ public class LidarSensor : MonoBehaviour {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
-
-                //Vi ändrade till korrekt variabler här
                 hits.AddLast(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
-                //dataStructure.AddHit(new SphericalCoordinates(hit.point));
             }
 
+            // Notify listeners that the lidar sensor have scanned points. 
             if(OnScanned != null)
             {
                 OnScanned(hits);
             }
             
-            if (Time.fixedTime - previousUpdate > 0.25) {
-               dataStructure.UpdatePoints(Time.fixedTime);
-                previousUpdate = Time.fixedTime;
+            if (Time.fixedTime - previousUpdate > storeInterval) {
+                // Notify data structure that it is time to store the collected points
+                if(StoreEvent != null)
+                {
+                    StoreEvent(Time.fixedTime);
+                    previousUpdate = Time.fixedTime;
+                }
             }
            
         }
