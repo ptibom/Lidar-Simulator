@@ -1,13 +1,19 @@
-﻿using System.Collections;
+﻿/*
+* @author: Philip Tibom
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// Author: Philip Tibom
+/// Simulates the lidar sensor by using ray casting.
+/// </summary>
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
     private List<Laser> lasers = new List<Laser>();
-    private List<RaycastHit> hits = new List<RaycastHit>();
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -20,6 +26,10 @@ public class LidarSensor : MonoBehaviour {
     public float offset = 0.001f;
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
+	private DataStructure dataStructure = new DataStructure();
+	private float previousUpdate;
+
+    public GameObject lineDrawerPrefab;
 
 
 
@@ -29,6 +39,7 @@ public class LidarSensor : MonoBehaviour {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
+
         // Initialize number of lasers, based on user selection.
         float upperTotalAngle = upperFOV / 2;
         float lowerTotalAngle = lowerFOV / 2;
@@ -36,15 +47,17 @@ public class LidarSensor : MonoBehaviour {
         float lowerAngle = lowerFOV / (numberOfLasers / 2);
         for (int i = 0; i < numberOfLasers; i++)
         {
+            GameObject lineDrawer = Instantiate(lineDrawerPrefab);
+            lineDrawer.transform.parent = gameObject.transform; // Set parent of drawer to this gameObject.
             if (i < numberOfLasers/2)
             {
-                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset));
+                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset, lineDrawer));
 
                 lowerTotalAngle -= lowerAngle;
             }
             else
             {
-                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0));
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer));
                 upperTotalAngle -= upperAngle;
             }
             
@@ -57,8 +70,8 @@ public class LidarSensor : MonoBehaviour {
         // For debugging, shows visible ray in real time.
         foreach (Laser laser in lasers)
         {
-            // Uncomment this line to disable drawing
-            laser.DrawRay();
+            // Comment this line to disable DEBUG drawing
+            //laser.DebugDrawRay();
         }
     }
 
@@ -78,14 +91,28 @@ public class LidarSensor : MonoBehaviour {
                 horizontalAngle -= 360;
             }
 
+
+
             // Execute lasers.
             foreach (Laser laser in lasers)
             {
                 RaycastHit hit = laser.ShootRay();
                 float distance = hit.distance;
                 float verticalAngle = laser.GetVerticalAngle();
-                // Example use: new coordinate(distance, horizontalAngle, verticalAngle)
+                
+                dataStructure.AddHit(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
             }
+
+            if (Time.fixedTime - previousUpdate > 0.25) {
+                dataStructure.UpdatePoints(Time.fixedTime);
+                previousUpdate = Time.fixedTime;
+            }
+           
         }
+    }
+
+    public LinkedList<SphericalCoordinates> GetLastHits()
+    {
+        return dataStructure.GetLatestHits ();
     }
 }

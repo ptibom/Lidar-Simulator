@@ -3,6 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// A class representing spherical coordinates. These are created by the lidar sensor.
+/// @author: Tobias Alldén
 /// </summary>
 public class SphericalCoordinates
 {
@@ -13,8 +14,8 @@ public class SphericalCoordinates
     public SphericalCoordinates(float radius, float inclination, float azimuth)
     {
         this.radius = radius;
-        this.inclination = inclination;
-        this.azimuth = azimuth;
+        this.inclination = (90 + inclination)*(2*Mathf.PI/360);
+        this.azimuth = (azimuth-90) * (2 * Mathf.PI / 360);
     }
 
     // Constructor based on cartesian coordinates
@@ -24,6 +25,11 @@ public class SphericalCoordinates
 	/// <param name="coordinates">Coordinates.</param>
     public SphericalCoordinates(Vector3 coordinates)
     {
+
+
+        //Det här är fel
+
+
         this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
 
         if (radius == 0)
@@ -31,8 +37,31 @@ public class SphericalCoordinates
             inclination = 0;
             azimuth = 0;
         }
-        this.inclination = Mathf.Atan(coordinates.z / radius);
-        this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+        else
+        {
+            this.inclination = Mathf.Acos(coordinates.z / radius);
+            if (coordinates.x != 0)
+            {
+                this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
+            }
+            else
+            {
+                this.azimuth = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Converts a spherical coordinate to a cartesian equivalent. 
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 ToCartesian()
+    {
+        Vector3 cartesian = new Vector3();
+        cartesian.z = radius * Mathf.Sin(inclination) * Mathf.Cos(azimuth);
+        cartesian.x = radius * Mathf.Sin(inclination) * Mathf.Sin(azimuth);
+        cartesian.y = radius * Mathf.Cos(inclination);
+        return cartesian;
     }
 
 	/// <summary>
@@ -59,4 +88,38 @@ public class SphericalCoordinates
     {
         return this.azimuth;
     }
+
+    /// <summary>
+    /// Clones this instance of the class
+    /// </summary>
+    /// <returns></returns>
+    public SphericalCoordinates Clone()
+    {
+        return new SphericalCoordinates(this.radius,this.inclination,this.azimuth);
+    }
+
+    /// <summary>
+    /// Overriding the equals method to be able to avoid float pooint errors.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public override bool Equals(object obj)
+    {
+        double eps = 0.01;
+        SphericalCoordinates other = (SphericalCoordinates)obj;
+        return (Math.Abs(this.azimuth - other.azimuth) < eps
+            && Math.Abs(this.inclination - other.inclination) < eps
+            && Math.Abs(this.radius - other.radius) < eps);
+    }
+
+    /// <summary>
+    /// Override hash code
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+        return  (int)Math.Floor(azimuth * 3 + inclination * 13 + radius * 11);
+    }
+
+
 }

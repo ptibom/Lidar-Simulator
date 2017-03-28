@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 	public GameObject followThis;
-	public float behindDistance;
-	public float aboveheight;
-	public float roamingSpeed = 10;
-	public float roamingHeight = 30;
+
+	public int scrollPixelMargin = 10;
+
+	public float behindDistance = 10f;
+	public float aboveheight = 5f;
+	public float roamingSpeed = 70f;
+	public float roamingHeight = 30f;
 	public float smoothingSpeed = 0.045f; // Ska vara runt 0.045 kör 2
 
 	float distancetoObject;
@@ -17,12 +20,15 @@ public class CameraController : MonoBehaviour {
 	CameraState state = CameraState.FOLLOW;
 	// Use this for initialization
 	void Start () {
-
+		Cursor.visible = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		/*så att jag enkelt kan avsluta när jag testar kameran med ett build*/
+		if (Input.GetKey (KeyCode.Escape)) {
+			Application.Quit();
+		}
 	}
 
 
@@ -52,6 +58,7 @@ public class CameraController : MonoBehaviour {
 	public void SetFollow() {
 		//ändra tillståndet så att kameran nu följer objektet istället.
 		state = CameraState.FOLLOW;
+		//Cursor.visible = false;
 	
 	}
 
@@ -59,21 +66,23 @@ public class CameraController : MonoBehaviour {
 		state = CameraState.ROAM;
 		transform.rotation = Quaternion.Euler (90, 0, 0);
 		transform.position = new Vector3 (transform.position.x, roamingHeight, transform.position.z);
+		Cursor.visible = true;
 	}
 
 	void Roam(){
 		Vector3 moveDirection = new Vector3 (0, 0, 0);
-
-		if (Input.GetKey (KeyCode.UpArrow)) {
+		//Scrolla om muspekaren är i kanten av skärmen eller om piltangenterna tryckks ner.
+		//skapa en summavektor som bestämmer vart kameran ska gå och normalisera den
+		if (/*Input.GetKey (KeyCode.UpArrow) ||*/ Input.mousePosition.y >= Screen.height - scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (0, 1, 0);
 		}
-		if(Input.GetKey (KeyCode.LeftArrow)) {
+		if(/*Input.GetKey (KeyCode.LeftArrow) ||*/ Input.mousePosition.x < scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (-1, 0, 0);
 		}
-		if(Input.GetKey (KeyCode.DownArrow)) {
+		if(/*Input.GetKey (KeyCode.DownArrow) ||*/ Input.mousePosition.y < scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (0, -1, 0);
 		}
-		if(Input.GetKey (KeyCode.RightArrow)) {
+		if(/*Input.GetKey (KeyCode.RightArrow) ||*/ Input.mousePosition.x >= Screen.width - scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (1, 0, 0);
 		}
 		if (Input.GetKey (KeyCode.RightControl)) {
@@ -83,6 +92,7 @@ public class CameraController : MonoBehaviour {
 			moveDirection = moveDirection + new Vector3 (0, 0, -1);
 		}
 		moveDirection = moveDirection.normalized;
+		//använd den normaliserade summavektorn för att translata kameran, deltaTime gör att det blir samma fart oavsett framerate, förhoppningsvis
 		transform.Translate((moveDirection * roamingSpeed*Time.deltaTime));
 	
 
@@ -92,8 +102,6 @@ public class CameraController : MonoBehaviour {
 	void Follow() {
 
 		targetPosition = new Vector3(0,0,0);
-
-		Vector3 DeltaPos;
 
 		Vector3 smoothVelocity;
 		if (followThis.GetComponent<Rigidbody> () != null) {

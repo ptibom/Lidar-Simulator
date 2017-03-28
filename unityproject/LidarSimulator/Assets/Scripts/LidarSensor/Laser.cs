@@ -1,7 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿/*
+* @author: Philip Tibom
+*/
+
 using UnityEngine;
 
+/// <summary>
+/// Author: Philip Tibom
+/// Ray casts and simulates individual lasers.
+/// </summary>
 public class Laser {
     private Ray ray;
     private RaycastHit hit;
@@ -9,14 +15,17 @@ public class Laser {
     private float rayDistance;
     private float verticalAngle;
     private GameObject parentObject;
+    private RenderLine lineDrawer;
     private float offset;
 
-    public Laser(GameObject parent, float verticalAngle, float distance, float offset)
+    public Laser(GameObject parent, float verticalAngle, float distance, float offset, GameObject lineDrawer)
     {
         parentObject = parent;
         this.offset = offset;
         this.verticalAngle = verticalAngle;
         rayDistance = distance;
+        this.lineDrawer = lineDrawer.GetComponent<RenderLine>();
+        lineDrawer.transform.position = parentObject.transform.position + (parentObject.transform.up * offset);
         ray = new Ray();
         UpdateRay();
     }
@@ -24,6 +33,18 @@ public class Laser {
     // Should be called from Update(), for best performance.
     // This is only visual, for debugging.
     public void DrawRay()
+    {
+        if (isHit)
+        {
+            lineDrawer.DrawLine(hit.point);
+        }
+        else
+        {
+            lineDrawer.DrawLine(ray.GetPoint(rayDistance));
+        }
+    }
+
+    public void DebugDrawRay()
     {
         float distance = rayDistance;
         if (isHit)
@@ -38,9 +59,10 @@ public class Laser {
     {
         // Perform raycast
         UpdateRay();
+
         isHit = Physics.Raycast(ray, out hit, rayDistance);
-        
-        // For future reference
+        DrawRay();
+
         if (isHit)
         {
             return hit;
