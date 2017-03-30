@@ -9,80 +9,97 @@ using System;
 
 public class SaveManager : MonoBehaviour
 {
-	public SaveObject [] datalist;
+    //public SaveObject [] datalist;
 
-	void Start (){
-		///filename to save lidar data
-		string filename= "/lidardata.csv" ;
-		/// list of class SaveObject
-		datalist = new SaveObject [4];
-		for (int i = 0; i < datalist.Length; i++) {
-			datalist [i] = new SaveObject ();
-		}
-		///initialization
-		datalist[0] = new SaveObject () { time  = 1, ID=1, radius=11,inclination=17,azimuth=81};
-		datalist[1] = new SaveObject () { time  = 2 , ID=2,radius = 22,inclination=27,azimuth=82 };
-		datalist[2]= new SaveObject () { time = 3, ID=3, radius  = 33, inclination=37,azimuth=83};
-		datalist[3] = new SaveObject () {time = 4 , ID=4, radius  = 44,inclination=44,azimuth=84 };
-		///Save in csv format
-		SaveToCsv (datalist, filename);
+    void Start()
+    {
+       
+        Dictionary<float, List<SphericalCoordinates>> someData = new Dictionary<float, List<SphericalCoordinates>>();
+        List<SphericalCoordinates> tempCoord = new List<SphericalCoordinates>();
+        tempCoord.Add(new SphericalCoordinates(1f, 2f, 3f));
+        tempCoord.Add(new SphericalCoordinates(2f, 3f, 2f));
+        tempCoord.Add(new SphericalCoordinates(4f, 2f, 3f));
+        someData.Add(0.1f, tempCoord);
+        tempCoord.Add(new SphericalCoordinates(2f, 5f, 3f));
+        tempCoord.Add(new SphericalCoordinates(3f, 4f, 2f));
+        tempCoord.Add(new SphericalCoordinates(3f, 4f, 3f));
+        someData.Add(0.2f, tempCoord);
+        tempCoord.Add(new SphericalCoordinates(1f, 5f, 3f));
+        tempCoord.Add(new SphericalCoordinates(2f, 5f, 2f));
+        tempCoord.Add(new SphericalCoordinates(4f, 2f, 3f));
+        someData.Add(0.3f, tempCoord);
 
-	}
+        SaveToCsv(someData, "/lidardata.csv");
+    }
+    //public void SaveToCsv(SaveObject[]  datalist, string filname){
+    public static void SaveToCsv(Dictionary<float, List<SphericalCoordinates>> data, String filename)
+    {    
+
+        try
+        {
+          
+            string filnamn = Application.persistentDataPath + filename;
+       
+            ///datatable for rows to be added
+            List<string[]> dataTable = new List<string[]>();
+            /// object list
+            /// 
+            /// header in csv file
+            string[] header = new string[5];
+
+            header[0] = "Time";
+            header[1] = "ID";
+            header[2] = "Radius";
+            header[3] = "Inclination";
+            header[4] = "Azimuth";
+            dataTable.Add(header);
 
 
-	public void SaveToCsv(SaveObject[]  datalist, string filname){
+            List<SaveObject> objlist = new List<SaveObject>();
+            foreach (KeyValuePair<float, List<SphericalCoordinates>> coordinatePair in data)
+            {
+                foreach (SphericalCoordinates coordinate in coordinatePair.Value)
+                {
+                    string[] rows = new string[5];
+                    rows[0] = coordinatePair.Key.ToString(); // The time
+                    rows[1] = 999.ToString(); // The id
+                    rows[2] = coordinate.GetRadius().ToString();
+                    rows[3] = coordinate.GetInclination().ToString();
+                    rows[4] = coordinate.GetAzimuth().ToString();
+                    dataTable.Add(rows);
+                }
+            }
 
+            ///put each row in data table to an array
+            string[][] output = new string[dataTable.Count][];
+            for (int i = 0; i < output.Length; i++)
+            {
+                output[i] = dataTable[i];
+            }
 
-		///filename to save lidar data
-		string filename = "/lidardata.csv";
-		string filnamn = Application.persistentDataPath + filename;
-		///datatable for rows to be added
-		List<string[]> dataTable = new List<string[]> ();
-		/// header in csv file
-		string[] header = new string[5]; 
+            ///add delimiter between strings in each row in the data table
+            StringBuilder sb = new StringBuilder();
 
-		header [0] = "Time";
-		header [1] = "ID";
-		header [2] = "Radius";
-		header [3] = "Inclination";
-		header [4] = "Azimuth";
-		dataTable.Add (header);
-		///add rows for each object in the object list to the data table
-		for (int k = 0; k < 4; k++) {
+            int length = output.GetLength(0);
+            string delimiter = ";";
+            for (int r = 0; r < length; r++)
+            {
 
-			string[] rows = new string [5];
-			rows [0] = datalist [k].time.ToString ();
-			rows [1] = datalist [k].ID.ToString ();
-			rows [2] = datalist [k].radius.ToString ();
-			rows [3] = datalist [k].inclination.ToString ();
-			rows [4] = datalist [k].azimuth.ToString ();
-			dataTable.Add (rows);
+                sb.AppendLine(string.Join(delimiter, output[r]));
+            }
+            ///write lines to output file
+            StreamWriter outputstream = System.IO.File.CreateText(filnamn);
+            /// write separator as the first  line in the file för CSV file to be oppened correctly
+            outputstream.WriteLine("sep=;");
 
-		}
-
-		///put each row in data table to an array
-		string[][] output = new string[dataTable.Count][];
-		for (int i = 0; i < output.Length; i++) {
-			output [i] = dataTable [i];
-		}
-
-		///add delimiter between strings in each row in the data table
-		StringBuilder sb = new StringBuilder ();
-
-		int length = output.GetLength (0);
-		string delimiter = ";";
-		for (int r = 0; r < length; r++) {
-
-			sb.AppendLine (string.Join (delimiter, output[r]));
-		}
-		///write lines to output file
-		StreamWriter outputstream = System.IO.File.CreateText (filnamn);
-		/// write separator as the first  line in the file för CSV file to be oppened correctly
-		outputstream.WriteLine ("sep=;");
-
-		outputstream.WriteLine (sb);
-		outputstream.Close();
-		Debug.Log("datapath"+Application.persistentDataPath );
-
-	}
+            outputstream.WriteLine(sb);
+            outputstream.Close();
+            Debug.Log("datapath" + Application.persistentDataPath);
+            Debug.Log("datapath" + Application.persistentDataPath);
+        }
+        catch (IOException e)
+        {
+            Debug.Log("Access violation, printing file.");
+        }
+    }
 }

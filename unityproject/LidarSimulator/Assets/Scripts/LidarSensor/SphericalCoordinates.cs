@@ -68,23 +68,23 @@ public class SphericalCoordinates
 	/// Gets the radius.
 	/// </summary>
 	/// <returns>The radius.</returns>
-    private float GetRadius()
+    public float GetRadius()
     {
         return this.radius;
     }
-	/// <summary>
-	/// Gets the inclination.
-	/// </summary>
-	/// <returns>The inclination.</returns>
-    private float GetInclination()
+    /// <summary>
+    /// Gets the inclination.
+    /// </summary>
+    /// <returns>The inclination.</returns>
+    public float GetInclination()
     {
         return this.radius;
     }
-	/// <summary>
-	/// Gets the azimuth.
-	/// </summary>
-	/// <returns>The azimuth.</returns>
-    private float GetAzimuth()
+    /// <summary>
+    /// Gets the azimuth.
+    /// </summary>
+    /// <returns>The azimuth.</returns>
+    public float GetAzimuth()
     {
         return this.azimuth;
     }
