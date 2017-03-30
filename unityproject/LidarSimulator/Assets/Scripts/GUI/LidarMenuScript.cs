@@ -18,6 +18,8 @@ public class LidarMenuScript : MonoBehaviour {
 	public Slider lowerNormal;
 	public Slider simulationSpeed;
 
+
+	private bool simulationSpeedSet = false;
 	private float[] simSpeedValues = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	void Start () 
@@ -48,8 +50,10 @@ public class LidarMenuScript : MonoBehaviour {
 		lowerFOV.value = sensor.lowerFOV;
 		SetSliderText (lowerFOV);
 		// Vertical offset between sets
+
 		offset.value = sensor.offset;
-		SetSliderText (offset);
+		//SetSliderText (offset);
+
 		// Normal of top set (Positive upwards from horizontal axis)
 		upperNormal.value = sensor.upperNormal;
 		SetSliderText (upperNormal);
@@ -57,8 +61,15 @@ public class LidarMenuScript : MonoBehaviour {
 		lowerNormal.value = sensor.lowerNormal;
 		SetSliderText (lowerNormal);
 		// Simulationspeed
-		simulationSpeed.value = sensor.simulationSpeed;
-		SetSliderText (simulationSpeed);
+
+		if (sensor.simulationSpeed < 1) {
+			simulationSpeed.value = (int)(sensor.simulationSpeed * 10 - 1);
+			UpdateSimulationSpeed();
+		} else {
+			simulationSpeed.value = sensor.simulationSpeed;
+			SetSliderText (simulationSpeed);
+		}
+
 	}
 
 	// Sets the text on the handle of the passed slider to the value of the slider
@@ -66,12 +77,18 @@ public class LidarMenuScript : MonoBehaviour {
 	{
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = slider.value.ToString ();
 	}
+		
 
 	// Sets the simulation speed in the LidarSensor script to the value in the GUI aswell as setting the handle text of the slider
 	public void UpdateSimulationSpeed()
 	{
-		simulationSpeed.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = simSpeedValues[ (int)simulationSpeed.value ].ToString ();
-		sensor.simulationSpeed = simSpeedValues[ (int)simulationSpeed.value ];
+		if (simulationSpeedSet) {
+			simulationSpeed.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = simSpeedValues [(int)simulationSpeed.value].ToString ();
+			sensor.simulationSpeed = simSpeedValues [(int)simulationSpeed.value];
+		}
+		else {
+			simulationSpeedSet = true;
+		}
 	}
 
 	// A method which syncs the LidarSensor script with the settings in the GUI
