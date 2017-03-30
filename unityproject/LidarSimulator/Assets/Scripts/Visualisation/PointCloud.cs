@@ -15,8 +15,8 @@ public class PointCloud : MonoBehaviour
     public GameObject particleGameObject;
 
     private ParticleSystem particalusSystem;
-    private LinkedList<SphericalCoordinates> points;
-    private bool pointsUpdate = false;
+    //private LinkedList<SphericalCoordinates> points;
+    //private bool pointsUpdate = false;
 
     /// <summary>
     /// Initialization
@@ -25,6 +25,7 @@ public class PointCloud : MonoBehaviour
     {
         particleGameObject = GameObject.FindGameObjectWithTag("pSystem");
         particalusSystem = particleGameObject.GetComponent<ParticleSystem>();
+        LidarSensor.OnScanned += OnUpdatePoints;
     }
 
     /// <summary>
@@ -32,16 +33,20 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Update()
     {
+        /*
         if (pointsUpdate)
         {
+            particalusSystem.Pause();
             ParticleSystem.Particle[] particleCloud = CreateParticles(points);
 
             if (particleCloud.Length != 0)
             {
                 particalusSystem.SetParticles(particleCloud, particleCloud.Length);
             }
+            
             pointsUpdate = false;
-        }
+            particalusSystem.Play();
+        }*/
     }
 
     /// <summary>
@@ -51,28 +56,46 @@ public class PointCloud : MonoBehaviour
     /// <returns></returns>
     private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
     {
-        ParticleSystem.Particle[] particleCloud = new ParticleSystem.Particle[positions.Count];
 
-        int i = 0;
-        foreach (SphericalCoordinates sc in positions)
+        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem.particleCount];
+        particalusSystem.GetParticles(oldPoints);
+
+        List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+
+        foreach (ParticleSystem.Particle p in oldPoints)
+        {
+            if (p.remainingLifetime > 0 )
+            {
+                particleCloud.Add(p);
+            }
+        }
+
+        for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
         {
             ParticleSystem.Particle particle = new ParticleSystem.Particle();
-            particle.position = sc.ToCartesian();
+            particle.position = it.Value.ToCartesian();
             particle.startColor = Color.green;
             particle.startSize = 0.1f;
-            particleCloud[i] = particle;
-            i++;
+            particle.startLifetime = 1f;
+            particle.remainingLifetime = 1f;
+            particleCloud.Add(particle);
         }
-        return particleCloud;
+
+        return particleCloud.ToArray();
     }
 
     /// <summary>
     /// Updates the points to be added to the point cloud (the latest from the lidar sensor)
     /// </summary>
     /// <param name="points"></param>
-    public void UpdatePoints(LinkedList<SphericalCoordinates> points)
+    public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
-        this.points = points;
-        pointsUpdate = true;
+
+        ParticleSystem.Particle[] particleCloud = CreateParticles(points);
+        if (particleCloud.Length != 0)
+        {
+            particalusSystem.SetParticles(particleCloud, particleCloud.Length);
+        }
+        
     }
 }
