@@ -57,7 +57,7 @@ public class LidarMenuScript : MonoBehaviour {
 		lowerNormal.value = sensor.lowerNormal;
 		SetSliderText (lowerNormal);
 		// Simulationspeed
-		simulationSpeed.value = sensor.simulationSpeed;
+		//simulationSpeed.value = sensor.simulationSpeed;
 		SetSliderText (simulationSpeed);
 	}
 
@@ -71,7 +71,7 @@ public class LidarMenuScript : MonoBehaviour {
 	public void UpdateSimulationSpeed()
 	{
 		simulationSpeed.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = simSpeedValues[ (int)simulationSpeed.value ].ToString ();
-		sensor.simulationSpeed = simSpeedValues[ (int)simulationSpeed.value ];
+		//sensor.simulationSpeed = simSpeedValues[ (int)simulationSpeed.value ];
 	}
 
 	// A method which syncs the LidarSensor script with the settings in the GUI

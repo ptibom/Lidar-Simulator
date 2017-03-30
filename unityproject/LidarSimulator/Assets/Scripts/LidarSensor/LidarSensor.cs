@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Author: Philip Tibom
@@ -31,6 +32,8 @@ public class LidarSensor : MonoBehaviour {
     public delegate void StorePoints(float timeStamp);
     public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
     public float storeInterval = 0.25f; // How often do we want to update the data structure
+    public float lapTime = 0;
+    private float lastLapTime = 0;
 
     private LidarStorage dataStructure = new LidarStorage();
 	private float previousUpdate;
@@ -45,7 +48,7 @@ public class LidarSensor : MonoBehaviour {
     private void Start ()
     {
         Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
-        Time.fixedDeltaTime = 0.002f; // Necessary for simulation to be detailed. Default is 0.02f.
+        Time.fixedDeltaTime = 0.0002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
 
         // Initialize number of lasers, based on user selection.
@@ -85,33 +88,55 @@ public class LidarSensor : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        // Check if it is time to step. Example: 2hz = 2 rotations in a second.
-        if (Time.fixedTime - lastUpdate > 1/(360/rotationAnglePerStep)/rotationSpeedHz)
+        // Check if number of steps is greater than possible calculations by unity.
+        float numberOfStepsNeededInOneLap = 360 / rotationAnglePerStep;
+        float numberOfStepsPossible = 1 / Time.fixedDeltaTime / 5;
+        float precalculateIterations = 1;
+        // Check if we need to precalculate steps.
+        if (numberOfStepsNeededInOneLap > numberOfStepsPossible)
         {
-            // Update current execution time.
+            precalculateIterations = (int)(numberOfStepsNeededInOneLap / numberOfStepsPossible);
+            if (360 % precalculateIterations != 0)
+            {
+                precalculateIterations += 360 % precalculateIterations;
+            }
+        }
+
+
+        // Check if it is time to step. Example: 2hz = 2 rotations in a second.
+        if (Time.fixedTime - lastUpdate > (1/(numberOfStepsNeededInOneLap)/rotationSpeedHz) * precalculateIterations)
+        {
+                // Update current execution time.
             lastUpdate = Time.fixedTime;
-
-            // Perform rotation.
-            transform.Rotate(0, rotationAnglePerStep, 0);
-            horizontalAngle += rotationAnglePerStep; // Keep track of our current rotation.
-            if (horizontalAngle >= 360)
-            {
-                horizontalAngle -= 360;
-            }
-
-
             LinkedList<SphericalCoordinates> hits = new LinkedList<SphericalCoordinates>();
-            // Execute lasers.
-            foreach (Laser laser in lasers)
+
+            for (int i = 0; i < precalculateIterations; i++)
             {
-                RaycastHit hit = laser.ShootRay();
-                float distance = hit.distance;
-                float verticalAngle = laser.GetVerticalAngle();
-                hits.AddLast(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
+                // Perform rotation.
+                transform.Rotate(0, rotationAnglePerStep, 0);
+                horizontalAngle += rotationAnglePerStep; // Keep track of our current rotation.
+                if (horizontalAngle >= 360)
+                {
+                    horizontalAngle -= 360;
+                    GameObject.Find("HitCText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
+                    lastLapTime = Time.fixedTime;
+                    Debug.Log(Time.fixedDeltaTime);
+                }
+
+
+                // Execute lasers.
+                foreach (Laser laser in lasers)
+                {
+                    RaycastHit hit = laser.ShootRay();
+                    float distance = hit.distance;
+                    float verticalAngle = laser.GetVerticalAngle();
+                    hits.AddLast(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
+                }
             }
+
 
             // Notify listeners that the lidar sensor have scanned points. 
-            if(OnScanned != null)
+            if (OnScanned != null)
             {
                 OnScanned(hits);
             }
