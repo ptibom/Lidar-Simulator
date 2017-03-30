@@ -120,7 +120,6 @@ public class LidarSensor : MonoBehaviour {
                     horizontalAngle -= 360;
                     GameObject.Find("HitCText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
                     lastLapTime = Time.fixedTime;
-                    Debug.Log(Time.fixedDeltaTime);
                 }
 
 
@@ -134,7 +133,7 @@ public class LidarSensor : MonoBehaviour {
                 }
             }
 
-
+            
             // Notify listeners that the lidar sensor have scanned points. 
             if (OnScanned != null)
             {
