@@ -15,7 +15,7 @@ public class SphericalCoordinates
     {
         this.radius = radius;
         this.inclination = (90 + inclination)*(2*Mathf.PI/360);
-        this.azimuth = (azimuth-90) * (2 * Mathf.PI / 360);
+        this.azimuth = azimuth * (2 * Mathf.PI / 360);
     }
 
     // Constructor based on cartesian coordinates
