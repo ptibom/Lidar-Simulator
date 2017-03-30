@@ -2,15 +2,17 @@
 * @author: Philip Tibom
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Author: Philip Tibom
+/// Creates drag and drop functionality.
+/// </summary>
 public class SceneEditor : MonoBehaviour {
     private GameObject go;
-    private bool moveGameObject;
-    private bool rotateGameObject;
+    private bool moveGameObject = false;
+    private bool rotateGameObject = false;
     private float previousMousePos;
     private float lastClick;
 
@@ -31,8 +33,8 @@ public class SceneEditor : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit))
             {
-                Bounds bounds = go.GetComponent<MeshRenderer>().bounds;
-                go.transform.position = hit.point + new Vector3(0, bounds.size.y / 2);
+                go.transform.position = hit.point;
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     lastClick = Time.time;
@@ -46,7 +48,7 @@ public class SceneEditor : MonoBehaviour {
                 }
             }
         }
-        else if (rotateGameObject)
+        else if (rotateGameObject && !EventSystem.current.IsPointerOverGameObject())
         {
             if (previousMousePos != 0)
             {
@@ -86,19 +88,37 @@ public class SceneEditor : MonoBehaviour {
         }
 	}
 
+    /// <summary>
+    /// Instantiates selected prefab.
+    /// </summary>
+    /// <param name="prefab">A game object prefab</param>
     public void PlaceObject(GameObject prefab)
     {
-        MoveObject(Instantiate(prefab));
+        if (!moveGameObject && !rotateGameObject)
+        {
+            MoveObject(Instantiate(prefab));
+        }
     }
 
+    /// <summary>
+    /// Enables movement of game object. Following the mouse.
+    /// </summary>
+    /// <param name="obj">A game object.</param>
     private void MoveObject(GameObject obj)
     {
-        go = obj;
-        SetAlpha(0.33f);
-        moveGameObject = true;
-        ActivateColliders(false);
+        if (!moveGameObject && !rotateGameObject)
+        {
+            go = obj;
+            SetAlpha(0.33f);
+            moveGameObject = true;
+            ActivateColliders(false);
+        }
     }
 
+    /// <summary>
+    /// Sets transparency of game object and child objects.
+    /// </summary>
+    /// <param name="value">Alpha value 0 to 1</param>
     private void SetAlpha(float value)
     {
         MeshRenderer[] allParts = go.GetComponentsInChildren<MeshRenderer>();
@@ -110,6 +130,10 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Activates colliders of object and child objects.
+    /// </summary>
+    /// <param name="isEnabled">Enabled or not</param>
     private void ActivateColliders(bool isEnabled)
     {
         Collider[] colliders = go.GetComponentsInChildren<Collider>();
@@ -119,6 +143,11 @@ public class SceneEditor : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Finds parent object tagged with "EditableObject".
+    /// </summary>
+    /// <param name="o">A game object</param>
+    /// <returns></returns>
     private GameObject FindParentEditableObject(GameObject o)
     {
         if (o.transform.parent != null && o.transform.parent.gameObject.CompareTag("EditableObject"))
