@@ -14,7 +14,9 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
 
-    private ParticleSystem[] particalusSystem;
+    private int usedParticleSystem = 0;
+
+    private List<ParticleSystem> particalusSystem;
 
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
@@ -24,27 +26,8 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Start()
     {
-        particalusSystem = new ParticleSystem[10];
-        particleGameObject = GameObject.Find("pSystem1");
-        particalusSystem[0] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem2");
-        particalusSystem[1] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem3");
-        particalusSystem[2] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem4");
-        particalusSystem[3] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem5");
-        particalusSystem[4] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem6");
-        particalusSystem[5] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem7");
-        particalusSystem[6] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem8");
-        particalusSystem[7] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem9");
-        particalusSystem[8] = particleGameObject.GetComponent<ParticleSystem>();
-        particleGameObject = GameObject.Find("pSystem10");
-        particalusSystem[9] = particleGameObject.GetComponent<ParticleSystem>();
+        //TODO: Start by instantiating one particle system at the proper location. 
+
         LidarSensor.OnScanned += OnUpdatePoints;
     }
 
@@ -77,6 +60,7 @@ public class PointCloud : MonoBehaviour
     private ParticleSystem.Particle[] CreateParticles(int number, LinkedList<SphericalCoordinates> positions)
     {
 
+        //TODO: If current particle systems count is over transform, create new particle system, update usedParticleSystem, count modulo something, so that there is a finite number of particle systems. 
         ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[number].particleCount];
         particalusSystem[number].GetParticles(oldPoints);
 
@@ -84,6 +68,7 @@ public class PointCloud : MonoBehaviour
 
         foreach (ParticleSystem.Particle p in oldPoints)
         {
+            //TODO: 
             if (p.remainingLifetime > 0 )
             {
                 particleCloud.Add(p);
@@ -110,6 +95,7 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
+        //TODO: Perhaps make this event driven 
         if (particalusSystem[9].particleCount < 1000)
         {
             for (int i = 0; i < 10; i++)
