@@ -14,7 +14,8 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
 
-    private ParticleSystem particalusSystem;
+    private ParticleSystem[] particalusSystem;
+
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
 
@@ -23,8 +24,27 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Start()
     {
-        particleGameObject = GameObject.FindGameObjectWithTag("pSystem");
-        particalusSystem = particleGameObject.GetComponent<ParticleSystem>();
+        particalusSystem = new ParticleSystem[10];
+        particleGameObject = GameObject.Find("pSystem1");
+        particalusSystem[0] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem2");
+        particalusSystem[1] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem3");
+        particalusSystem[2] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem4");
+        particalusSystem[3] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem5");
+        particalusSystem[4] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem6");
+        particalusSystem[5] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem7");
+        particalusSystem[6] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem8");
+        particalusSystem[7] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem9");
+        particalusSystem[8] = particleGameObject.GetComponent<ParticleSystem>();
+        particleGameObject = GameObject.Find("pSystem10");
+        particalusSystem[9] = particleGameObject.GetComponent<ParticleSystem>();
         LidarSensor.OnScanned += OnUpdatePoints;
     }
 
@@ -54,11 +74,11 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
+    private ParticleSystem.Particle[] CreateParticles(int number, LinkedList<SphericalCoordinates> positions)
     {
 
-        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem.particleCount];
-        particalusSystem.GetParticles(oldPoints);
+        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[number].particleCount];
+        particalusSystem[number].GetParticles(oldPoints);
 
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
 
@@ -76,8 +96,8 @@ public class PointCloud : MonoBehaviour
             particle.position = it.Value.ToCartesian();
             particle.startColor = Color.green;
             particle.startSize = 0.1f;
-            particle.startLifetime = 1f;
-            particle.remainingLifetime = 1f;
+            particle.startLifetime = 50f;
+            particle.remainingLifetime = 50f;
             particleCloud.Add(particle);
         }
 
@@ -90,12 +110,22 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
-
-        ParticleSystem.Particle[] particleCloud = CreateParticles(points);
-        if (particleCloud.Length != 0)
+        if (particalusSystem[9].particleCount < 1000)
         {
-            particalusSystem.SetParticles(particleCloud, particleCloud.Length);
+            for (int i = 0; i < 10; i++)
+            {
+                if (particalusSystem[i].particleCount < 1000)
+                {
+                    ParticleSystem.Particle[] particleCloud = CreateParticles(i, points);
+                    if (particleCloud.Length != 0)
+                    {
+                        particalusSystem[i].SetParticles(particleCloud, particleCloud.Length);
+                    }
+                    break;
+                }
+
+            }
         }
-        
+           
     }
 }
