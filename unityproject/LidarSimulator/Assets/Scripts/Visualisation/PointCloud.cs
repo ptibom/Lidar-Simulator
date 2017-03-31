@@ -13,6 +13,7 @@ using UnityEngine;
 public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
+    public GameObject pointCloudBase;
 
     private int usedParticleSystem = 0;
 
@@ -26,7 +27,9 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Start()
     {
-        //TODO: Start by instantiating one particle system at the proper location. 
+        pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
+        Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
+        
 
         LidarSensor.OnScanned += OnUpdatePoints;
     }
@@ -57,12 +60,12 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(int number, LinkedList<SphericalCoordinates> positions)
+    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
     {
 
         //TODO: If current particle systems count is over transform, create new particle system, update usedParticleSystem, count modulo something, so that there is a finite number of particle systems. 
-        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[number].particleCount];
-        particalusSystem[number].GetParticles(oldPoints);
+        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[0].particleCount];
+        particalusSystem[0].GetParticles(oldPoints);
 
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
 
@@ -95,23 +98,14 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
-        //TODO: Perhaps make this event driven 
-        if (particalusSystem[9].particleCount < 1000)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                if (particalusSystem[i].particleCount < 1000)
-                {
-                    ParticleSystem.Particle[] particleCloud = CreateParticles(i, points);
-                    if (particleCloud.Length != 0)
-                    {
-                        particalusSystem[i].SetParticles(particleCloud, particleCloud.Length);
-                    }
-                    break;
-                }
-
-            }
-        }
+        //TODO: Perhaps make this event driven
+           ParticleSystem.Particle[] particleCloud = CreateParticles(points);
+             if (particleCloud.Length != 0)
+             {
+                 particalusSystem[0].SetParticles(particleCloud, particleCloud.Length);
+             }
            
-    }
+
+       }
+          
 }
