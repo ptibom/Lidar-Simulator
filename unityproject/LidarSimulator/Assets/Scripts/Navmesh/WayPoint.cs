@@ -7,6 +7,8 @@ public class WayPoint : MonoBehaviour {
 	public GameObject previous;
 	//med denna tredje referensen slipper jag listorna.... tror jag.
 	public GameObject previousBranch;
+	LineRenderer nextLine;
+	public bool isStartNode = false;
 
 	public int path;
 	public int pathIndex;
@@ -15,22 +17,38 @@ public class WayPoint : MonoBehaviour {
 	public static List<WayPoint> waypoints = new List<WayPoint>();
 
 	/*Tanken är att en path är en lista av waypoints. Som i sin tur lagras i en lista av paths*/
-	public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
+	//public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
 
 
 
 	// Use this for initialization
 	void awake() {
 		waypoints.Add (this);
+
 	}
 
 	void Start () {
-		
+		nextLine = this.GetComponent<LineRenderer> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (next != null) {
+			Vector3[] g = new Vector3[2];
+			g [0] = transform.position;
+			g [1] = next.transform.position;
+			nextLine.SetPositions(g);
+		}
+
+	}
+
+	//väldigt viktigt för att få looparna i remove path att funka. Det måste finnas en startnod.
+	public void SetStart(bool s) {
+		isStartNode = s;
+	}
+
+	public bool IsStart(){
+		return isStartNode;
 	}
 
 
@@ -55,10 +73,10 @@ public class WayPoint : MonoBehaviour {
 
 		//WayPoint previousWayPointScript = previousWayPoint.GetComponent<WayPoint>();
 		//WayPoint nextWayPointScript = previousWayPoint.GetComponent<WayPoint>();
-		if(next != null && previous != null && next.GetComponent<WayPoint>().previousBranch != null){
+		/*if(next != null && previous != null && next.GetComponent<WayPoint>().previousBranch != null){
 			
-		}
-		else if (next != null && previous != null && previousBranch != null) {
+		}*/
+		if (next != null && previous != null && previousBranch != null) {
 
 			next.GetComponent<WayPoint> ().previous = previous;
 			previous.GetComponent<WayPoint> ().next = next;
@@ -104,15 +122,66 @@ public class WayPoint : MonoBehaviour {
 	}*/
 
 	public static void removePath(GameObject wayPointInPath) {
+		Debug.Log ("RemovePath Called");
+		//int i = 0;
+		//int j = 0;
 		//skapar en lista med alla waypoints i pathen och använder den för att förstöra hela pathen
-	
+		WayPoint currentWayPoint = wayPointInPath.GetComponent<WayPoint>();
+		GameObject currentWayPointGameObject = wayPointInPath;
+		while (true) {
+			//Första loopen är problemet!!!!!!!!!!
+			/*i = i + 1;
+			if (i >= 10) {
+				Debug.Log ("Looping too much, breaking");
+			}*/
+			if (currentWayPoint.isStartNode == true/*previous == null*/) {
+				Debug.Log ("Breaking1");
+				break;
+			}
+			if (currentWayPoint.previous != null) {
+			
+				currentWayPointGameObject = currentWayPoint.previous;
+				currentWayPoint = currentWayPointGameObject.GetComponent<WayPoint> ();
+			}
+			Debug.Log ("Loop1");
+			//break;
+		}
+		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
+		while (true) {
+			/*j = j + 1;
+			if (j >= 10) {
+				Debug.Log ("Looping too much, breaking");
+			}*/
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
+				Debug.Log ("Breaking2");
+				break;
+			}
+			WayPointsToDestroy.Add (currentWayPointGameObject);
+			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
+			currentWayPointGameObject = currentWayPoint.gameObject;
+			Debug.Log ("Loop2");
+			
+		}
+		foreach (GameObject g in WayPointsToDestroy) {
+			Debug.Log ("Destroying");
+			Destroy (g);
+		}
 	}
-
+	
+	/**/
 	public void ClosePath(GameObject otherWayPoint, GameObject previousWayPoint) {
-		next = 
+		previousWayPoint.GetComponent<WayPoint>().next = otherWayPoint;
+		otherWayPoint.GetComponent<WayPoint> ().previousBranch = previousWayPoint;
 	}
 
 	public GameObject GetGameObject() {
 		return this.gameObject;
+	}
+
+public static void TestMethod (GameObject g){
+		WayPoint currentWayPoint = g.GetComponent<WayPoint>();
+		GameObject currentWayPointGameObject = g;
+		Debug.Log ("Method call worked");
+
 	}
 }
