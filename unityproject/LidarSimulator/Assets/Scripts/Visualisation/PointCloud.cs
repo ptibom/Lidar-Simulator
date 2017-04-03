@@ -14,6 +14,8 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
     public GameObject pointCloudBase;
+    public int maxParticleSystems = 10;
+    public int maxParticlesPerCloud = 10000; // maximum number of particles in a cloud
 
     private int usedParticleSystem = 0;
 
@@ -27,10 +29,13 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Start()
     {
+        particalusSystem = new List<ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
-        Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
-        
+        for(int i = 0; i < maxParticleSystems; i++)
+        {
+            particalusSystem.Add((Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>());
 
+        }
         LidarSensor.OnScanned += OnUpdatePoints;
     }
 
@@ -60,12 +65,12 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
+    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
     {
 
         //TODO: If current particle systems count is over transform, create new particle system, update usedParticleSystem, count modulo something, so that there is a finite number of particle systems. 
-        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[0].particleCount];
-        particalusSystem[0].GetParticles(oldPoints);
+        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[particleSystemID].particleCount];
+        particalusSystem[particleSystemID].GetParticles(oldPoints);
 
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
 
@@ -85,7 +90,7 @@ public class PointCloud : MonoBehaviour
             particle.startColor = Color.green;
             particle.startSize = 0.1f;
             particle.startLifetime = 50f;
-            particle.remainingLifetime = 50f;
+            particle.remainingLifetime = 1f;
             particleCloud.Add(particle);
         }
 
@@ -97,14 +102,14 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
-    {
-        //TODO: Perhaps make this event driven
-           ParticleSystem.Particle[] particleCloud = CreateParticles(points);
-             if (particleCloud.Length != 0)
-             {
-                 particalusSystem[0].SetParticles(particleCloud, particleCloud.Length);
-             }
-           
+    {           
+       if (particalusSystem[usedParticleSystem].particleCount >= maxParticlesPerCloud)
+        {
+            usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;                
+        }
+        ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
+        particalusSystem[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
+                
 
        }
           
