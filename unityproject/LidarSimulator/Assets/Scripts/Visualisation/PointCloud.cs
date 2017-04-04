@@ -16,6 +16,7 @@ public class PointCloud : MonoBehaviour
     public GameObject pointCloudBase;
     public int maxParticleSystems = 10;
     public int maxParticlesPerCloud = 10000; // maximum number of particles in a cloud
+	public float particleSize = 0.01f;
 
     private int usedParticleSystem = 0;
 
@@ -44,20 +45,14 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Update()
     {
-        /*
-        if (pointsUpdate)
+        if (particalusSystem[usedParticleSystem].particleCount >= maxParticlesPerCloud)
         {
-            particalusSystem.Pause();
-            ParticleSystem.Particle[] particleCloud = CreateParticles(points);
-
-            if (particleCloud.Length != 0)
-            {
-                particalusSystem.SetParticles(particleCloud, particleCloud.Length);
-            }
-            
-            pointsUpdate = false;
-            particalusSystem.Play();
-        }*/
+            usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+        }
+        if (particalusSystem[usedParticleSystem].Equals(null))
+        {
+            particalusSystem.Add((Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>());
+        }
     }
 
     /// <summary>
@@ -76,19 +71,29 @@ public class PointCloud : MonoBehaviour
 
         foreach (ParticleSystem.Particle p in oldPoints)
         {
-            //TODO: 
-            if (p.remainingLifetime > 0 )
+            if(p.remainingLifetime > 0)
             {
                 particleCloud.Add(p);
             }
         }
+        
 
         for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
         {
             ParticleSystem.Particle particle = new ParticleSystem.Particle();
             particle.position = it.Value.ToCartesian();
-            particle.startColor = Color.green;
-            particle.startSize = 0.1f;
+            if(it.Value.GetInclination() < 3)
+            {
+                particle.startColor = Color.red;
+            } else if(it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
+            {
+                particle.startColor = Color.yellow;
+            } else
+            {
+                particle.startColor = Color.green;
+            }
+           
+            particle.startSize = particleSize;
             particle.startLifetime = 50f;
             particle.remainingLifetime = 1f;
             particleCloud.Add(particle);
@@ -103,10 +108,7 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {           
-       if (particalusSystem[usedParticleSystem].particleCount >= maxParticlesPerCloud)
-        {
-            usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;                
-        }
+       
         ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
         particalusSystem[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
                 
