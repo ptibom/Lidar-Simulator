@@ -4,7 +4,21 @@ timeCreated: 1487168007
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: LidarBase
+    100004: LidarHead
+    400000: //RootNode
+    400002: LidarBase
+    400004: LidarHead
+    2300000: LidarBase
+    2300002: LidarHead
+    3300000: LidarBase
+    3300002: LidarHead
+    4300000: LidarBase
+    4300002: LidarHead
+    7400000: Default Take
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -15,6 +29,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 

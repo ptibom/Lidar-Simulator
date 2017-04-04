@@ -20,14 +20,15 @@ public class InputSyncScript : MonoBehaviour {
 	}
 
 	public void SyncToInputField(){
-
-
-
-		//FIX! This does not set the length of the string!!!
-
-
-
-		inputField.text = gameObject.GetComponent<Slider>().value.ToString();
+		inputField.text = SetValueLength (gameObject.GetComponent<Slider> ().value.ToString ());
 	}
+
+	private string SetValueLength(string text){
+		if(text.Length > 4){
+			text = text.Substring (0, 4);
+		}
+		return text;
+	}
+
 
 }

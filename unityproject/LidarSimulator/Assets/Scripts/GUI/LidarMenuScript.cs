@@ -70,9 +70,24 @@ public class LidarMenuScript : MonoBehaviour {
 		slider.transform.FindChild ("Handle Slide Area").FindChild ("Handle").FindChild ("HandleText").GetComponent<Text> ().text = newVal.ToString ();
 	}
 
+	// A method which syncs the slider values to the visual values in the inputField boxes
+	public void SyncInputFieldToSlider(){
+		numberOfLasers.GetComponent<InputSyncScript> ().SyncToSlider ();
+		rotationSpeedHz.GetComponent<InputSyncScript> ().SyncToSlider ();
+		rotationAnglePerStep.GetComponent<InputSyncScript> ().SyncToSlider ();
+		rayDistance.GetComponent<InputSyncScript> ().SyncToSlider ();
+		upperFOV.GetComponent<InputSyncScript> ().SyncToSlider ();
+		lowerFOV.GetComponent<InputSyncScript> ().SyncToSlider ();
+		offset.GetComponent<InputSyncScript> ().SyncToSlider ();
+		upperNormal.GetComponent<InputSyncScript> ().SyncToSlider ();
+		lowerNormal.GetComponent<InputSyncScript> ().SyncToSlider ();
+	}
+
 	// A method which syncs the LidarSensor script with the settings in the GUI
 	public void SendSettingsToLidar()
 	{
+		SyncInputFieldToSlider ();
+
 		sensor.numberOfLasers = (int)numberOfLasers.value;
 		sensor.rotationSpeedHz = rotationSpeedHz.value;
 		sensor.rotationAnglePerStep = rotationAnglePerStep.value;
