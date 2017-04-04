@@ -17,6 +17,8 @@ public class PointCloud : MonoBehaviour
     public int maxParticleSystems = 10;
     public int maxParticlesPerCloud = 10000; // maximum number of particles in a cloud
 	public float particleSize = 0.01f;
+    private int lapCounter = 0;
+    private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
 
     private int usedParticleSystem = 0;
 
@@ -32,26 +34,48 @@ public class PointCloud : MonoBehaviour
     {
         particalusSystem = new List<ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
-        for(int i = 0; i < maxParticleSystems; i++)
+        particleSystemLapCounter = new Dictionary<int, int>();
+
+        for (int i = 0; i < maxParticleSystems / 2; i++)
         {
-            particalusSystem.Add((Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>());
+            ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+            particalusSystem.Add(p);
+            particleSystemLapCounter.Add(i,lapCounter);
 
         }
         LidarSensor.OnScanned += OnUpdatePoints;
+        LidarSensor.NewRotationEvent += NewLap;
     }
 
     /// <summary>
-    /// Updates the particle systems particles if there is new points. 
+    /// Updates the particle system used if there is new points. 
     /// </summary>
-    void Update()
+    void UpdateParticleSystemIfNeeded()
     {
         if (particalusSystem[usedParticleSystem].particleCount >= maxParticlesPerCloud)
         {
-            usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
-        }
-        if (particalusSystem[usedParticleSystem].Equals(null))
-        {
-            particalusSystem.Add((Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>());
+            if(particalusSystem.Count == usedParticleSystem + 1 && particalusSystem.Count < maxParticleSystems)
+            {
+                int value;
+                if(particleSystemLapCounter.TryGetValue(usedParticleSystem, out value))
+                {
+                    if(value == lapCounter) // we need to create a new one
+                    {
+                        ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+                        particalusSystem.Add(p);
+                    } else
+                    {
+                        usedParticleSystem = 0;
+                    }
+                }
+
+
+            } else
+            {
+                usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+                particleSystemLapCounter.Remove(usedParticleSystem);
+                particleSystemLapCounter.Add(usedParticleSystem,lapCounter);
+            }
         }
     }
 
@@ -61,21 +85,24 @@ public class PointCloud : MonoBehaviour
     /// <param name="positions"></param>
     /// <returns></returns>
     private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
-    {
 
+    {
         //TODO: If current particle systems count is over transform, create new particle system, update usedParticleSystem, count modulo something, so that there is a finite number of particle systems. 
         ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[particleSystemID].particleCount];
         particalusSystem[particleSystemID].GetParticles(oldPoints);
 
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
-
-        foreach (ParticleSystem.Particle p in oldPoints)
+        if(particalusSystem[particleSystemID].particleCount < maxParticlesPerCloud)
         {
-            if(p.remainingLifetime > 0)
+            foreach (ParticleSystem.Particle p in oldPoints)
             {
-                particleCloud.Add(p);
+                if (p.remainingLifetime > 0)
+                {
+                    particleCloud.Add(p);
+                }
             }
         }
+        
         
 
         for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
@@ -94,7 +121,7 @@ public class PointCloud : MonoBehaviour
             }
            
             particle.startSize = particleSize;
-            particle.startLifetime = 50f;
+            particle.startLifetime = 0.2f;
             particle.remainingLifetime = 1f;
             particleCloud.Add(particle);
         }
@@ -107,12 +134,22 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
-    {           
-       
+    {
+
+        UpdateParticleSystemIfNeeded();
         ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
         particalusSystem[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
+        particalusSystem[usedParticleSystem].Play();
                 
 
        }
+
+    /// <summary>
+    /// Is signalled when the lidar sensor has completed a lap, increments lap counter, used to distinguish wether a new particle system will be created.
+    /// </summary>
+    public void NewLap()
+    {
+        lapCounter++;
+    }
           
 }
