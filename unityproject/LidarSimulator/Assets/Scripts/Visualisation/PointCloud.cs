@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ public class PointCloud : MonoBehaviour
     public GameObject particleGameObject;
     public GameObject pointCloudBase;
     public int maxParticleSystems = 10;
-    public int maxParticlesPerCloud = 10000; // maximum number of particles in a cloud
+    public int maxParticlesPerCloud = 2000; // maximum number of particles in a cloud
 	public float particleSize = 0.01f;
     private int lapCounter = 0;
     private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
@@ -39,6 +39,7 @@ public class PointCloud : MonoBehaviour
         for (int i = 0; i < maxParticleSystems / 2; i++)
         {
             ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+            p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
             particalusSystem.Add(p);
             particleSystemLapCounter.Add(i,lapCounter);
 
@@ -73,6 +74,7 @@ public class PointCloud : MonoBehaviour
             } else
             {
                 usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+                Debug.Log("Used: " + usedParticleSystem) ;
                 particleSystemLapCounter.Remove(usedParticleSystem);
                 particleSystemLapCounter.Add(usedParticleSystem,lapCounter);
             }

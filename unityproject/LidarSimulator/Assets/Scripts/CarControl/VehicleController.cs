@@ -10,21 +10,30 @@ public class VehicleController : MonoBehaviour {
 	private Rigidbody rb;
 
 	//Use this for initialization
+    void Start()
+    {
+        
+    }
 
 	void Update(){
-		rb = GetComponent<Rigidbody> ();
-		force = Input.GetAxis ("Vertical");
-		dir = Input.GetAxis ("Horizontal");
-	}
+        //rb = GetComponent<Rigidbody>();
+        force = Input.GetAxis("Vertical");
+        dir = Input.GetAxis("Horizontal");
+    }
 	void FixedUpdate(){
 		// Move forward and backward 
 		Vector3 movement = transform.forward * force * speed * Time.deltaTime;
-		rb.MovePosition (rb.position + movement);
-		// Steering
-		float turn = dir * turnspeed * Time.deltaTime;
+        //rb.AddForce(transform.forward * force*speed);
+        //rb.MovePosition (rb.position + movement);
+        transform.Translate(movement);
+        // Steering
+        float turn = dir * turnspeed * Time.deltaTime;
 
 		// Rotation in the y axis and apply to the rigidbody's rotation.
 		Quaternion turnRotation = Quaternion.Euler (0f, turn, 0f);
-		rb.MoveRotation (rb.rotation * turnRotation);
+        //rb.MoveRotation (rb.rotation * turnRotation);
+        transform.rotation = transform.rotation * turnRotation;
 	}
+
+
 }
