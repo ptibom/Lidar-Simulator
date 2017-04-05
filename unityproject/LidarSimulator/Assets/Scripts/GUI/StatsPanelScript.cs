@@ -31,7 +31,7 @@ public class StatsPanelScript : MonoBehaviour {
 
 	void UpdateText(){
 		if(Time.fixedTime > lastUpdateTime){
-			timeText.text = "Time: " + Time.fixedTime.ToString ("F") + " s";	
+			timeText.text = "Time: " + ((int)Time.fixedTime).ToString() + " s";	
 			hitPText.text = "Points hit: " + 0;
 			fpsText.text = "Fps: " + (int)(frameCounter / timeCounter);
 

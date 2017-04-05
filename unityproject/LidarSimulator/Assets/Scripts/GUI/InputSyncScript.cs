@@ -5,17 +5,30 @@ using UnityEngine.UI;
 
 public class InputSyncScript : MonoBehaviour {
 
-	public GameObject inputField;	
+	public InputField inputField;	
+
+	public void AvoidEmptyInput(){
+		if(inputField.text.Equals("")){
+			inputField.text = "0";
+		} else if(gameObject.GetComponent<Slider> ().maxValue < float.Parse(inputField.text)){
+			inputField.text = gameObject.GetComponent<Slider> ().maxValue.ToString ();
+		}
+	}
 
 	public void SyncToSlider(){
-		if(inputField.GetComponent<InputField> ().text.Equals("")){
-			inputField.GetComponent<InputField> ().text = "0";
-		}
-		gameObject.GetComponent<Slider> ().value = float.Parse(inputField.GetComponent<InputField> ().text);
+		gameObject.GetComponent<Slider> ().value = float.Parse(inputField.text);
 	}
 
 	public void SyncToInputField(){
-		inputField.GetComponent<InputField> ().text = gameObject.GetComponent<Slider> ().value.ToString();
+		inputField.text = SetValueLength (gameObject.GetComponent<Slider> ().value.ToString ());
 	}
+
+	private string SetValueLength(string text){
+		if(text.Length > 4){
+			text = text.Substring (0, 4);
+		}
+		return text;
+	}
+
 
 }
