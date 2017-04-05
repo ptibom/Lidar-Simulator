@@ -118,7 +118,7 @@ public class LidarSensor : MonoBehaviour {
                 if (horizontalAngle >= 360)
                 {
                     horizontalAngle -= 360;
-					GameObject.Find("RotSpeedText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
+					//GameObject.Find("RotSpeedText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
                     lastLapTime = Time.fixedTime;
                 }
 
