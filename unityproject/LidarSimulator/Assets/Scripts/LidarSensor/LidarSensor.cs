@@ -29,6 +29,8 @@ public class LidarSensor : MonoBehaviour {
     public float lowerNormal = 30f;
     public static event NewPoints OnScanned;
     public static event StorePoints StoreEvent;
+    public static event NewLap NewRotationEvent;
+    public delegate void NewLap();
     public delegate void StorePoints(float timeStamp);
     public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
     public float storeInterval = 0.25f; // How often do we want to update the data structure
