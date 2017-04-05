@@ -20,14 +20,52 @@ public class WayPoint : MonoBehaviour {
 	//public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
 
 
+	//stäng av eller sätt på waypointens triggercollider.
+	public void SetColliderState(bool b){
+		SphereCollider s = GetComponent<SphereCollider> ();
+		s.enabled = b;
+	}
+
+	public static void SetGlobalVisibility (bool b){
+		//Debug.Log ("SetGlobalVisibility() called");
+		foreach (WayPoint w in waypoints) {
+			w.SetVisibility (b);
+			//Debug.Log ("Iterated through a WayPoint");
+		}
+	}
+
+
+	public static void SetGlobalColliderState (bool b){
+		//Debug.Log ("SetGlobalVisibility() called");
+		foreach (WayPoint w in waypoints) {
+			w.SetColliderState(b);
+			//Debug.Log ("Iterated through a WayPoint");
+		}
+	}
+
+
+	public void SetVisibility(bool b){
+		if (b == true) {
+			nextLine.enabled = true;
+			Renderer r = GetComponent<Renderer> ();
+			r.enabled = true;
+		} 
+		else {
+			nextLine.enabled = false;
+			Renderer r = GetComponent<Renderer> ();
+			r.enabled = false;
+		}
+	
+	}
 
 	// Use this for initialization
 	void awake() {
-		waypoints.Add (this);
+
 
 	}
 
 	void Start () {
+		waypoints.Add (this);
 		nextLine = this.GetComponent<LineRenderer> ();
 	}
 	
@@ -121,6 +159,10 @@ public class WayPoint : MonoBehaviour {
 	
 	}*/
 
+
+
+	/*Det är super-hyper-mega-ultra-viktigt att det finns en nod i vägen som är satt till startnod annars kommer du frysa programmet i en oändlig while-loop om du 
+	kallar på den här*/
 	public static void removePath(GameObject wayPointInPath) {
 		Debug.Log ("RemovePath Called");
 		//int i = 0;
@@ -164,6 +206,7 @@ public class WayPoint : MonoBehaviour {
 		}
 		foreach (GameObject g in WayPointsToDestroy) {
 			Debug.Log ("Destroying");
+			waypoints.Remove (g.GetComponent<WayPoint> ());
 			Destroy (g);
 		}
 	}
@@ -178,7 +221,7 @@ public class WayPoint : MonoBehaviour {
 		return this.gameObject;
 	}
 
-public static void TestMethod (GameObject g){
+	public static void TestMethod (GameObject g){
 		WayPoint currentWayPoint = g.GetComponent<WayPoint>();
 		GameObject currentWayPointGameObject = g;
 		Debug.Log ("Method call worked");
