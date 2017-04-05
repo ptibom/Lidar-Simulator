@@ -26,11 +26,94 @@ public class WayPoint : MonoBehaviour {
 		s.enabled = b;
 	}
 
+	public void SetPathColliderState(bool b, GameObject wayPointInPath){
+		Debug.Log ("RemovePath Called");
+		//int i = 0;
+		//int j = 0;
+		//skapar en lista med alla waypoints i pathen och använder den för att förstöra hela pathen
+		WayPoint currentWayPoint = wayPointInPath.GetComponent<WayPoint>();
+		GameObject currentWayPointGameObject = wayPointInPath;
+		while (true) {
+			//Första loopen är problemet!!!!!!!!!!
+			/*i = i + 1;
+			if (i >= 10) {
+				Debug.Log ("Looping too much, breaking");
+			}*/
+			if (currentWayPoint.isStartNode == true/*previous == null*/) {
+				Debug.Log ("Breaking1");
+				break;
+			}
+			if (currentWayPoint.previous != null) {
+
+				currentWayPointGameObject = currentWayPoint.previous;
+				currentWayPoint = currentWayPointGameObject.GetComponent<WayPoint> ();
+			}
+			Debug.Log ("Loop1");
+			//break;
+		}
+		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
+		while (true) {
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
+				//Debug.Log ("Breaking2");
+				break;
+			}
+			WayPointsToDestroy.Add (currentWayPointGameObject);
+			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
+			currentWayPointGameObject = currentWayPoint.gameObject;
+			//Debug.Log ("Loop2");
+
+		}
+		foreach (GameObject g in WayPointsToDestroy) {
+			g.GetComponent<WayPoint> ().SetColliderState (b);
+		}
+	}
+
+	public void SetPathVisibility(bool b, GameObject wayPointInPath){
+		Debug.Log ("RemovePath Called");
+		//int i = 0;
+		//int j = 0;
+		//skapar en lista med alla waypoints i pathen och använder den för att förstöra hela pathen
+		WayPoint currentWayPoint = wayPointInPath.GetComponent<WayPoint>();
+		GameObject currentWayPointGameObject = wayPointInPath;
+		while (true) {
+			//Första loopen är problemet!!!!!!!!!!
+			/*i = i + 1;
+			if (i >= 10) {
+				Debug.Log ("Looping too much, breaking");
+			}*/
+			if (currentWayPoint.isStartNode == true/*previous == null*/) {
+				Debug.Log ("Breaking1");
+				break;
+			}
+			if (currentWayPoint.previous != null) {
+
+				currentWayPointGameObject = currentWayPoint.previous;
+				currentWayPoint = currentWayPointGameObject.GetComponent<WayPoint> ();
+			}
+			Debug.Log ("Loop1");
+			//break;
+		}
+		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
+		while (true) {
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
+				//Debug.Log ("Breaking2");
+				break;
+			}
+			WayPointsToDestroy.Add (currentWayPointGameObject);
+			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
+			currentWayPointGameObject = currentWayPoint.gameObject;
+			//Debug.Log ("Loop2");
+
+		}
+		foreach (GameObject g in WayPointsToDestroy) {
+			//Debug.Log ("Destroying");
+			g.GetComponent<WayPoint>().SetVisibility(b);
+		}
+	}
+
 	public static void SetGlobalVisibility (bool b){
-		//Debug.Log ("SetGlobalVisibility() called");
 		foreach (WayPoint w in waypoints) {
 			w.SetVisibility (b);
-			//Debug.Log ("Iterated through a WayPoint");
 		}
 	}
 
@@ -43,7 +126,7 @@ public class WayPoint : MonoBehaviour {
 		}
 	}
 
-
+	//sätt på eller stäng av waypointens renderer
 	public void SetVisibility(bool b){
 		if (b == true) {
 			nextLine.enabled = true;
