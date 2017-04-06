@@ -17,6 +17,8 @@ public class LidarMenuScript : MonoBehaviour {
 	public Slider lowerNormal;
 	public Slider simulationSpeed;
 
+	public TimeManager timeManager;
+
 	private float[] simSpeedSliderValues = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	void Start () 
@@ -47,11 +49,11 @@ public class LidarMenuScript : MonoBehaviour {
 		lowerNormal.value = sensor.lowerNormal;
 
 		// Simulationspeed
-		if (sensor.simulationSpeed < 1) {
-			simulationSpeed.value = (int)(sensor.simulationSpeed * 10 - 1);
+		if (timeManager.startTime < 1) {
+			simulationSpeed.value = (int)(timeManager.startTime * 10 - 1);
 			UpdateSimulationSpeed();
 		} else {
-			simulationSpeed.value = (int)(sensor.simulationSpeed + 8);
+			simulationSpeed.value = (int)(timeManager.startTime + 8);
 			UpdateSimulationSpeed();
 		}
 
@@ -60,7 +62,7 @@ public class LidarMenuScript : MonoBehaviour {
 	// Sets the simulation speed in the LidarSensor script to the value in the GUI aswell as setting the handle text of the slider
 	public void UpdateSimulationSpeed()
 	{
-		sensor.simulationSpeed = simSpeedSliderValues [(int)simulationSpeed.value];
+		timeManager.SetTimeScale( simSpeedSliderValues [(int)simulationSpeed.value]);
 		UpdateSliderHandleText (simulationSpeed, simSpeedSliderValues [(int)simulationSpeed.value]);
 
 	}

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class PauseScript : MonoBehaviour {
 
-	public GameObject timeController;
+	public TimeManager timeController;
 
 	public void PauseToggle(){
 		if(gameObject.GetComponent<Toggle>().isOn){
-			
+			timeController.PauseTime();
 		} else {
-			
+			timeController.UnPauseTime();
 		}
 
 	}

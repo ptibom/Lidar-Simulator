@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour {
 
+	public float startTime = 1;
     private float oldTime = 1;
 
 	// Use this for initialization
 	void Start () {
-		
+		SetTimeScale (startTime);
 	}
 	
 	// Update is called once per frame
