@@ -34,6 +34,8 @@ public class LidarSensor : MonoBehaviour {
     public float lapTime = 0;
     private float lastLapTime = 0;
 
+	public GameObject pointCloudObject;
+
     private LidarStorage dataStructure = new LidarStorage();
 	private float previousUpdate;
 
@@ -133,14 +135,14 @@ public class LidarSensor : MonoBehaviour {
 
             
             // Notify listeners that the lidar sensor have scanned points. 
-            if (OnScanned != null)
+			if (OnScanned != null  && pointCloudObject != null && pointCloudObject.activeInHierarchy)
             {
                 OnScanned(hits);
             }
             
             if (Time.fixedTime - previousUpdate > storeInterval) {
                 // Notify data structure that it is time to store the collected points
-                if(StoreEvent != null)
+				if(StoreEvent != null)
                 {
                     StoreEvent(Time.fixedTime);
                     previousUpdate = Time.fixedTime;

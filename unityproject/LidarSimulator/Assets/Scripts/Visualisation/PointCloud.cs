@@ -153,5 +153,15 @@ public class PointCloud : MonoBehaviour
     {
         lapCounter++;
     }
-          
+
+	void OnDisable() {
+		Debug.Log ("SUp");
+		LidarSensor.OnScanned -= OnUpdatePoints;
+		LidarSensor.NewRotationEvent -= NewLap;
+	}
+ 	
+	void OnEnable(){
+		LidarSensor.OnScanned += OnUpdatePoints;
+		LidarSensor.NewRotationEvent += NewLap;
+	}
 }

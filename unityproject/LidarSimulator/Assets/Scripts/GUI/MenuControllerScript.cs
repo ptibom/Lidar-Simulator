@@ -49,15 +49,15 @@ public class MenuControllerScript : MonoBehaviour {
 	}
 
     public void SwitchVisualisationCamera()
-    {
+    {	
         if (visCamera.activeInHierarchy)
         {
-            visCamera.SetActive(false);
-            mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+           	visCamera.SetActive(false);
+           	mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
         } else {
             visCamera.SetActive(true);
             mainCamera.GetComponent<Camera>().rect = new Rect(0, 0 , 0.5f, 1);
         }
-        mainCamera.GetComponent<Camera>().enabled = true;
+        	mainCamera.GetComponent<Camera>().enabled = true;
     }
 }
