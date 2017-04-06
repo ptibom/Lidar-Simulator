@@ -11,7 +11,7 @@ public class MenuControllerScript : MonoBehaviour {
 	public GameObject lidarCamera;
     public GameObject visCamera;
 	public GameObject editorMenu;
-	public GameObject visButton;
+	public GameObject visToggle;
 
 	public void SetLidarCameraActive(bool popup){
         if (popup)
@@ -34,11 +34,17 @@ public class MenuControllerScript : MonoBehaviour {
 		}
 	}
 
-	public void SetVisButtonActive(bool setOn){
+	public void SetVisToggleActive(bool setOn){
 		if(setOn){
-			visButton.SetActive (true);	
+			visToggle.SetActive (true);	
+			if(!visCamera.activeInHierarchy){
+				SwitchVisualisationCamera ();
+			}
 		} else {
-			visButton.SetActive (false);
+			visToggle.SetActive (false);
+			if(visCamera.activeInHierarchy){
+				SwitchVisualisationCamera ();
+			}
 		}
 	}
 
