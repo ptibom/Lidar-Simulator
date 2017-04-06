@@ -2,10 +2,8 @@
 * @author: Philip Tibom
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// Author: Philip Tibom
@@ -21,7 +19,6 @@ public class LidarSensor : MonoBehaviour {
     public float rotationSpeedHz = 1.0f;
     public float rotationAnglePerStep = 45.0f;
     public float rayDistance = 100f;
-    public float simulationSpeed = 1;
     public float upperFOV = 30f;
     public float lowerFOV = 30f;
     public float offset = 0.001f;
@@ -49,7 +46,6 @@ public class LidarSensor : MonoBehaviour {
     // Use this for initialization
     private void Start ()
     {
-        Time.timeScale = simulationSpeed; // For now, only be set before start in editor.
         Time.fixedDeltaTime = 0.0002f; // Necessary for simulation to be detailed. Default is 0.02f.
 
 
