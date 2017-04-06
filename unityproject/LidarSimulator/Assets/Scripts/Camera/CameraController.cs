@@ -21,6 +21,7 @@ public class CameraController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Cursor.visible = true;
+		SetRoam ();
 	}
 	
 	// Update is called once per frame

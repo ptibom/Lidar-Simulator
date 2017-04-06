@@ -6,28 +6,14 @@ using UnityEditor;
 
 public class MenuControllerScript : MonoBehaviour {
 
-	LidarSensor sensor;
-	GameObject mainCamera;
-	GameObject lidarCamera;
-    GameObject visCamera;
-	// Use this for initialization
-	void Start () {
-		sensor = GameObject.FindGameObjectWithTag ("Lidar").GetComponent<LidarSensor> ();
-		mainCamera = GameObject.FindGameObjectWithTag ("MainCamera");
-		lidarCamera = GameObject.Find ("LidarCamera");
-        visCamera = GameObject.FindGameObjectWithTag("VisCamera");
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public LidarSensor sensor;
+	public GameObject mainCamera;
+	public GameObject lidarCamera;
+    public GameObject visCamera;
+	public GameObject editorMenu;
+	public GameObject visButton;
 
-	public void PlayButton(){
-		//sensor.playSimulation = !sensor.playSimulation;
-	}
-		
-	public void SwitchCamera(bool popup){
+	public void SetLidarCameraActive(bool popup){
         if (popup)
         {
             lidarCamera.SetActive(true);
@@ -35,6 +21,25 @@ public class MenuControllerScript : MonoBehaviour {
         {
             lidarCamera.SetActive(false);
         }
+	}
+
+	public void SetMainCamera(bool follow){
+		if(follow){
+			editorMenu.SetActive (false);
+			mainCamera.GetComponent<CameraController> ().SetFollow ();
+		}
+		else{
+			editorMenu.SetActive (true);
+			mainCamera.GetComponent<CameraController> ().SetRoam ();
+		}
+	}
+
+	public void SetVisButtonActive(bool setOn){
+		if(setOn){
+			visButton.SetActive (true);	
+		} else {
+			visButton.SetActive (false);
+		}
 	}
 
     public void SwitchVisualisationCamera()
