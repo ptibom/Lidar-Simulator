@@ -8,6 +8,7 @@ public class AgentTest : MonoBehaviour {
 	public float minDist;
 
 	UnityEngine.AI.NavMeshAgent agent;
+
 	// Use this for initialization
 	void Start () {
 		agent = GetComponent<UnityEngine.AI.NavMeshAgent> ();
