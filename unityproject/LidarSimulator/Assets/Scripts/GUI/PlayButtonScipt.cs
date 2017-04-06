@@ -5,23 +5,12 @@ using UnityEngine.UI;
 
 public class PlayButtonScipt : MonoBehaviour {
 
-	public GameObject editorMenu;
-
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
+	public MenuControllerScript menuController;
+	public Toggle lidarSensorButton;
 
 	void OnGUI(){
-		if(gameObject.GetComponent<Toggle>().isOn){
-			editorMenu.SetActive (false);
-		}
-		else{
-			editorMenu.SetActive (true);
-		}
+		menuController.SetMainCamera (gameObject.GetComponent<Toggle> ().isOn);
+		menuController.SetLidarCameraActive (lidarSensorButton.isOn && !gameObject.GetComponent<Toggle> ().isOn);
 	}
 
 }
