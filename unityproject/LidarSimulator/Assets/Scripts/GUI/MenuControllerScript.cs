@@ -9,9 +9,9 @@ public class MenuControllerScript : MonoBehaviour {
 	public LidarSensor sensor;
 	public GameObject mainCamera;
 	public GameObject lidarCamera;
-    public GameObject visCamera;
 	public GameObject editorMenu;
-	public GameObject visButton;
+	public GameObject visToggle;
+	public GameObject pointCloud;
 
 	public void SetLidarCameraActive(bool popup){
         if (popup)
@@ -34,24 +34,30 @@ public class MenuControllerScript : MonoBehaviour {
 		}
 	}
 
-	public void SetVisButtonActive(bool setOn){
+	public void SetVisToggleActive(bool setOn){
 		if(setOn){
-			visButton.SetActive (true);	
+			visToggle.SetActive (true);	
+			if(visToggle.GetComponent<Toggle>().isOn && !pointCloud.activeInHierarchy){
+				SwitchPointCloudActive ();
+			}
 		} else {
-			visButton.SetActive (false);
+			visToggle.SetActive (false);
+			if(pointCloud.activeInHierarchy){
+				SwitchPointCloudActive ();
+			}
 		}
 	}
 
-    public void SwitchVisualisationCamera()
-    {
-        if (visCamera.activeInHierarchy)
+    public void SwitchPointCloudActive()
+    {	
+		if (pointCloud.activeInHierarchy)
         {
-            visCamera.SetActive(false);
-            mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+			pointCloud.SetActive (false);
+           	mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
         } else {
-            visCamera.SetActive(true);
+			pointCloud.SetActive (true);
             mainCamera.GetComponent<Camera>().rect = new Rect(0, 0 , 0.5f, 1);
         }
-        mainCamera.GetComponent<Camera>().enabled = true;
+        	mainCamera.GetComponent<Camera>().enabled = true;
     }
 }

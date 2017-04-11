@@ -17,13 +17,19 @@ public class LidarMenuScript : MonoBehaviour {
 	public Slider lowerNormal;
 	public Slider simulationSpeed;
 
+	public TimeManager timeManager;
+
+	public LidarLineMimic lidarLineMimic;
+
 	private float[] simSpeedSliderValues = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	void Start () 
 	{
+		lidarLineMimic.InitializeLaserMimicList ();
 		InitializeGUIValues ();
+		UpdateLaserMimicValues();
 	}
-
+		
 	// A method which syncs the GUI lidar menu sliders with the initial values of the LidarSensor script
 	void InitializeGUIValues()
 	{
@@ -47,20 +53,37 @@ public class LidarMenuScript : MonoBehaviour {
 		lowerNormal.value = sensor.lowerNormal;
 
 		// Simulationspeed
-		if (sensor.simulationSpeed < 1) {
-			simulationSpeed.value = (int)(sensor.simulationSpeed * 10 - 1);
+		if (timeManager.startTime < 1) {
+			simulationSpeed.value = (int)(timeManager.startTime * 10 - 1);
 			UpdateSimulationSpeed();
 		} else {
-			simulationSpeed.value = (int)(sensor.simulationSpeed + 8);
+			simulationSpeed.value = (int)(timeManager.startTime + 8);
 			UpdateSimulationSpeed();
 		}
 
 	}
+
+	public void UpdateLaserMimicValues(){
+		lidarLineMimic.numberOfLasers = (int)numberOfLasers.value;
+		// Upper field of view
+		lidarLineMimic.upperFOV = upperFOV.value;
+		// lower field of view
+		lidarLineMimic.lowerFOV = lowerFOV.value;
+		// Vertical offset between sets
+		lidarLineMimic.offset = offset.value;
+		// Normal of top set (Positive upwards from horizontal axis)
+		lidarLineMimic.upperNormal = upperNormal.value;
+		// Normal of bottom set ((Positive downwards from horizontal axis)
+		lidarLineMimic.lowerNormal = lowerNormal.value;
+
+		lidarLineMimic.UpdateLines();
+	}
+
 		
 	// Sets the simulation speed in the LidarSensor script to the value in the GUI aswell as setting the handle text of the slider
 	public void UpdateSimulationSpeed()
 	{
-		sensor.simulationSpeed = simSpeedSliderValues [(int)simulationSpeed.value];
+		timeManager.SetTimeScale( simSpeedSliderValues [(int)simulationSpeed.value]);
 		UpdateSliderHandleText (simulationSpeed, simSpeedSliderValues [(int)simulationSpeed.value]);
 
 	}
