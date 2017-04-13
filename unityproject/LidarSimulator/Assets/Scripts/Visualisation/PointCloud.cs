@@ -19,10 +19,11 @@ public class PointCloud : MonoBehaviour
 	public float particleSize = 0.01f;
     private int lapCounter = 0;
     private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
+    private int lastParticleSystemLastUpdate;
 
     private int usedParticleSystem = 0;
 
-    private List<ParticleSystem> particalusSystem;
+    private Dictionary<int,ParticleSystem> particleSystemIdMap;
 
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
@@ -32,7 +33,7 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void Start()
     {
-        particalusSystem = new List<ParticleSystem>();
+        particleSystemIdMap = new Dictionary<int, ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
         particleSystemLapCounter = new Dictionary<int, int>();
 
@@ -40,7 +41,7 @@ public class PointCloud : MonoBehaviour
         {
             ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
             p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
-            particalusSystem.Add(p);
+            particleSystemIdMap.Add(i,p);
             particleSystemLapCounter.Add(i,lapCounter);
 
         }
@@ -54,9 +55,9 @@ public class PointCloud : MonoBehaviour
     void UpdateParticleSystemIfNeeded()
     {
         int nextParticleSystem = usedParticleSystem+1;
-        if(nextParticleSystem >= particalusSystem.Count) 
+        if(nextParticleSystem >= particleSystemIdMap.Count) 
         {
-            if(nextParticleSystem >= maxParticleSystems || particleSystemLapCounter[usedParticleSystem] != lapCounter) // Either full or new lap
+            if(nextParticleSystem >= maxParticleSystems || lastParticleSystemLastUpdate != lapCounter) // Either full or new lap
             {
                 usedParticleSystem = 0;
                 particleSystemLapCounter.Remove(usedParticleSystem);
@@ -66,9 +67,9 @@ public class PointCloud : MonoBehaviour
             {
                 usedParticleSystem += 1;
                 ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
-                particalusSystem.Add(p);
-                p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
-                particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
+                particleSystemIdMap.Add(usedParticleSystem,p);
+                p.transform.SetParent(GameObject.Find("ParticleSystems").transform);                
+                //particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
             }
         } else
         {
@@ -84,50 +85,38 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)    {
-
-
-        //TODO: If current particle systems count is over transform, create new particle system, update usedParticleSystem, count modulo something, so that there is a finite number of particle systems. 
-        ParticleSystem.Particle[] oldPoints = new ParticleSystem.Particle[particalusSystem[particleSystemID].particleCount];
-        particalusSystem[particleSystemID].GetParticles(oldPoints);
-
+    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
+    {
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
-        if (particalusSystem[particleSystemID].particleCount < maxParticlesPerCloud)
-        {
-            foreach (ParticleSystem.Particle p in oldPoints)
-            {
-                if (p.remainingLifetime > 0)
-                {
-                    particleCloud.Add(p);
-                }
-            }
-        }
-
-
-
         for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
         {
-            ParticleSystem.Particle particle = new ParticleSystem.Particle();
-            particle.position = it.Value.ToCartesian();
-            if (it.Value.GetInclination() < 3)
+            if (it.Value.GetRadius() == 0)
             {
-                particle.startColor = Color.red;
-            }
-            else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
-            {
-                particle.startColor = Color.yellow;
             }
             else
             {
-                particle.startColor = Color.green;
+                ParticleSystem.Particle particle = new ParticleSystem.Particle();
+                particle.position = it.Value.ToCartesian();
+                if (it.Value.GetInclination() < 3)
+                {
+                    particle.startColor = Color.red;
+                }
+                else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
+                {
+                    particle.startColor = Color.yellow;
+                }
+                else
+                {
+                    particle.startColor = Color.green;
+                }
+
+                particle.startSize = particleSize;
+                particle.startLifetime = 10f;
+                particle.remainingLifetime = 1f;
+                particleCloud.Add(particle);
             }
-
-            particle.startSize = particleSize;
-            particle.startLifetime = 0.2f;
-            particle.remainingLifetime = 1f;
-            particleCloud.Add(particle);
+            
         }
-
         return particleCloud.ToArray();
     }
 
@@ -138,13 +127,9 @@ public class PointCloud : MonoBehaviour
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
         UpdateParticleSystemIfNeeded();
-        Debug.Log("Used Particle System: " + usedParticleSystem);
-
         ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
-        particalusSystem[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
-        particalusSystem[usedParticleSystem].Play();
-                
-
+        particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
+        particleSystemIdMap[usedParticleSystem].Play();
        }
 
     /// <summary>
