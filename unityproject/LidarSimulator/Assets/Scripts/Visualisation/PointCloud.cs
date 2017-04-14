@@ -17,12 +17,15 @@ public class PointCloud : MonoBehaviour
     public int maxParticleSystems = 10;
     public int maxParticlesPerCloud = 2000; // maximum number of particles in a cloud
 	public float particleSize = 0.01f;
+    public bool clearOnPause = true;; // clears particles on pause
+
+
+
     private int lapCounter = 0;
     private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
     private int lastParticleSystemLastUpdate;
-
+    private bool isEnabled;
     private int usedParticleSystem = 0;
-
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
 
     //private LinkedList<SphericalCoordinates> points;
@@ -47,6 +50,7 @@ public class PointCloud : MonoBehaviour
         }
         LidarSensor.OnScanned += OnUpdatePoints;
         LidarSensor.NewRotationEvent += NewLap;
+        isEnabled = true;
     }
 
     /// <summary>
@@ -130,7 +134,64 @@ public class PointCloud : MonoBehaviour
         ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
         particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
         particleSystemIdMap[usedParticleSystem].Play();
-       }
+    }
+
+
+
+    /// <summary>
+    /// Resumes the point cloud after a pause
+    /// </summary>
+    public void Play()
+    {
+        LidarSensor.OnScanned += OnUpdatePoints;
+        LidarSensor.NewRotationEvent += NewLap;
+        isEnabled = true;
+
+        if(clearOnPause == false)
+        {
+            foreach (var entity in particleSystemIdMap)
+            {
+                entity.Value.Play();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Pauses the visualization
+    /// </summary>
+    public void Pause()
+    {
+        LidarSensor.OnScanned -= OnUpdatePoints;
+        LidarSensor.NewRotationEvent -= NewLap;
+        isEnabled = false;
+
+        if(clearOnPause)
+        {
+            foreach (var entity in particleSystemIdMap)
+            {
+                entity.Value.Clear();
+            }
+            usedParticleSystem = 0;
+        } else
+        {
+            foreach (var entity in particleSystemIdMap)
+            {
+                entity.Value.Pause();
+            }
+        }
+
+    }
+
+
+/// <summary>
+/// This method is called when the lidar specifications are changed. Calculates the number of particle systems needed, point size and number of particles / system.
+/// </summary>
+    public void UpdateSpecs(int numLasers, float rotAngle)
+    {
+       // maxParticleSystems = (int) Mathf.Ceil(360*numLasers/(2000*rotAngle));
+
+
+    }
 
     /// <summary>
     /// Is signalled when the lidar sensor has completed a lap, increments lap counter, used to distinguish wether a new particle system will be created.
