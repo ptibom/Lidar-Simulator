@@ -14,17 +14,15 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
     public GameObject pointCloudBase;
-    public int maxParticleSystems = 10;
-    public int maxParticlesPerCloud = 2000; // maximum number of particles in a cloud
-	public float particleSize = 0.01f;
-    public bool clearOnPause = true;; // clears particles on pause
+    public bool clearOnPause = true; // clears particles on pause
 
-
-
+    private int maxParticleSystems = 50;
+    private int maxParticlesPerCloud = 100; // maximum number of particles in a cloud
+    private float particleSize = 0.1f;
     private int lapCounter = 0;
     private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
     private int lastParticleSystemLastUpdate;
-    private bool isEnabled;
+    private bool isEnabled = false;
     private int usedParticleSystem = 0;
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
 
@@ -39,18 +37,13 @@ public class PointCloud : MonoBehaviour
         particleSystemIdMap = new Dictionary<int, ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
         particleSystemLapCounter = new Dictionary<int, int>();
-
-        for (int i = 0; i < maxParticleSystems / 2; i++)
-        {
-            ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
-            p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
-            particleSystemIdMap.Add(i,p);
-            particleSystemLapCounter.Add(i,lapCounter);
-
-        }
+        LidarSensor.UpdateLidarSpecifications += UpdateSpecs;
+        CreateNeededParticleSystems();
         LidarSensor.OnScanned += OnUpdatePoints;
         LidarSensor.NewRotationEvent += NewLap;
         isEnabled = true;
+
+
     }
 
     /// <summary>
@@ -59,28 +52,28 @@ public class PointCloud : MonoBehaviour
     void UpdateParticleSystemIfNeeded()
     {
         int nextParticleSystem = usedParticleSystem+1;
-        if(nextParticleSystem >= particleSystemIdMap.Count) 
-        {
-            if(nextParticleSystem >= maxParticleSystems || lastParticleSystemLastUpdate != lapCounter) // Either full or new lap
+            if (nextParticleSystem >= particleSystemIdMap.Count)
             {
-                usedParticleSystem = 0;
-                particleSystemLapCounter.Remove(usedParticleSystem);
-                particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
-                Debug.Log("Relap");
+                if (nextParticleSystem >= maxParticleSystems || lastParticleSystemLastUpdate != lapCounter) // Either full or new lap
+                {
+                    usedParticleSystem = 0;
+                    particleSystemLapCounter.Remove(usedParticleSystem);
+                    particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
+                    Debug.Log("Relap");
+                } else
+                {
+                    usedParticleSystem += 1;
+                    ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+                    particleSystemIdMap.Add(usedParticleSystem, p);
+                    p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
+                }
             } else
             {
-                usedParticleSystem += 1;
-                ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
-                particleSystemIdMap.Add(usedParticleSystem,p);
-                p.transform.SetParent(GameObject.Find("ParticleSystems").transform);                
-                //particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
+                usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+                particleSystemLapCounter.Remove(usedParticleSystem);
+                particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
             }
-        } else
-        {
-            usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
-            particleSystemLapCounter.Remove(usedParticleSystem);
-            particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
-        }
+        
         
     }
 
@@ -92,12 +85,10 @@ public class PointCloud : MonoBehaviour
     private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
     {
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+
         for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
         {
-            if (it.Value.GetRadius() == 0)
-            {
-            }
-            else
+            if (it.Value.GetRadius() != 0)
             {
                 ParticleSystem.Particle particle = new ParticleSystem.Particle();
                 particle.position = it.Value.ToCartesian();
@@ -115,8 +106,8 @@ public class PointCloud : MonoBehaviour
                 }
 
                 particle.startSize = particleSize;
-                particle.startLifetime = 10f;
-                particle.remainingLifetime = 1f;
+                particle.startLifetime = 1f;
+                particle.remainingLifetime = 2f;
                 particleCloud.Add(particle);
             }
             
@@ -130,10 +121,12 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
     {
-        UpdateParticleSystemIfNeeded();
-        ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
-        particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
-        particleSystemIdMap[usedParticleSystem].Play();
+        if (isEnabled) {
+            UpdateParticleSystemIfNeeded();
+            ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
+            particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
+            particleSystemIdMap[usedParticleSystem].Play();
+        }
     }
 
 
@@ -188,8 +181,51 @@ public class PointCloud : MonoBehaviour
 /// </summary>
     public void UpdateSpecs(int numLasers, float rotAngle)
     {
-       // maxParticleSystems = (int) Mathf.Ceil(360*numLasers/(2000*rotAngle));
+        int particlesPerSystem;
 
+        int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numLasers) / rotAngle); // maximum number of raycast hits per lap
+
+
+        if(maxNumParticlesPerLap < 250000)
+        {
+            particlesPerSystem = 3000;
+            particleSize = 0.1f;
+            
+        }  else if(maxNumParticlesPerLap < 750000)
+        {
+            particlesPerSystem = 5000;
+            particleSize = 0.05f;
+        } else
+        {
+            particlesPerSystem = 10000;
+            particleSize = 0.01f;
+        }
+
+        maxParticleSystems = (int) Mathf.Ceil(maxNumParticlesPerLap/particlesPerSystem);
+        CreateNeededParticleSystems();
+
+
+    }
+
+
+    /// <summary>
+    /// Creates the needed number of particle systems.
+    /// </summary>
+    private void CreateNeededParticleSystems()
+    {
+        int currentNumberOfSystems = particleSystemIdMap.Count;
+
+        if (currentNumberOfSystems < maxParticleSystems / 2)
+        {
+            for (int i = currentNumberOfSystems; i < maxParticleSystems / 2; i++)
+            {
+                ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+                p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
+                particleSystemIdMap.Add(i, p);
+                particleSystemLapCounter.Add(i, lapCounter);
+
+            }
+        }       
 
     }
 
@@ -198,16 +234,9 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     public void NewLap()
     {
-        lapCounter++;
+        if (isEnabled)
+        { 
+            lapCounter++;
+        }
     }
-
-	void OnDisable() {
-		LidarSensor.OnScanned -= OnUpdatePoints;
-		LidarSensor.NewRotationEvent -= NewLap;
-	}
- 	
-	void OnEnable(){
-		LidarSensor.OnScanned += OnUpdatePoints;
-		LidarSensor.NewRotationEvent += NewLap;
-	}
 }
