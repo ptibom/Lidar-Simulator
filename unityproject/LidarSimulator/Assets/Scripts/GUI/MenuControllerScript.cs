@@ -6,12 +6,18 @@ using UnityEditor;
 
 public class MenuControllerScript : MonoBehaviour {
 
-	public LidarSensor sensor;
-	public GameObject mainCamera;
-	public GameObject lidarCamera;
-	public GameObject editorMenu;
-	public GameObject visToggle;
-	public GameObject pointCloud;
+	[SerializeField]
+	private LidarSensor sensor;
+	[SerializeField]
+	private GameObject mainCamera;
+	[SerializeField]
+	private GameObject lidarCamera;
+	[SerializeField]
+	private GameObject editorMenu;
+	[SerializeField]
+	private GameObject pointCloud;
+	[SerializeField]
+	private GameObject visToggle;
 
 	public void SetLidarCameraActive(bool popup){
         if (popup)
@@ -38,17 +44,17 @@ public class MenuControllerScript : MonoBehaviour {
 		if(setOn){
 			visToggle.SetActive (true);	
 			if(visToggle.GetComponent<Toggle>().isOn && !pointCloud.activeInHierarchy){
-				SwitchPointCloudActive ();
+				TogglePointCloudActive ();
 			}
 		} else {
 			visToggle.SetActive (false);
 			if(pointCloud.activeInHierarchy){
-				SwitchPointCloudActive ();
+				TogglePointCloudActive ();
 			}
 		}
 	}
 
-    public void SwitchPointCloudActive()
+    public void TogglePointCloudActive()
     {	
 		if (pointCloud.activeInHierarchy)
         {

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class PauseScript : MonoBehaviour {
 
-	public TimeManager timeController;
+	[SerializeField]
+	private TimeManager timeController;
 
 	public void PauseToggle(){
 		if(gameObject.GetComponent<Toggle>().isOn){
