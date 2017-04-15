@@ -1,11 +1,6 @@
 ﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-///
-
-
-
 /// <summary>
 /// Script for updating a particle system.
 /// @author: Tobias Alldén
@@ -37,11 +32,12 @@ public class PointCloud : MonoBehaviour
         particleSystemIdMap = new Dictionary<int, ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
         particleSystemLapCounter = new Dictionary<int, int>();
-        LidarSensor.UpdateLidarSpecifications += UpdateSpecs;
+       // LidarSensor.UpdateLidarSpecifications += UpdateSpecs;
         CreateNeededParticleSystems();
         LidarSensor.OnScanned += OnUpdatePoints;
         LidarSensor.NewRotationEvent += NewLap;
         isEnabled = true;
+        LidarMenuScript.PassGuiValsOnStart += UpdateSpecs;
 
 
     }
@@ -51,7 +47,9 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void UpdateParticleSystemIfNeeded()
     {
-        int nextParticleSystem = usedParticleSystem+1;
+        if(particleSystemIdMap[usedParticleSystem].particleCount >= maxParticlesPerCloud)
+        {
+            int nextParticleSystem = usedParticleSystem + 1;
             if (nextParticleSystem >= particleSystemIdMap.Count)
             {
                 if (nextParticleSystem >= maxParticleSystems || lastParticleSystemLastUpdate != lapCounter) // Either full or new lap
@@ -60,22 +58,27 @@ public class PointCloud : MonoBehaviour
                     particleSystemLapCounter.Remove(usedParticleSystem);
                     particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
                     Debug.Log("Relap");
-                } else
+                }
+                else
                 {
                     usedParticleSystem += 1;
-                    ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+                    GameObject newGO = Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
+                    newGO.name = "pSyst" + usedParticleSystem;
+                    ParticleSystem p = newGO.GetComponent<ParticleSystem>();
                     particleSystemIdMap.Add(usedParticleSystem, p);
                     p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
                 }
-            } else
+            }
+            else
             {
                 usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
                 particleSystemLapCounter.Remove(usedParticleSystem);
                 particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
             }
-        
-        
+        }     
     }
+
+    //TODO: Find a way to fill each system before next iteration. 
 
     /// <summary>
     /// Creates an array of Shuriken Particles for the lidar sensor hits.
@@ -85,6 +88,15 @@ public class PointCloud : MonoBehaviour
     private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
     {
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+        ParticleSystem currentParticleSystem = particleSystemIdMap[usedParticleSystem];
+
+
+        if (currentParticleSystem.particleCount < maxParticlesPerCloud)
+        {
+            ParticleSystem.Particle[] oldParticles = new ParticleSystem.Particle[currentParticleSystem.particleCount];
+            currentParticleSystem.GetParticles(oldParticles);
+            particleCloud.AddRange(oldParticles);
+        }
 
         for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
         {
@@ -179,11 +191,14 @@ public class PointCloud : MonoBehaviour
 /// <summary>
 /// This method is called when the lidar specifications are changed. Calculates the number of particle systems needed, point size and number of particles / system.
 /// </summary>
-    public void UpdateSpecs(int numLasers, float rotAngle)
+    public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
+        , float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
+        Pause();
+        Debug.Log("Swag");
         int particlesPerSystem;
 
-        int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numLasers) / rotAngle); // maximum number of raycast hits per lap
+        int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numberOfLasers) / rotationAnglePerStep); // maximum number of raycast hits per lap
 
 
         if(maxNumParticlesPerLap < 250000)
@@ -203,6 +218,7 @@ public class PointCloud : MonoBehaviour
 
         maxParticleSystems = (int) Mathf.Ceil(maxNumParticlesPerLap/particlesPerSystem);
         CreateNeededParticleSystems();
+        Play();
 
 
     }
@@ -219,10 +235,23 @@ public class PointCloud : MonoBehaviour
         {
             for (int i = currentNumberOfSystems; i < maxParticleSystems / 2; i++)
             {
-                ParticleSystem p = (Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+
+                GameObject newGO = Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
+                newGO.name = "pSyst" + i;
+                ParticleSystem p = newGO.GetComponent<ParticleSystem>();
                 p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
                 particleSystemIdMap.Add(i, p);
                 particleSystemLapCounter.Add(i, lapCounter);
+
+            }
+        } else if(currentNumberOfSystems > maxParticleSystems)
+        {
+            for(int i = maxParticleSystems; i< currentNumberOfSystems; i++)
+            {
+                particleSystemIdMap[i].Clear();
+                particleSystemIdMap.Remove(i);
+                particleSystemLapCounter.Remove(i);
+                Destroy(GameObject.Find("pSyst" + i));
 
             }
         }       
