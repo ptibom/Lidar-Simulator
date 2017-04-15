@@ -195,7 +195,6 @@ public class PointCloud : MonoBehaviour
         , float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
         Pause();
-        Debug.Log("Swag");
         int particlesPerSystem;
 
         int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numberOfLasers) / rotationAnglePerStep); // maximum number of raycast hits per lap
@@ -215,8 +214,8 @@ public class PointCloud : MonoBehaviour
             particlesPerSystem = 10000;
             particleSize = 0.01f;
         }
-
-        maxParticleSystems = (int) Mathf.Ceil(maxNumParticlesPerLap/particlesPerSystem);
+        
+        maxParticleSystems = (int)Mathf.Ceil((float)maxNumParticlesPerLap / (float)particlesPerSystem);
         CreateNeededParticleSystems();
         Play();
 
