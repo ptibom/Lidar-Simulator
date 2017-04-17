@@ -47,9 +47,39 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     void UpdateParticleSystemIfNeeded()
     {
+        
+        if(particleSystemLapCounter[usedParticleSystem] != lapCounter)
+        {
+            particleSystemIdMap[usedParticleSystem].Clear();
+            particleSystemLapCounter.Remove(usedParticleSystem);
+            particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
+        } else
+        {
+            if(particleSystemIdMap[usedParticleSystem].particleCount > maxParticlesPerCloud)
+            {
+                int nextParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+                if(nextParticleSystem >= particleSystemIdMap.Count)
+                {
+                    GameObject newGO = Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
+                    newGO.name = "pSyst" + nextParticleSystem;
+                    ParticleSystem p = newGO.GetComponent<ParticleSystem>();
+                    p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
+                    particleSystemIdMap.Add(nextParticleSystem, p);
+                    particleSystemLapCounter.Add(nextParticleSystem, lapCounter);
+                    usedParticleSystem = nextParticleSystem;
+                } else // exists
+                {
+                    usedParticleSystem = nextParticleSystem;
+                    UpdateParticleSystemIfNeeded();
+                }
+            }
+        }
+
+
+        /**
         if(particleSystemIdMap[usedParticleSystem].particleCount >= maxParticlesPerCloud)
         {
-            int nextParticleSystem = usedParticleSystem + 1;
+            int nextParticleSystem = (usedParticleSystem + 1)% maxParticleSystems;
             if (nextParticleSystem >= particleSystemIdMap.Count)
             {
                 if (nextParticleSystem >= maxParticleSystems || lastParticleSystemLastUpdate != lapCounter) // Either full or new lap
@@ -57,7 +87,7 @@ public class PointCloud : MonoBehaviour
                     usedParticleSystem = 0;
                     particleSystemLapCounter.Remove(usedParticleSystem);
                     particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
-                    Debug.Log("Relap");
+                    lastParticleSystemLastUpdate = lapCounter;
                 }
                 else
                 {
@@ -76,6 +106,10 @@ public class PointCloud : MonoBehaviour
                 particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
             }
         }     
+    **/
+
+
+
     }
 
     //TODO: Find a way to fill each system before next iteration. 
