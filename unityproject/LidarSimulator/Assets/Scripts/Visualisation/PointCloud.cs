@@ -15,11 +15,11 @@ public class PointCloud : MonoBehaviour
     private int maxParticlesPerCloud = 100; // maximum number of particles in a cloud
     private float particleSize = 0.1f;
     private int lapCounter = 0;
-    private Dictionary<int, int> particleSystemLapCounter; // The id of the particleSystem and the lap count
     private int lastParticleSystemLastUpdate;
     private bool isEnabled = false;
     private int usedParticleSystem = 0;
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
+    private float rotationSpeed;
 
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
@@ -31,7 +31,6 @@ public class PointCloud : MonoBehaviour
     {
         particleSystemIdMap = new Dictionary<int, ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
-        particleSystemLapCounter = new Dictionary<int, int>();
        // LidarSensor.UpdateLidarSpecifications += UpdateSpecs;
         CreateNeededParticleSystems();
         LidarSensor.OnScanned += OnUpdatePoints;
@@ -46,15 +45,7 @@ public class PointCloud : MonoBehaviour
     /// Either updates the used particle system, or creates a new one if it is nesescary.
     /// </summary>
     void UpdateParticleSystemIfNeeded()
-    {    
-        
-        if(particleSystemLapCounter[usedParticleSystem] != lapCounter)
-        {
-            particleSystemIdMap[usedParticleSystem].Clear();
-            particleSystemLapCounter.Remove(usedParticleSystem);
-            particleSystemLapCounter.Add(usedParticleSystem, lapCounter);
-        } else
-        {
+    {            
             if(particleSystemIdMap[usedParticleSystem].particleCount > maxParticlesPerCloud)
             {
                 int nextParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
@@ -65,14 +56,13 @@ public class PointCloud : MonoBehaviour
                     ParticleSystem p = newGO.GetComponent<ParticleSystem>();
                     p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
                     particleSystemIdMap.Add(nextParticleSystem, p);
-                    particleSystemLapCounter.Add(nextParticleSystem, lapCounter);
                     usedParticleSystem = nextParticleSystem;
                 } else // exists
                 {
                     usedParticleSystem = nextParticleSystem;
                     //UpdateParticleSystemIfNeeded();
                 }
-            }
+            
         }
 
 
@@ -228,29 +218,29 @@ public class PointCloud : MonoBehaviour
     public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
         , float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
-        Debug.Log("Numlas | rotAngle |" + numberOfLasers + " | " +rotationAnglePerStep);
+        this.rotationSpeed  = 1.0f / rotationSpeed;
+        Debug.Log("sag");
         Pause();
-        int particlesPerSystem;
 
         int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numberOfLasers) / rotationAnglePerStep); // maximum number of raycast hits per lap
 
 
         if(maxNumParticlesPerLap < 250000)
         {
-            particlesPerSystem = 3000;
+            maxParticlesPerCloud = 3000;
             particleSize = 0.1f;
             
         }  else if(maxNumParticlesPerLap < 750000)
         {
-            particlesPerSystem = 5000;
+            maxParticlesPerCloud = 5000;
             particleSize = 0.05f;
         } else
         {
-            particlesPerSystem = 10000;
+            maxParticlesPerCloud = 10000;
             particleSize = 0.01f;
         }
         
-        maxParticleSystems = (int)Mathf.Ceil((float)maxNumParticlesPerLap / (float)particlesPerSystem);
+        maxParticleSystems = (int)Mathf.Ceil((float)maxNumParticlesPerLap / (float)maxParticlesPerCloud);
         CreateNeededParticleSystems();
         Play();
 
@@ -275,7 +265,6 @@ public class PointCloud : MonoBehaviour
                 ParticleSystem p = newGO.GetComponent<ParticleSystem>();
                 p.transform.SetParent(GameObject.Find("ParticleSystems").transform);
                 particleSystemIdMap.Add(i, p);
-                particleSystemLapCounter.Add(i, lapCounter);
 
             }
         } else if(currentNumberOfSystems > maxParticleSystems)
@@ -284,7 +273,6 @@ public class PointCloud : MonoBehaviour
             {
                 particleSystemIdMap[i].Clear();
                 particleSystemIdMap.Remove(i);
-                particleSystemLapCounter.Remove(i);
                 Destroy(GameObject.Find("pSyst" + i));
 
             }
@@ -301,6 +289,8 @@ public class PointCloud : MonoBehaviour
         { 
             lapCounter++;
         }
+        Debug.Log("lap");
+
     }
 
     private void OnDisable()
