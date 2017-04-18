@@ -2,10 +2,11 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// A script which sets the with of the recttransform size as the same as the largest width of the children of the object
+/// Sets the with of the recttransform size as the same as the largest width of the children of the object
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class WidthAsChildrenScript : MonoBehaviour {
+public class WidthAsChildren : MonoBehaviour {
 
     /// <summary>
     /// Waits for all other GUI initializations to be set before calling the method which sets the width

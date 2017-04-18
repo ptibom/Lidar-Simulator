@@ -2,10 +2,11 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// A script which controlls and updates all parameters of the stats window
+/// Controlls and updates all parameters of the stats window
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class StatsPanelScript : MonoBehaviour {
+public class StatsPanel : MonoBehaviour {
 
     public Text fpsText;
     public Text timeText;

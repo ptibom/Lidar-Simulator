@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// A script controlling all aspects of the lidar mimic
+/// Controlls all aspects of the lidar mimic
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
 public class LidarLineMimic : MonoBehaviour {
@@ -11,12 +12,12 @@ public class LidarLineMimic : MonoBehaviour {
 	public GameObject lineDrawerPrefab;
     public Slider numberOfLasersSlider;
 
-	public int numberOfLasers = 2;
-	public float upperFOV = 30f;
-	public float lowerFOV = 30f;
-	public float offset = 0.001f;
-	public float upperNormal = 30f;
-	public float lowerNormal = 30f;
+	public int numberOfLasers;
+	public float upperFOV;
+	public float lowerFOV;
+	public float offset;
+	public float upperNormal;
+	public float lowerNormal;
 
 	private int maxLasers = 64;
 	private List<LaserMimic> lasersMimics = new List<LaserMimic>();
@@ -24,15 +25,17 @@ public class LidarLineMimic : MonoBehaviour {
     /// <summary>
     /// Adds the method UpdateLidarValues to the event in the lidarMenu script to listen on parameter changes in the GUI
     /// </summary>
-	void Start(){
+	void Start()
+    {
         maxLasers = (int)numberOfLasersSlider.maxValue;
-		LidarMenuScript.OnLidarMenuValChanged += UpdateLidarValues;
+		LidarMenu.OnLidarMenuValChanged += UpdateLidarValues;
     }
 
 	/// <summary>
     /// Initializing the lidar mimic with the maximum number of lasers set in the slider settings for number of lasers
     /// </summary>
-	public void InitializeLaserMimicList () {
+	public void InitializeLaserMimicList ()
+    {
 		for (int i = 0; i < maxLasers; i++)
 		{
 			GameObject lineDrawer = Instantiate(lineDrawerPrefab);
@@ -45,7 +48,7 @@ public class LidarLineMimic : MonoBehaviour {
     
 
     /// <summary>
-    /// A method which updates all parameters of the lidar mimic
+    /// Updates all parameters of the lidar mimic
     /// </summary>
     /// <param name="numberOfLasers"></param>
     /// <param name="upperFOV"></param>
@@ -53,7 +56,8 @@ public class LidarLineMimic : MonoBehaviour {
     /// <param name="offset"></param>
     /// <param name="upperNormal"></param>
     /// <param name="lowerNormal"></param>
-    public void UpdateLidarValues(int numberOfLasers, float upperFOV, float lowerFOV, float offset, float upperNormal, float lowerNormal){
+    public void UpdateLidarValues(int numberOfLasers, float upperFOV, float lowerFOV, float offset, float upperNormal, float lowerNormal)
+    {
 		this.numberOfLasers = numberOfLasers;
 		this.upperFOV = upperFOV;
 		this.lowerFOV = lowerFOV;
@@ -67,7 +71,8 @@ public class LidarLineMimic : MonoBehaviour {
     /// <summary>
     /// Updates the parameters of all laser mimics to new correct settings and disables all not used mimics
     /// </summary>
-	public void UpdateLines(){
+	public void UpdateLines()
+    {
 		float upperTotalAngle = upperFOV / 2;
 		float lowerTotalAngle = lowerFOV / 2;
 		float upperAngle = upperFOV / (numberOfLasers / 2);
@@ -89,7 +94,8 @@ public class LidarLineMimic : MonoBehaviour {
 			}
 		}
 
-		for(int i = numberOfLasers; i < lasersMimics.Count; i++){
+		for(int i = numberOfLasers; i < lasersMimics.Count; i++)
+        {
 			lasersMimics [i].SetActive (false);
 		}
 
@@ -99,18 +105,22 @@ public class LidarLineMimic : MonoBehaviour {
     /// <summary>
     /// Updates the visually drawn lines
     /// </summary>
-	public void DrawRays(){
-		foreach(LaserMimic lm in lasersMimics){
-			lm.DrawRay ();
+	public void DrawRays()
+    {
+		foreach(LaserMimic lm in lasersMimics)
+        {
+            lm.DrawRay();
 		}
 	}
 
     /// <summary>
     /// Destroys all line renderers and deletes all instances of the LaserMimic class
     /// </summary>
-	public void DestroyLaserMimics(){
-		foreach(LaserMimic lm in lasersMimics){
-			Destroy (lm.GetLineDrawerGObject());
+	public void DestroyLaserMimics()
+    {
+		foreach(LaserMimic lm in lasersMimics)
+        {
+			Destroy (lm.GetLineDrawerGameObject());
 		}
 		lasersMimics.Clear ();
 	}
@@ -119,12 +129,11 @@ public class LidarLineMimic : MonoBehaviour {
     /// A class which mimics the parameters of the actual lidar sensor and draws lines to represent the lasers of the lidar
     /// </summary>
 	class LaserMimic {
-		private float verticalAngle;
-		private float offset;
+        private GameObject lineDrawer;
 		private RenderLine lineRenderer;
 		private bool rayOn;
 		private float rayDistance = 5f;
-		private GameObject lineDrawer;
+		
 
         /// <summary>
         /// Initializes all parameters of the laser mimic as correct values
@@ -133,9 +142,8 @@ public class LidarLineMimic : MonoBehaviour {
         /// <param name="offset"></param>
         /// <param name="lineDrawer"></param>
         /// <param name="rayOn"></param>
-		public LaserMimic(float verticalAngle, float offset, GameObject lineDrawer, bool rayOn){
-			this.verticalAngle = verticalAngle;
-			this.offset = offset;
+		public LaserMimic(float verticalAngle, float offset, GameObject lineDrawer, bool rayOn)
+        {
 			this.lineDrawer = lineDrawer;
 			lineRenderer = lineDrawer.GetComponent<RenderLine>();
 			lineDrawer.transform.position = lineDrawer.transform.position + (lineDrawer.transform.up * offset);
@@ -149,9 +157,8 @@ public class LidarLineMimic : MonoBehaviour {
         /// <param name="verticalAngle"></param>
         /// <param name="offset"></param>
         /// <param name="baseTransform"></param>
-		public void SetRayParameters(float verticalAngle, float offset, Transform baseTransform){
-			this.verticalAngle = verticalAngle;
-			this.offset = offset;
+		public void SetRayParameters(float verticalAngle, float offset, Transform baseTransform)
+        {
 			lineDrawer.transform.position = baseTransform.position + (baseTransform.up * offset);
 			lineDrawer.transform.rotation = baseTransform.rotation;
 			lineDrawer.transform.Rotate (new Vector3 (verticalAngle, 0, 0));
@@ -160,10 +167,14 @@ public class LidarLineMimic : MonoBehaviour {
         /// <summary>
         /// Draws visual lines according to the parameters of the laser mimic
         /// </summary>
-		public void DrawRay(){
-			if (rayOn) {
+		public void DrawRay()
+        {
+			if (rayOn)
+            {
 				lineRenderer.DrawLine (lineDrawer.transform.forward * rayDistance + lineRenderer.transform.position);
-			} else {
+			}
+            else
+            {
 				lineRenderer.DrawLine (lineDrawer.transform.position);
 			}
 		}
@@ -173,7 +184,7 @@ public class LidarLineMimic : MonoBehaviour {
             rayOn = state;
         }
 
-        public GameObject GetLineDrawerGObject()
+        public GameObject GetLineDrawerGameObject()
 		{
 			return lineDrawer;
 		}	

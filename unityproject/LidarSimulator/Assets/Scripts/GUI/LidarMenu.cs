@@ -2,9 +2,12 @@
 using UnityEngine.UI;
 
 /// <summary>
+/// Handles almost all interactions between the lidar menu and all other components of the simulator.
+/// Main functionality: Sends the settings of the lidar menu GUI to the LidarLaserMimic, LidarSensor and the PointCloud.
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class LidarMenuScript : MonoBehaviour {
+public class LidarMenu : MonoBehaviour {
 
 	public static event UpdateMimicValues OnLidarMenuValChanged;
     public static event PassLidarMenuValues PassGuiValsOnStart;
@@ -21,15 +24,15 @@ public class LidarMenuScript : MonoBehaviour {
     public Slider offset;
     public Slider upperNormal;
     public Slider lowerNormal;
-    public Slider simulationSpeed;
 
-    public TimeManager timeManager;
     public LidarLineMimic lidarLineMimic;
 
     private LidarSensor sensor;
 
-    private float[] simSpeedSliderValues = {0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
+    /// <summary>
+    /// Calls all initialization methods which syncs the lidar menu sliders with the lidar sensors initial values, and creates and  updates the lidar mimic system.
+    /// </summary>
 	void Start () 
 	{
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
@@ -38,7 +41,9 @@ public class LidarMenuScript : MonoBehaviour {
 		UpdateLaserMimicValues ();
 	}
 		
-	// A method which syncs the GUI lidar menu sliders with the initial values of the LidarSensor and TimeManager script 
+    /// <summary>
+    /// Initializes all the values of the lidar menu with the initial values of the lidar sensor.
+    /// </summary>
 	void InitializeGUIValues()
 	{
 		numberOfLasers.value = sensor.numberOfLasers;
@@ -50,40 +55,23 @@ public class LidarMenuScript : MonoBehaviour {
         offset.value = sensor.offset;
         upperNormal.value = sensor.upperNormal;
         lowerNormal.value = sensor.lowerNormal;
-
-		if (timeManager.startTime < 1) {
-			simulationSpeed.value = (int)(timeManager.startTime * 10 - 1);
-			UpdateSimulationSpeed();
-		} else {
-			simulationSpeed.value = (int)(timeManager.startTime + 8);
-			UpdateSimulationSpeed();
-		}
 	}
 
-    // Sets the simulation speed in the LidarSensor script to the value in the GUI aswell as setting the handle text of the slider
-    public void UpdateSimulationSpeed()
-    {
-        timeManager.SetTimeScale(simSpeedSliderValues[(int)simulationSpeed.value]);
-        UpdateSliderHandleText(simulationSpeed, simSpeedSliderValues[(int)simulationSpeed.value]);
-
-    }
-
-    // Update slider handle text
-    public void UpdateSliderHandleText(Slider slider, float newVal)
-    {
-        slider.transform.FindChild("Handle Slide Area").FindChild("Handle").FindChild("HandleText").GetComponent<Text>().text = newVal.ToString();
-    }
-
-    // Updates tha values of the lidar mimic to the values of the GUI
+    /// <summary>
+    /// Invokes an event to updates the values of the lidar mimic to the values of the GUI
+    /// </summary>
     public void UpdateLaserMimicValues()
     {
 		OnLidarMenuValChanged ((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
 	}
 
-	// Creates an event with the final values set in the GUI for the sensor and pointcloud to listen to
-	public void SendSettingsToLidar()
+    /// <summary>
+    /// Invokes an event with the current values set in the GUI for the lidar sensor and pointcloud to listen to
+    /// </summary>
+    public void SendSettingsToLidar()
 	{
-        if (PassGuiValsOnStart != null) {
+        if (PassGuiValsOnStart != null)
+        {
             PassGuiValsOnStart((int)numberOfLasers.value, rotationSpeedHz.value, rotationSpeedHz.value, rayDistance.value,
                 upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
         }

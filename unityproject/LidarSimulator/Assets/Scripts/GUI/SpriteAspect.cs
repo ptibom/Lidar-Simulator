@@ -3,14 +3,16 @@ using UnityEngine.UI;
 
 /// <summary>
 /// A script which sets the aspect ratio of an AspectRatioFitter component as the aspect ratio of an image
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class SpriteAspectScript : MonoBehaviour {
+public class SpriteAspect : MonoBehaviour {
     
     /// <summary>
     /// Sets the initial aspect ratio as eventual image of component
     /// </summary>
-    void Start () {
+    void Start ()
+    {
         if (gameObject.GetComponent<Image>())
         {
             SetAspectRatioAsImage(gameObject.GetComponent<Image>());

@@ -2,17 +2,22 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// Script for calling correct timeControl methods from the pause toggle
+/// Calls correct timeControl methods from the pause toggle
+/// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class PauseToggleScript : MonoBehaviour {
+public class PauseToggle : MonoBehaviour {
 
     public TimeManager timeController;
 
-	public void PauseToggle(){
-		if(gameObject.GetComponent<Toggle>().isOn){
+	public void Toggle()
+    {
+		if(gameObject.GetComponent<Toggle>().isOn)
+        {
 			timeController.PauseTime();
-		} else {
+		}
+        else
+        {
 			timeController.UnPauseTime();
 		}
 
