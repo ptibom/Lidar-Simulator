@@ -1,44 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+
+/// <summary>
+/// A script which controlls and updates all parameters of the stats window
+/// @author: Jonathan Jansson
+/// </summary>
 public class StatsPanelScript : MonoBehaviour {
 
-	private Text timeText;
-	private Text fpsText;
-	private Text hitPText;
+    public Text fpsText;
+    public Text timeText;
+	public Text hitPText;
 
 	private float updateDelay = 0.25f;
-	private float lastUpdateTime = 0f;
+	private float updateTime = 0f;
 
 	private float timeCounter = 0f;
 	private float frameCounter = 0f;
 
-	// Use this for initialization
-	void Start () {
-		timeText = GameObject.Find ("TimeText").GetComponent<Text> ();
-		fpsText = GameObject.Find ("FpsText").GetComponent<Text> ();
-		hitPText = GameObject.Find ("HitPText").GetComponent<Text> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	/// <summary>
+    /// Counts updates and frames for the fps counter every update and handles the delay between GUI updates of values
+    /// </summary>
+	void Update ()
+    {
 		timeCounter += Time.deltaTime;
 		frameCounter += 1;
 
-		UpdateText ();
-	}
+        if (Time.fixedTime > updateTime)
+        {
+            UpdateTexts();
+        }
+    }
 
-	void UpdateText(){
-		if(Time.fixedTime > lastUpdateTime){
-			timeText.text = "Time: " + ((int)Time.fixedTime).ToString() + " s";	
-			hitPText.text = "Points hit: " + 0;
-			fpsText.text = "Fps: " + (int)(frameCounter / timeCounter);
+    /// <summary>
+    /// Calculates and sets all parameters of the GUI stats panel
+    /// </summary>
+	void UpdateTexts()
+    {
+		timeText.text = "Time: " + ((int)Time.fixedTime).ToString() + " s";	
+		hitPText.text = "Points hit: " + 0;
+		fpsText.text = "Fps: " + (int)(frameCounter / timeCounter);
 
-			timeCounter = 0f;
-			frameCounter = 0f;
+		timeCounter = 0f;
+		frameCounter = 0f;
 
-			lastUpdateTime = Time.fixedTime + updateDelay;
-		}
+		updateTime = Time.fixedTime + updateDelay;
 	}
 }

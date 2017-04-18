@@ -1,18 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// A script which sets the aspect ratio of an AspectRatioFitter component as the aspect ratio of an image
+/// @author: Jonathan Jansson
+/// </summary>
 public class SpriteAspectScript : MonoBehaviour {
+    
+    /// <summary>
+    /// Sets the initial aspect ratio as eventual image of component
+    /// </summary>
+    void Start () {
+        if (gameObject.GetComponent<Image>())
+        {
+            SetAspectRatioAsImage(gameObject.GetComponent<Image>());
+        }
+    }
 
-	// Use this for initialization
-	void Start () {
-		Vector2 imageSize = gameObject.GetComponent<Image> ().sprite.rect.size;
-		gameObject.GetComponent<AspectRatioFitter> ().aspectRatio = imageSize.x / imageSize.y;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void SetAspectRatioAsImage(Image image)
+    {
+        Vector2 imageSize = image.sprite.rect.size;
+        gameObject.GetComponent<AspectRatioFitter>().aspectRatio = imageSize.x / imageSize.y;
+    }
 }

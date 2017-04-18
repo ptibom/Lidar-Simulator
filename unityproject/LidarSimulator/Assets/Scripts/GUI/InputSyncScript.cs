@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;	
+﻿using UnityEngine;	
 using UnityEngine.UI;
 
+/// <summary>
+/// @author: Jonathan Jansson
+/// </summary>
 public class InputSyncScript : MonoBehaviour {
 
-
-	[SerializeField]
-	private InputField inputField;	
+    public InputField inputField;	
 
 	public void AvoidEmptyInput(){
 		if(inputField.text.Equals("")){

@@ -1,23 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 
-public class MenuControllerScript : MonoBehaviour {
+/// <summary>
+/// @author: Jonathan Jansson
+/// </summary>
 
-	[SerializeField]
-	private LidarSensor sensor;
-	[SerializeField]
-	private GameObject mainCamera;
-	[SerializeField]
-	private GameObject lidarCamera;
-	[SerializeField]
-	private GameObject editorMenu;
-	[SerializeField]
-	private GameObject pointCloud;
-	[SerializeField]
-	private GameObject visToggle;
+public class EditorControllerScript : MonoBehaviour {
+
+    public LidarSensor sensor;
+    public GameObject mainCamera;
+    public GameObject lidarCamera;
+    public GameObject editorMenu;
+    public GameObject pointCloud;
+    public GameObject visToggle;
+    public Toggle pauseToggle;
+
+
 
 	public void SetLidarCameraActive(bool popup){
         if (popup)
@@ -29,12 +27,16 @@ public class MenuControllerScript : MonoBehaviour {
         }
 	}
 
-	public void SetMainCamera(bool follow){
+	public void SwitchMainCameraView(bool follow){
 		if(follow){
 			editorMenu.SetActive (false);
 			mainCamera.GetComponent<CameraController> ().SetFollow ();
 		}
 		else{
+            if (pauseToggle.isOn)
+            {
+                pauseToggle.isOn = false;
+            }
 			editorMenu.SetActive (true);
 			mainCamera.GetComponent<CameraController> ().SetRoam ();
 		}

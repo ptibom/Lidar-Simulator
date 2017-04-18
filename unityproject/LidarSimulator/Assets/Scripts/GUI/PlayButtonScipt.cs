@@ -1,19 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// A script which controls all switching of views and UI elements depending on play/stop state
+/// @author: Jonathan Jansson
+/// </summary>
 public class PlayButtonScipt : MonoBehaviour {
 
-	[SerializeField]
-	private MenuControllerScript menuController;
-	[SerializeField]
-	private Toggle lidarSensorButton;
+    public EditorControllerScript editorController;
+    public Toggle lidarSensorButton;
 
 	public void OnToggle(){
-		menuController.SetMainCamera (gameObject.GetComponent<Toggle> ().isOn);
-		menuController.SetLidarCameraActive (lidarSensorButton.isOn && !gameObject.GetComponent<Toggle> ().isOn);
-		menuController.SetVisToggleActive (gameObject.GetComponent<Toggle> ().isOn);
+		editorController.SwitchMainCameraView (gameObject.GetComponent<Toggle> ().isOn);
+		editorController.SetLidarCameraActive (lidarSensorButton.isOn && !gameObject.GetComponent<Toggle> ().isOn);
+		editorController.SetVisToggleActive (gameObject.GetComponent<Toggle> ().isOn);
 	}
 
 }
