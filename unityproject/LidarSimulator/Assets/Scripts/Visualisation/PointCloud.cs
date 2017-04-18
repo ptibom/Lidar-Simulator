@@ -36,7 +36,7 @@ public class PointCloud : MonoBehaviour
         LidarSensor.OnScanned += OnUpdatePoints;
         LidarSensor.NewRotationEvent += NewLap;
         isEnabled = true;
-        LidarMenuScript.PassGuiValsOnStart += UpdateSpecs;
+        LidarMenu.PassGuiValsOnStart += UpdateSpecs;
 
 
     }
