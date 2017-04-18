@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class InputSyncScript : MonoBehaviour {
 
-	public InputField inputField;	
+
+	[SerializeField]
+	private InputField inputField;	
 
 	public void AvoidEmptyInput(){
 		if(inputField.text.Equals("")){
@@ -17,10 +19,11 @@ public class InputSyncScript : MonoBehaviour {
 
 	public void SyncToSlider(){
 		gameObject.GetComponent<Slider> ().value = float.Parse(inputField.text);
-	}
+    }
 
 	public void SyncToInputField(){
 		inputField.text = SetValueLength (gameObject.GetComponent<Slider> ().value.ToString ());
+        SyncToSlider();
 	}
 
 	private string SetValueLength(string text){

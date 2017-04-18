@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LidarLineMimic : MonoBehaviour {
-	
-	public GameObject lineDrawerPrefab;
+
+	[SerializeField]
+	private GameObject lineDrawerPrefab;
+
 	public int numberOfLasers = 2;
 	public float upperFOV = 30f;
 	public float lowerFOV = 30f;
@@ -14,6 +16,10 @@ public class LidarLineMimic : MonoBehaviour {
 
 	private int maxLasers = 64;
 	private List<LaserMimic> lasersMimics = new List<LaserMimic>();
+
+	void Start(){
+		LidarMenuScript.OnLidarMenuValChanged += UpdateLidarValues;
+	}
 
 	// Use this for initialization
 	public void InitializeLaserMimicList () {
@@ -25,6 +31,17 @@ public class LidarLineMimic : MonoBehaviour {
 			lineDrawer.transform.rotation = transform.rotation;
 			lasersMimics.Add(new LaserMimic(0,0, lineDrawer, false));
 		}
+	}
+
+	public void UpdateLidarValues(int numberOfLasers, float upperFOV, float lowerFOV, float offset, float upperNormal, float lowerNormal){
+		this.numberOfLasers = numberOfLasers;
+		this.upperFOV = upperFOV;
+		this.lowerFOV = lowerFOV;
+		this.offset = offset;
+		this.upperNormal = upperNormal;
+		this.lowerNormal = lowerNormal;
+
+		UpdateLines ();
 	}
 		
 	public void UpdateLines(){

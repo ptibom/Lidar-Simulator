@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class PlayButtonScipt : MonoBehaviour {
 
-	public MenuControllerScript menuController;
-	public Toggle lidarSensorButton;
+	[SerializeField]
+	private MenuControllerScript menuController;
+	[SerializeField]
+	private Toggle lidarSensorButton;
 
 	public void OnToggle(){
 		menuController.SetMainCamera (gameObject.GetComponent<Toggle> ().isOn);
