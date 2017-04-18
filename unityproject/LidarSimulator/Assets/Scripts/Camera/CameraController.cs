@@ -85,12 +85,14 @@ public class CameraController : MonoBehaviour {
 		if(/*Input.GetKey (KeyCode.RightArrow) ||*/ Input.mousePosition.x >= Screen.width - scrollPixelMargin) {
 			moveDirection = moveDirection + new Vector3 (1, 0, 0);
 		}
-		if (Input.GetKey (KeyCode.RightControl)) {
+		if (Input.GetAxis ("Mouse ScrollWheel") > 0) {
 			moveDirection = moveDirection + new Vector3 (0, 0, 1);
 		}
-		if (Input.GetKey (KeyCode.RightShift)) {
+		if (Input.GetAxis ("Mouse ScrollWheel") < 0) {
 			moveDirection = moveDirection + new Vector3 (0, 0, -1);
 		}
+
+
 		moveDirection = moveDirection.normalized;
 		//använd den normaliserade summavektorn för att translata kameran, deltaTime gör att det blir samma fart oavsett framerate, förhoppningsvis
 		transform.Translate((moveDirection * roamingSpeed*Time.deltaTime));
