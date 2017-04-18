@@ -120,6 +120,11 @@ public class LidarSensor : MonoBehaviour {
                     horizontalAngle -= 360;
 					//GameObject.Find("RotSpeedText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
                     lastLapTime = Time.fixedTime;
+                    if(NewRotationEvent != null)
+                    {
+                        NewRotationEvent();
+
+                    }
                 }
 
 
