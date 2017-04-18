@@ -46,7 +46,7 @@ public class PointCloud : MonoBehaviour
     /// Either updates the used particle system, or creates a new one if it is nesescary.
     /// </summary>
     void UpdateParticleSystemIfNeeded()
-    {
+    {    
         
         if(particleSystemLapCounter[usedParticleSystem] != lapCounter)
         {
@@ -70,7 +70,7 @@ public class PointCloud : MonoBehaviour
                 } else // exists
                 {
                     usedParticleSystem = nextParticleSystem;
-                    UpdateParticleSystemIfNeeded();
+                    //UpdateParticleSystemIfNeeded();
                 }
             }
         }
@@ -228,6 +228,7 @@ public class PointCloud : MonoBehaviour
     public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
         , float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
+        Debug.Log("Numlas | rotAngle |" + numberOfLasers + " | " +rotationAnglePerStep);
         Pause();
         int particlesPerSystem;
 
@@ -264,9 +265,9 @@ public class PointCloud : MonoBehaviour
     {
         int currentNumberOfSystems = particleSystemIdMap.Count;
 
-        if (currentNumberOfSystems < maxParticleSystems / 2)
+        if (currentNumberOfSystems < maxParticleSystems)
         {
-            for (int i = currentNumberOfSystems; i < maxParticleSystems / 2; i++)
+            for (int i = currentNumberOfSystems; i < maxParticleSystems; i++)
             {
 
                 GameObject newGO = Instantiate(particleGameObject, pointCloudBase.transform.position, Quaternion.identity);
@@ -300,5 +301,14 @@ public class PointCloud : MonoBehaviour
         { 
             lapCounter++;
         }
+    }
+
+    private void OnDisable()
+    {
+        Pause();
+    }
+    private void OnEnable()
+    {
+        Play();
     }
 }
