@@ -9,6 +9,7 @@ public class ExternalVisualization : MonoBehaviour {
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton;
+    public Text lapText, openText, posOpen;
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
@@ -16,12 +17,19 @@ public class ExternalVisualization : MonoBehaviour {
 		currentListPosition = 0;
 		nextButton = GameObject.Find("Next").GetComponent<Button>();
 		prevButton = GameObject.Find("Prev").GetComponent<Button>();
-		openButton = GameObject.Find("Open").GetComponent<Button>();
+        openButton = GameObject.Find("Open").GetComponent<Button>();
+        lapText = GameObject.Find("LapText").GetComponent<Text>();
+        openText = GameObject.Find("OpenText").GetComponent<Text>();
+        posOpen = GameObject.Find("PosOpen").GetComponent<Text>();
 
 
-		nextButton.onClick.AddListener(LoadNext);
+        nextButton.onClick.AddListener(LoadNext);
 		prevButton.onClick.AddListener(LoadPrev);
 		openButton.onClick.AddListener(LoadPoints);
+
+        openText.text = "Please open a data set for viewing";
+
+
 
 
 	}
@@ -33,7 +41,8 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-
+        openButton.transform.SetPositionAndRotation(posOpen.transform.position,Quaternion.identity);
+        openText.enabled = false;
 
 	}
 
@@ -46,6 +55,7 @@ public class ExternalVisualization : MonoBehaviour {
 			currentListPosition += 1;
 			ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
 			pSystem.SetParticles(particles,particles.Length);
+            lapText.text = "Lap: " + currentListPosition;
 		}
 	}
 	/// <summary>
@@ -58,8 +68,10 @@ public class ExternalVisualization : MonoBehaviour {
 			currentListPosition -= 1;
 			ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
 			pSystem.SetParticles(particles, particles.Length);
-		}
-	}
+            lapText.text = "Lap: " + currentListPosition;
+
+        }
+    }
 
 
 	private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
