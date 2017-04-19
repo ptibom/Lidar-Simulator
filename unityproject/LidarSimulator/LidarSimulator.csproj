@@ -110,7 +110,7 @@
     <Compile Include="Assets\Scripts\Navmesh\WayPointTester.cs" />
     <Compile Include="Assets\Scripts\TestEventSystem.cs" />
     <Compile Include="Assets\Scripts\TimeManager.cs" />
-    <Compile Include="Assets\Scripts\TransparenceFuckery.cs" />
+    <Compile Include="Assets\Scripts\TransparentMateralFix.cs" />
     <Compile Include="Assets\Scripts\Visualisation\ExternalVisualization.cs" />
     <Compile Include="Assets\Scripts\Visualisation\PointCloud.cs" />
   </ItemGroup>
