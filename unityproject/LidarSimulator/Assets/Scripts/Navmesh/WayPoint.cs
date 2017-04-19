@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Way point.
+/// Manages the functionality of the waypoint gameobjects. Making them link together and form paths
+///  for objects with agent scripts to follow. 
+/// 
+/// Authour: Rickard Laurenius
+/// </summary>
+
 public class WayPoint : MonoBehaviour {
 	public GameObject next;
 	public GameObject previous;
@@ -69,7 +77,7 @@ public class WayPoint : MonoBehaviour {
 	}
 
 	public void SetPathVisibility(bool b, GameObject wayPointInPath){
-		Debug.Log ("RemovePath Called");
+		Debug.Log ("SetPathVisibility called!");
 		//int i = 0;
 		//int j = 0;
 		//skapar en lista med alla waypoints i pathen och använder den för att förstöra hela pathen
@@ -82,7 +90,7 @@ public class WayPoint : MonoBehaviour {
 				Debug.Log ("Looping too much, breaking");
 			}*/
 			if (currentWayPoint.isStartNode == true/*previous == null*/) {
-				Debug.Log ("Breaking1");
+				Debug.Log ("Breaking!");
 				break;
 			}
 			if (currentWayPoint.previous != null) {

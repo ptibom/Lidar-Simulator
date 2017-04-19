@@ -102,7 +102,7 @@ public class LidarMenuScript : MonoBehaviour {
 	{
         if (PassGuiValsOnStart != null)
         {
-            PassGuiValsOnStart((int)numberOfLasers.value, rotationSpeedHz.value, rotationSpeedHz.value, rayDistance.value,
+            PassGuiValsOnStart((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
                 upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
         }
 
