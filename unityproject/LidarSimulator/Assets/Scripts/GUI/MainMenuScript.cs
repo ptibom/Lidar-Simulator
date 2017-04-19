@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 /// <summary>
@@ -28,7 +29,7 @@ public class MainMenuScript : MonoBehaviour {
     /// </summary>
     public void StartSimulation()
     {
-
+        SceneManager.LoadSceneAsync("FinalScene",LoadSceneMode.Single);
     }
 
     /// <summary>
