@@ -28,6 +28,7 @@ public class EditorController : MonoBehaviour{
         {
             pauseToggle.isOn = false;
         }
+        
         SwitchMainCameraView(simulatorMode);
         pauseToggle.interactable = simulatorMode;
         editorMenu.SetActive(!simulatorMode);
@@ -58,7 +59,11 @@ public class EditorController : MonoBehaviour{
 	void SetVisToggleActive(bool state)
     {
         visToggle.SetActive(state);
-        if ((visToggle.GetComponent<Toggle>().isOn && !pointCloud.activeInHierarchy) || pointCloud.activeInHierarchy)
+        
+        bool visToggleOn = visToggle.GetComponent<Toggle>().isOn;
+        bool pointCloudActive = pointCloud.activeInHierarchy;
+
+        if ((state && visToggleOn && !pointCloudActive) || (!state && pointCloudActive))
         {
             TogglePointCloudActive();
         }
@@ -69,7 +74,7 @@ public class EditorController : MonoBehaviour{
     /// </summary>
     void TogglePointCloudActive()
     {
-        pointCloud.SetActive(!pointCloud.activeInHierarchy);
+        pointCloud.SetActive(!pointCloud.activeInHierarchy);    
 
 		if (!pointCloud.activeInHierarchy)
         {
