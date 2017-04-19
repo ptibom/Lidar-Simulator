@@ -54,11 +54,13 @@ public class SceneEditor : MonoBehaviour {
                             placedNavObj = null;
                             previousWayPoint = null;
 							isPlacingWaypoint = false;
+							WayPoint.SetAllColliders (true);
                             Destroy(go);
 						}
 					}
 					else if(previousWayPoint == null)
-					{
+					{	
+						
 						go.GetComponent<WayPoint>().SetStart(true);
 						placedNavObj.GetComponent<AgentTest> ().target = go.transform;
                         go.GetComponent<WayPoint>().SetColliderState(true);
@@ -80,6 +82,7 @@ public class SceneEditor : MonoBehaviour {
 				{
                     // If waypoint exist, destroy and start over.
 					Destroy(go);
+					WayPoint.SetAllColliders (true);
 					isPlacingWaypoint = false;
 					placedNavObj = null;
 					previousWayPoint = null;
@@ -140,6 +143,7 @@ public class SceneEditor : MonoBehaviour {
                 isRotatingGameObject = false;
 				if (go.GetComponent<AgentTest>() != null) 
 				{
+					WayPoint.SetAllColliders (false);
 					placedNavObj = go;
 					isPlacingWaypoint = true;
                     go = Instantiate(wayPoint);
