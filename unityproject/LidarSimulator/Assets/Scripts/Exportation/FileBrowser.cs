@@ -3,55 +3,8 @@ using System.Collections;
 
 using System;
 using System.IO;
-public class MintestFileBrowser : MonoBehaviour
-{
-    //skins and textures
-    //public GUISkin[] skins;
-    Texture2D file, folder, back, drive;
-    //public SaveManager svManager;
 
-    //string[] layoutTypes = {"Type 0","Type 1"};
-    //initialize file browser
-    MinFileBrowser fb = new MinFileBrowser();
-    string output = "no file";
-    // Use this for initialization
-    void Start()
-    {
-        fb.fileTexture = file;
-        fb.directoryTexture = folder;
-        fb.backTexture = back;
-        fb.driveTexture = drive;
-        //show the search bar
-        fb.showSearch = true;
-        
-        //search recursively (setting recursive search may cause a long delay)
-        fb.searchRecursively = true;
-    }
-
-
-
-    void OnGUI()
-    {
-        GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical();
-      
-
-        GUILayout.EndVertical();
-        GUILayout.Space(80);
-        //GUILayout.Label("Overwrite exiting file: " + output);
-        GUILayout.EndHorizontal();
-        //draw and display output
-        if (fb.Draw())
-        { //true is returned when a file has been selected
-          //the output file is a member if the FileInfo class, if cancel was selected the value is null
-
-            output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
-            gameObject.SetActive(false);
-
-        }
-    }
-}
-public class MinFileBrowser
+public class FileBrowser
 {
     //public 
     //Optional Parameters
@@ -69,6 +22,7 @@ public class MinFileBrowser
     public FileInfo outputFile; //the selected output file
                                 //Search
     public bool showSearch = true; //show the search bar
+    public bool showPopUp;
     public bool searchRecursively = true; //search current folder and sub folders
                                           //Protected	
                                           //GUI
@@ -96,24 +50,22 @@ public class MinFileBrowser
 #endif
 
     //Constructors
-    public MinFileBrowser(string directory, int layoutStyle, Rect guiRect) { currentDirectory = new DirectoryInfo(directory); layout = layoutStyle; guiSize = guiRect; }
-#if (UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8)
-		public minFileBrowser(string directory,int layoutStyle):this(directory,layoutStyle,new Rect(0,0,Screen.width,Screen.height)){}
-		public minFileBrowser(string directory):this(directory,1){}
-#else
-    public MinFileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.75f)) { }
-    public MinFileBrowser(string directory) : this(directory, 0) { }
-#endif
-    public MinFileBrowser(Rect guiRect) : this() { guiSize = guiRect; }
-    public MinFileBrowser(int layoutStyle) : this(Directory.GetCurrentDirectory(), layoutStyle) { }
-    public MinFileBrowser() : this(Directory.GetCurrentDirectory()) { }
+    public FileBrowser(string directory, int layoutStyle, Rect guiRect) { currentDirectory = new DirectoryInfo(directory); layout = layoutStyle; guiSize = guiRect; }
+    #if (UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8)
+		public FileBrowser(string directory,int layoutStyle):this(directory,layoutStyle,new Rect(0,0,Screen.width,Screen.height)){}
+		public FileBrowser(string directory):this(directory,1){}
+    #else
+    public FileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.75f)) { }
+    public FileBrowser(string directory) : this(directory, 0) { }
+    #endif
+    public FileBrowser(Rect guiRect) : this() { guiSize = guiRect; }
+    public FileBrowser(int layoutStyle) : this(Directory.GetCurrentDirectory(), layoutStyle) { }
+    public FileBrowser() : this(Directory.GetCurrentDirectory()) { }
 
     //set variables
     public void setDirectory(string dir) { currentDirectory = new DirectoryInfo(dir); }
     //public void setLayout(int l){	layout=l;	}
     public void setGUIRect(Rect r) { guiSize = r; }
-
-
     //gui function to be called during OnGUI
     public bool Draw()
     {
@@ -201,20 +153,17 @@ public class MinFileBrowser
                     return true;
                 }
                 GUILayout.FlexibleSpace();
-                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle)) {
-            
-                    //saveBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
-                    Debug.Log("writing over :"+outputFile );
-
-                    SaveFile (null+outputFile) ;
-                     return true;}
-                //FileInfo f = outputFile;
-
+                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle))
+                {
+                    Debug.Log("writing over :" + outputFile);
+                    SaveFile(null + outputFile);
+                    return true;
+                }
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
-                
+
                 break;
             case 1: //mobile preferred layout
             default:
@@ -280,7 +229,7 @@ public class MinFileBrowser
                     return true;
                 }
                 break;
-            case 2:
+                case 2:
                 GUILayout.BeginHorizontal("box");
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(currentDirectory.FullName);
@@ -341,21 +290,20 @@ public class MinFileBrowser
                     return true;
                 }
                 GUILayout.FlexibleSpace();
-                if ((selectStyle == null) ? GUILayout.Button("Select") : GUILayout.Button("Select", selectStyle)) { Debug.Log(outputFile); return true; }
-
-                SaveFile(currentDirectory + "\\" + searchBarString);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
+                if ((selectStyle == null) ? GUILayout.Button("Select") : GUILayout.Button("Select", selectStyle)) { return true; }
+                    SaveFile(currentDirectory + "\\" + searchBarString);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
+                    GUILayout.EndHorizontal();
+                    break;
+                 }
+        
                 GUILayout.EndVertical();
-                GUILayout.EndHorizontal();
-                break;
+                GUILayout.EndArea();
+                if (guiSkin) { GUI.skin = oldSkin; }
+                return false;
         }
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
-        if (guiSkin) { GUI.skin = oldSkin; }
-        return false;
-    }
-
     protected bool DrawSearchField()
     {
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
@@ -375,8 +323,6 @@ public class MinFileBrowser
         }
         return false;
     }
-
-
 
     public void GetFileList(DirectoryInfo di)
     {
@@ -410,7 +356,6 @@ public class MinFileBrowser
 
         //get files
         FileInfo[] fia = di.GetFiles(searchPattern);
-        //FileInfo[] fia = searchDirectory(di,searchPattern);
         files = new FileInformation1[fia.Length];
         for (int f = 0; f < fia.Length; f++)
         {
@@ -425,11 +370,7 @@ public class MinFileBrowser
         string filetosave = filename;
         try
         {
-            /*if (File.Exists(filetosave))
-            {
-                Debug.Log(filetosave + " already exists.");
-                return;
-            }*/
+ 
             StreamWriter sr = File.CreateText(filetosave );
            
             sr.WriteLine("This is the existing file which has been ovewritten.");
@@ -474,9 +415,7 @@ public class FileInformation1
         fi = f;
         gc = new GUIContent(fi.Name);
     }
-
-
-    public FileInformation1(FileInfo f, Texture2D img)
+public FileInformation1(FileInfo f, Texture2D img)
     {
         fi = f;
         gc = new GUIContent(fi.Name, img);
@@ -486,7 +425,7 @@ public class FileInformation1
     public void label() { GUILayout.Label(gc); }
     public bool button(GUIStyle gs) { return GUILayout.Button(gc, gs); }
     public void label(GUIStyle gs) { GUILayout.Label(gc, gs); }
-}
+    }
 
 public class DirectoryInformation1
 {
