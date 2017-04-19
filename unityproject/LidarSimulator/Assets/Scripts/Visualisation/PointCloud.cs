@@ -128,17 +128,23 @@ public class PointCloud : MonoBehaviour
             {
                 ParticleSystem.Particle particle = new ParticleSystem.Particle();
                 particle.position = it.Value.ToCartesian();
-                if (it.Value.GetInclination() < 3)
+                if (it.Value.GetRadius() < 5)
                 {
                     particle.startColor = Color.red;
+                    particle.startSize = particleSize/5;
+
                 }
-                else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
+                else if (it.Value.GetRadius() > 5 && it.Value.GetRadius() < 10)
                 {
                     particle.startColor = Color.yellow;
+                    particle.startSize = particleSize;
+
                 }
                 else
                 {
                     particle.startColor = Color.green;
+                    particle.startSize = particleSize*2;
+
                 }
 
                 particle.startSize = particleSize;
