@@ -23,7 +23,8 @@ public class WayPointTester : MonoBehaviour {
 		if (time > 3f && deletePath == true) {
 			deletePath = false;
 			Debug.Log ("Calling removePath()");
-			WayPoint.removePath (testThisPath);
+            testThisPath.GetComponent<WayPoint>().RemovePath();
+			//WayPoint.RemovePath (testThisPath);
 			//WayPoint.TestMethod(testThisPath);
 		}
 		if (time > 3f && testvisibility == true && changedToInvisible == false) {
