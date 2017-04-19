@@ -1,37 +1,60 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Controlls the movement of the drivable car. Provides both moving and 
-/// turning acceleration for a more dynamic feel
+/// Controlls the movement of the drivable car. Provides both moving and turning acceleration for a more dynamic feel
 /// 
 /// @author: Jonathan Jansson
 /// </summary>
 public class CarMovement : MonoBehaviour {
 
-	public float moveSpeed;
+    public float moveSpeed;
     public float rotationSpeed;
     public GameObject carPivot;
 
-    private float rotateAcc = 1f;
-    private float moveAcc = 1f;
-    private float maxSpeed = 30f;
+    private int direction = 1;
+    private float baseMoveSpeed = 20f;
+    private float moveAcc = 0.2f;
+    private float moveDeAcc = 1.1f;
+    private float maxMoveSpeed = 35f;
+
+    private float baseRotationSpeed;
+    private float rotationAcc = 0.6f;
+    private float rotationDeAcc = 1.015f;
     private float maxRotationSpeed = 140f;
+
+    /// <summary>
+    /// Initializes the base move and rotationspeed
+    /// </summary>
+    private void Start()
+    {
+        baseMoveSpeed = moveSpeed;
+        baseRotationSpeed = rotationSpeed;
+    }
 
     /// <summary>
     /// Checks if the arrowkeys on the keyboard is pressed and calls all functions based on those actions.
     /// Controlls the movement direction, movement acceleration and rotation direction based on if one is driving forward or backwards.
     /// </summary>
-    void Update () {
+    void Update ()
+    {
         if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                Move(1);
+                if(direction == -1)
+                {
+                    moveSpeed = 0;
+                }
+                direction = 1;
                 Rotate(1);
             }
             else
             {
-                Move(-1);
+                if(direction == 1)
+                {
+                    moveSpeed = 0;
+                }
+                direction = -1;
                 Rotate(-1);
             }
 
@@ -41,9 +64,12 @@ public class CarMovement : MonoBehaviour {
         {
             MoveAcc(false);
         }
-        
+       
+        if (moveSpeed != 0)
+        {
+            Move(direction);
+        }
         RotateAcc();
-        
 	}
 
     /// <summary>
@@ -54,38 +80,46 @@ public class CarMovement : MonoBehaviour {
     {
         if (driving)
         {
-            if ((moveAcc + moveSpeed) < maxSpeed)
+            if (moveSpeed < baseMoveSpeed)
             {
-                moveAcc += 0.2f;
+                moveSpeed = baseMoveSpeed;
+            }
+            else if (moveSpeed < maxMoveSpeed)
+            {
+                moveSpeed += moveAcc;
             }
         }
-        else
+        else if(moveSpeed > 0)
         {
-            moveAcc /= 1.5f;
+            moveSpeed /= moveDeAcc;
+            if (moveSpeed < 2)
+            {
+                moveSpeed = 0;
+            }
         }
     }
 
     /// <summary>
-    /// Controlls the rotation acceleration and deacceleration based on left or right keys being pressed and
+    /// Controlls the rotation acceleration and deacceleration based on left or right keys being pressed or not
     /// </summary>
     void RotateAcc()
     {
         if (Input.GetKey(KeyCode.LeftArrow) ^ Input.GetKey(KeyCode.RightArrow))
         {
-            if (rotateAcc + rotationSpeed < maxRotationSpeed)
+            if (rotationSpeed < maxRotationSpeed)
             {
-                rotateAcc += 0.5f;
+                rotationSpeed += rotationAcc;
             }
         }
         else
         {
-            if (rotateAcc < 1)
+            if (rotationSpeed <= baseRotationSpeed)
             {
-                rotateAcc = 1f;
+                rotationSpeed = baseRotationSpeed;
             }
-            else if (rotateAcc > 1)
+            else
             {
-                rotateAcc /= 1.5f;
+                rotationSpeed /= rotationDeAcc;
             }
         }
     }
@@ -97,7 +131,7 @@ public class CarMovement : MonoBehaviour {
     /// <param name="dir"></param>
     void Move(int dir)
     {
-        transform.Translate(dir * Vector3.forward * (moveSpeed + moveAcc) * Time.deltaTime);
+        transform.Translate(dir * Vector3.forward * moveSpeed * Time.deltaTime);
     }
 
     /// <summary>
@@ -111,11 +145,11 @@ public class CarMovement : MonoBehaviour {
         {
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                transform.RotateAround(carPivot.transform.position, transform.up, dir * -(rotationSpeed + rotateAcc) * Time.deltaTime);
+                transform.RotateAround(carPivot.transform.position, transform.up, dir * -rotationSpeed * Time.deltaTime);
             }
             else
             {
-                transform.RotateAround(carPivot.transform.position, transform.up, dir * (rotationSpeed + rotateAcc) * Time.deltaTime);
+                transform.RotateAround(carPivot.transform.position, transform.up, dir * rotationSpeed * Time.deltaTime);
             }
         }
     }
