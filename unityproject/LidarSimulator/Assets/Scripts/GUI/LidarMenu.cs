@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -62,18 +63,29 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
     public void UpdateLaserMimicValues()
     {
-		OnLidarMenuValChanged ((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
-	}
+        try
+        {
+            OnLidarMenuValChanged((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log("Event has no delegates: " + e);
+        }
+    }
 
     /// <summary>
     /// Invokes an event with the current values set in the GUI for the lidar sensor and pointcloud to listen to
     /// </summary>
     public void SendSettingsToLidar()
 	{
-        if (PassGuiValsOnStart != null)
+        try
         {
             PassGuiValsOnStart((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
                 upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log("Event has no delegates: " + e);
         }
         /*
        sensor.numberOfLasers = (int)numberOfLasers.value;
