@@ -29,16 +29,15 @@ public class SaveManager : MonoBehaviour
         tempCoord.Add(new SphericalCoordinates(4f, 2f, 3f));
         someData.Add(0.3f, tempCoord);
 
-        SaveToCsv(someData, "/lidardata.csv");
+        //SaveToCsv(someData, "/lidardata.csv");
     }
     //public void SaveToCsv(SaveObject[]  datalist, string filname){
-    public static void SaveToCsv(Dictionary<float, List<SphericalCoordinates>> data, String filename)
+    public static void SaveToCsv(Dictionary<float, LinkedList<SphericalCoordinates>> data, String filename)
     {    
-
         try
         {
           
-            string filnamn = Application.persistentDataPath + filename;
+            //string filnamn = Application.persistentDataPath + filename;
        
             ///datatable for rows to be added
             List<string[]> dataTable = new List<string[]>();
@@ -56,7 +55,7 @@ public class SaveManager : MonoBehaviour
 
 
             List<SaveObject> objlist = new List<SaveObject>();
-            foreach (KeyValuePair<float, List<SphericalCoordinates>> coordinatePair in data)
+            foreach (KeyValuePair<float, LinkedList<SphericalCoordinates>> coordinatePair in data)
             {
                 foreach (SphericalCoordinates coordinate in coordinatePair.Value)
                 {
@@ -88,7 +87,7 @@ public class SaveManager : MonoBehaviour
                 sb.AppendLine(string.Join(delimiter, output[r]));
             }
             ///write lines to output file
-            StreamWriter outputstream = System.IO.File.CreateText(filnamn);
+            StreamWriter outputstream = System.IO.File.CreateText(filename);
             /// write separator as the first  line in the file för CSV file to be oppened correctly
             outputstream.WriteLine("sep=;");
 
