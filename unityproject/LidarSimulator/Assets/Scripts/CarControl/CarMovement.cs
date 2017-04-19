@@ -28,6 +28,7 @@ public class CarMovement : MonoBehaviour {
     private void Start()
     {
         baseMoveSpeed = moveSpeed;
+        moveSpeed = 0f;
         baseRotationSpeed = rotationSpeed;
     }
 

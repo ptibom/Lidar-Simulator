@@ -66,5 +66,9 @@ public class LidarStorage {
 		return currentHits;
 	}
 
+    public Dictionary<float, LinkedList<SphericalCoordinates>> GetData()
+    {
+        return dataStorage;
+    }
 
 }

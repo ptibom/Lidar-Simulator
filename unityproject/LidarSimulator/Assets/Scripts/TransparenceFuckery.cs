@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TransparenceFuckery : MonoBehaviour {
-
     public Material mat1;
     public Material mat2;
     public Material mat3;

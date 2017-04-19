@@ -156,4 +156,9 @@ public class LidarSensor : MonoBehaviour {
            
         }
     }
+
+    public LidarStorage GetLidarStorage()
+    {
+        return dataStructure;
+    }
 }
