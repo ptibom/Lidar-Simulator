@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\GUI\EditorController.cs" />
     <Compile Include="Assets\Scripts\GUI\InputSync.cs" />
     <Compile Include="Assets\Scripts\GUI\LidarMenu.cs" />
+    <Compile Include="Assets\Scripts\GUI\MainMenuButtonScript.cs" />
     <Compile Include="Assets\Scripts\GUI\PauseToggle.cs" />
     <Compile Include="Assets\Scripts\GUI\PlayButton.cs" />
     <Compile Include="Assets\Scripts\GUI\SimSpeed.cs" />
