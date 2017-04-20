@@ -34,6 +34,8 @@ public class LidarSensor : MonoBehaviour {
     public float lapTime = 0;
     private float lastLapTime = 0;
 
+    private bool isPlaying = false;
+
 	public GameObject pointCloudObject;
 
     private LidarStorage dataStructure = new LidarStorage();
@@ -44,12 +46,21 @@ public class LidarSensor : MonoBehaviour {
     // Use this for initialization
     private void Start ()
     {
-        Time.fixedDeltaTime = 0.0002f; // Necessary for simulation to be detailed. Default is 0.02f.
-        UpdateSettings();
+        LidarMenu.PassGuiValsOnStart += UpdateSettings;
     }
 
-    public void UpdateSettings()
+    public void UpdateSettings(int numberOfLasers, float rotationSpeedHz, float rotationAnglePerStep, float rayDistance, float upperFOV,
+        float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
+        this.numberOfLasers = numberOfLasers;
+        this.rotationSpeedHz = rotationSpeedHz;
+        this.rotationAnglePerStep = rotationAnglePerStep;
+        this.rayDistance = rayDistance;
+        this.upperFOV = upperFOV;
+        this.lowerFOV = lowerFOV;
+        this.upperNormal = upperNormal;
+        this.lowerNormal = lowerNormal;
+
         // Initialize number of lasers, based on user selection.
         lasers = new List<Laser>();
 
@@ -74,21 +85,35 @@ public class LidarSensor : MonoBehaviour {
                 upperTotalAngle -= upperAngle;
             }
         }
+
+        isPlaying = true;
+    }
+
+    public void PauseSensor()
+    {
+        isPlaying = fale;
     }
 
     // Update is called once per frame
     private void Update ()
     {
         // For debugging, shows visible ray in real time.
+        /*
         foreach (Laser laser in lasers)
         {
-            // Comment this line to disable DEBUG drawing
-            //laser.DebugDrawRay();
+            laser.DebugDrawRay();
         }
+        */
     }
 
     private void FixedUpdate()
     {
+        // Do nothing, if the simulator is paused.
+        if (!isPlaying)
+        {
+            return;
+        }
+
         // Check if number of steps is greater than possible calculations by unity.
         float numberOfStepsNeededInOneLap = 360 / rotationAnglePerStep;
         float numberOfStepsPossible = 1 / Time.fixedDeltaTime / 5;
