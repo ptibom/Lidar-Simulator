@@ -91,7 +91,7 @@ public class LidarSensor : MonoBehaviour {
 
     public void PauseSensor()
     {
-        isPlaying = fale;
+        isPlaying = false;
     }
 
     // Update is called once per frame
