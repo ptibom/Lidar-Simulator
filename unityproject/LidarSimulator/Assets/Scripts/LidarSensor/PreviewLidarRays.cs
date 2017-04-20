@@ -12,12 +12,12 @@ public class PreviewLidarRays : MonoBehaviour {
 	public GameObject lineDrawerPrefab;
     public Slider numberOfLasersSlider;
 
-	public int numberOfLasers;
-	public float upperFOV;
-	public float lowerFOV;
-	public float offset;
-	public float upperNormal;
-	public float lowerNormal;
+	private int numberOfLasers;
+    private float upperFOV;
+    private float lowerFOV;
+    private float offset;
+    private float upperNormal;
+    private float lowerNormal;
 
 	private int maxLasers = 64;
 	private List<LaserMimic> lasersMimics = new List<LaserMimic>();
@@ -77,12 +77,13 @@ public class PreviewLidarRays : MonoBehaviour {
 		float lowerTotalAngle = lowerFOV / 2;
 		float upperAngle = upperFOV / (numberOfLasers / 2);
 		float lowerAngle = lowerFOV / (numberOfLasers / 2);
+        float offsetCm = offset / 100; // Converts offset to cm
 
 		for (int i = 0; i < numberOfLasers; i++)
 		{
 			if (i < numberOfLasers/2)
 			{
-				lasersMimics[i].SetRayParameters(lowerTotalAngle + lowerNormal, -offset, transform);
+				lasersMimics[i].SetRayParameters(lowerTotalAngle + lowerNormal, -offsetCm, transform);
 				lasersMimics [i].SetActive (true);
 				lowerTotalAngle -= lowerAngle;
 			}

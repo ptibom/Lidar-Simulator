@@ -28,5 +28,4 @@ public class PlayButton : MonoBehaviour {
             lidarMenu.StopSimulation();
         }
     }
-
 }

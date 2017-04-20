@@ -30,7 +30,7 @@ public class LidarMenu : MonoBehaviour {
     public Slider upperNormal;
     public Slider lowerNormal;
 
-    public PreviewLidarRays lidarLineMimic;
+    public PreviewLidarRays lidarLinePreview;
 
     private LidarSensor sensor;
 
@@ -41,11 +41,11 @@ public class LidarMenu : MonoBehaviour {
 	void Start () 
 	{
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
-		lidarLineMimic.InitializeLaserMimicList ();
-		InitializeGUIValues ();
-		UpdateLaserMimicValues ();
-	}
-		
+		lidarLinePreview.InitializeLaserMimicList ();
+        InitializeGUIValues();
+        UpdateLaserMimicValues();
+    }
+    
     /// <summary>
     /// Initializes all the values of the lidar menu with the initial values of the lidar sensor.
     /// </summary>
@@ -97,7 +97,6 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
     public void StartSimulation()
 	{
-        Debug.Log("hej");
         try
         {
             OnStartSimulation((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,

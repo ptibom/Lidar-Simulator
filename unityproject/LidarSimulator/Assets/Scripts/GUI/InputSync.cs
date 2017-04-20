@@ -10,7 +10,7 @@ public class InputSync : MonoBehaviour {
 
     public InputField inputField;
 
-    private int inputFieldMaxChars;
+    private int inputFieldMaxChars = 5;
 
     void Start()
     {
@@ -20,7 +20,8 @@ public class InputSync : MonoBehaviour {
     /// <summary>
     /// Corrects eventual wrong inputs from the inputfield such as "no input" and "out of bounds values"
     /// </summary>
-	public void InputCorrection(){
+	public void InputCorrection()
+    {
 		if(inputField.text.Equals(""))
         {
 			inputField.text = "0";
@@ -44,7 +45,6 @@ public class InputSync : MonoBehaviour {
     /// </summary>
 	public void SyncToInputField()
     {
-        Debug.Log(gameObject.GetComponent<Slider>().value.ToString());
 		inputField.text = SetValueLength (gameObject.GetComponent<Slider> ().value.ToString ());
         SyncToSlider();
 	}
@@ -62,6 +62,4 @@ public class InputSync : MonoBehaviour {
 		}
 		return text;
 	}
-
-
 }
