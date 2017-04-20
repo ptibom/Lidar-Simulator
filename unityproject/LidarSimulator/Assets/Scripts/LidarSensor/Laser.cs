@@ -9,6 +9,7 @@ using UnityEngine;
 /// Ray casts and simulates individual lasers.
 /// </summary>
 public class Laser {
+    private int laserId;
     private Ray ray;
     private RaycastHit hit;
     private bool isHit;
@@ -18,8 +19,9 @@ public class Laser {
     private RenderLine lineDrawer;
     private float offset;
 
-    public Laser(GameObject parent, float verticalAngle, float distance, float offset, GameObject lineDrawer)
+    public Laser(GameObject parent, float verticalAngle, float distance, float offset, GameObject lineDrawer, int laserId)
     {
+        this.laserId = laserId;
         parentObject = parent;
         this.offset = offset;
         this.verticalAngle = verticalAngle;
@@ -87,5 +89,10 @@ public class Laser {
     public float GetVerticalAngle()
     {
         return verticalAngle;
+    }
+
+    public int GetLaserId()
+    {
+        return laserId;
     }
 }

@@ -32,14 +32,13 @@ public class LoadManager : MonoBehaviour
 
             for (int i = 0; i < columns.Length; i++)
             {
+                key = float.Parse(columns[0]);
 
-                 key = float.Parse(columns[0]);
-
-                //float Id = columns[2];
+                //float id = columns[2];
                 float radius = float.Parse(columns[1]);
                 float inclination = float.Parse(columns[2]);
                 float azimuth = float.Parse( columns[3]);
-                SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth);
+                SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth, new Vector3(), 0); // TODO: load world coordinate and ID??
                 coorValues.AddLast(sc);
             }
             data.Add(key, coorValues); 

@@ -63,13 +63,13 @@ public class LidarSensor : MonoBehaviour {
             lineDrawer.transform.parent = gameObject.transform; // Set parent of drawer to this gameObject.
             if (i < numberOfLasers / 2)
             {
-                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset, lineDrawer));
+                lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset, lineDrawer, i));
 
                 lowerTotalAngle -= lowerAngle;
             }
             else
             {
-                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer));
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer, i));
                 upperTotalAngle -= upperAngle;
             }
         }
@@ -134,7 +134,7 @@ public class LidarSensor : MonoBehaviour {
                     RaycastHit hit = laser.ShootRay();
                     float distance = hit.distance;
                     float verticalAngle = laser.GetVerticalAngle();
-                    hits.AddLast(new SphericalCoordinate(distance, verticalAngle, horizontalAngle));
+                    hits.AddLast(new SphericalCoordinate(distance, verticalAngle, horizontalAngle, hit.point, laser.GetLaserId()));
                 }
             }
 

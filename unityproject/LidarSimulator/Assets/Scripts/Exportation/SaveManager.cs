@@ -16,17 +16,17 @@ public class SaveManager : MonoBehaviour
        
         Dictionary<float, List<SphericalCoordinate>> someData = new Dictionary<float, List<SphericalCoordinate>>();
         List<SphericalCoordinate> tempCoord = new List<SphericalCoordinate>();
-        tempCoord.Add(new SphericalCoordinate(1f, 2f, 3f));
-        tempCoord.Add(new SphericalCoordinate(2f, 3f, 2f));
-        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f));
+        tempCoord.Add(new SphericalCoordinate(1f, 2f, 3f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(2f, 3f, 2f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f, new Vector3(), 0));
         someData.Add(0.1f, tempCoord);
-        tempCoord.Add(new SphericalCoordinate(2f, 5f, 3f));
-        tempCoord.Add(new SphericalCoordinate(3f, 4f, 2f));
-        tempCoord.Add(new SphericalCoordinate(3f, 4f, 3f));
+        tempCoord.Add(new SphericalCoordinate(2f, 5f, 3f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(3f, 4f, 2f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(3f, 4f, 3f, new Vector3(), 0));
         someData.Add(0.2f, tempCoord);
-        tempCoord.Add(new SphericalCoordinate(1f, 5f, 3f));
-        tempCoord.Add(new SphericalCoordinate(2f, 5f, 2f));
-        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f));
+        tempCoord.Add(new SphericalCoordinate(1f, 5f, 3f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(2f, 5f, 2f, new Vector3(), 0));
+        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f, new Vector3(), 0));
         someData.Add(0.3f, tempCoord);
 
         //SaveToCsv(someData, "/lidardata.csv");
