@@ -15,10 +15,18 @@ public class PlayButton : MonoBehaviour {
 
     // SUPER QUICK WORKAROUND FIX BELOW!!!!!!!!!!!!!!!!!
 
-	public void OnToggle()
+    public void OnToggle()
     {
         bool toggleIsOn = gameObject.GetComponent<Toggle>().isOn;
         editorController.SetMode(toggleIsOn);
+        if (toggleIsOn)
+        {
+            lidarMenu.StartSimulation();
+        }
+        else
+        {
+            lidarMenu.StopSimulation();
+        }
     }
 
 }

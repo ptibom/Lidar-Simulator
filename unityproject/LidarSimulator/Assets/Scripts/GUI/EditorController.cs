@@ -8,9 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 
 public class EditorController : MonoBehaviour{
-
-    public LidarSensor sensor;
-    public LidarMenu lidarMenu;
+    
     public GameObject mainCamera;
     public GameObject lidarCamera;
     public GameObject editorMenu;
@@ -35,10 +33,6 @@ public class EditorController : MonoBehaviour{
         editorMenu.SetActive(!simulatorMode);
         lidarCamera.SetActive(lidarSensorToggle.isOn && !simulatorMode);
         SetVisToggleActive(simulatorMode);
-        if (!simulatorMode)
-        {
-            lidarMenu.StopSimulation();
-        }
     }
 
     /// <summary>
@@ -87,8 +81,7 @@ public class EditorController : MonoBehaviour{
         }
         else
         {
-            mainCamera.GetComponent<Camera>().rect = new Rect(0, 0 , 0.5f, 1);
-            lidarMenu.SendSettingsToLidar();
+            mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
         }
 
         mainCamera.GetComponent<Camera>().enabled = true;
