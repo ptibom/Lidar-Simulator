@@ -4,34 +4,31 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ExternalPointCloud : MonoBehaviour {
-    private Mesh mesh;
+    private List<Mesh> meshes;
     int numPoints = 60000;
 
     // Use this for initialization
     void Start()
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        CreateMesh();
+        meshes = new List<Mesh>();
+        Mesh startMesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = startMesh;
     }
 
-    void CreateMesh()
+    void CreateMesh(Vector3[] worldPoints, int[] indices, Color[] colors)
     {
-        Vector3[] points = new Vector3[numPoints];
-        int[] indecies = new int[numPoints];
-        Color[] colors = new Color[numPoints];
-        
-        for (int i = 0; i < points.Length; ++i)
+        if(worldPoints.Length > 65000)
         {
-            points[i] = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-            indecies[i] = i;
-            colors[i] = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1.0f);
-        }
-
-        mesh.vertices = points;
-        mesh.colors = colors;
-        mesh.SetIndices(indecies, MeshTopology.Points, 0);
+            //TODO: 
+        } else
+        {
+            meshes[0].vertices = worldPoints;
+            meshes[0].colors = colors;
+            meshes[0].SetIndices(indices,MeshTopology.Points,0);
+            
+        }      
 
     }
+
 }
 
