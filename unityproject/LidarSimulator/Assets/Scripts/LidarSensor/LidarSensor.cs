@@ -57,6 +57,7 @@ public class LidarSensor : MonoBehaviour {
         float lowerTotalAngle = lowerFOV / 2;
         float upperAngle = upperFOV / (numberOfLasers / 2);
         float lowerAngle = lowerFOV / (numberOfLasers / 2);
+        offset = (offset / 100) * 2; // Convert offset to centimeters.
         for (int i = 0; i < numberOfLasers; i++)
         {
             GameObject lineDrawer = Instantiate(lineDrawerPrefab);
