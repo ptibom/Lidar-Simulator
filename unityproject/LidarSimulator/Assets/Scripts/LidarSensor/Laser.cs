@@ -95,4 +95,9 @@ public class Laser {
     {
         return laserId;
     }
+
+    public RenderLine GetRenderLine()
+    {
+        return lineDrawer;
+    }
 }

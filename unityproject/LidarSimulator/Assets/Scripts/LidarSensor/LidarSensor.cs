@@ -46,7 +46,8 @@ public class LidarSensor : MonoBehaviour {
     // Use this for initialization
     private void Start()
     {
-        LidarMenu.PassGuiValsOnStart += UpdateSettings;
+        LidarMenu.OnStartSimulation += UpdateSettings;
+        LidarMenu.OnStopSimulation += PauseSensor;
     }
 
     public void UpdateSettings(int numberOfLasers, float rotationSpeedHz, float rotationAnglePerStep, float rayDistance, float upperFOV,
@@ -61,9 +62,21 @@ public class LidarSensor : MonoBehaviour {
         this.offset = offset;
         this.upperNormal = upperNormal;
         this.lowerNormal = lowerNormal;
-        
 
+        InitiateLasers();
+    }
+
+    private void InitiateLasers()
+    {
         // Initialize number of lasers, based on user selection.
+        if (lasers != null)
+        {
+            foreach (Laser l in lasers)
+            {
+                Destroy(l.GetRenderLine().gameObject);
+            }
+        }
+
         lasers = new List<Laser>();
 
         float upperTotalAngle = upperFOV / 2;
@@ -130,11 +143,10 @@ public class LidarSensor : MonoBehaviour {
             }
         }
 
-
         // Check if it is time to step. Example: 2hz = 2 rotations in a second.
         if (Time.fixedTime - lastUpdate > (1/(numberOfStepsNeededInOneLap)/rotationSpeedHz) * precalculateIterations)
         {
-                // Update current execution time.
+            // Update current execution time.
             lastUpdate = Time.fixedTime;
             LinkedList<SphericalCoordinate> hits = new LinkedList<SphericalCoordinate>();
 
@@ -151,7 +163,6 @@ public class LidarSensor : MonoBehaviour {
                     if(NewRotationEvent != null)
                     {
                         NewRotationEvent();
-
                     }
                 }
 
@@ -181,7 +192,6 @@ public class LidarSensor : MonoBehaviour {
                     previousUpdate = Time.fixedTime;
                 }
             }
-           
         }
     }
 
