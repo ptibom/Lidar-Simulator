@@ -29,7 +29,7 @@ public class LidarSensor : MonoBehaviour {
     public static event NewLap NewRotationEvent;
     public delegate void NewLap();
     public delegate void StorePoints(float timeStamp);
-    public delegate void NewPoints(LinkedList<SphericalCoordinates> hits);
+    public delegate void NewPoints(LinkedList<SphericalCoordinate> hits);
     public float storeInterval = 0.25f; // How often do we want to update the data structure
     public float lapTime = 0;
     private float lastLapTime = 0;
@@ -108,7 +108,7 @@ public class LidarSensor : MonoBehaviour {
         {
                 // Update current execution time.
             lastUpdate = Time.fixedTime;
-            LinkedList<SphericalCoordinates> hits = new LinkedList<SphericalCoordinates>();
+            LinkedList<SphericalCoordinate> hits = new LinkedList<SphericalCoordinate>();
 
             for (int i = 0; i < precalculateIterations; i++)
             {
@@ -134,7 +134,7 @@ public class LidarSensor : MonoBehaviour {
                     RaycastHit hit = laser.ShootRay();
                     float distance = hit.distance;
                     float verticalAngle = laser.GetVerticalAngle();
-                    hits.AddLast(new SphericalCoordinates(distance, verticalAngle, horizontalAngle));
+                    hits.AddLast(new SphericalCoordinate(distance, verticalAngle, horizontalAngle));
                 }
             }
 

@@ -5,13 +5,14 @@ using UnityEngine;
 /// A class representing spherical coordinates. These are created by the lidar sensor.
 /// @author: Tobias Alldén
 /// </summary>
-public class SphericalCoordinates
+public class SphericalCoordinate
 {
+    private Vector3 globalWorldCoordinate; // Useful for some things. The other coordinates are local.
     private float radius;
     private float inclination;
     private float azimuth;
 
-    public SphericalCoordinates(float radius, float inclination, float azimuth)
+    public SphericalCoordinate(float radius, float inclination, float azimuth)
     {
         this.radius = radius;
         this.inclination = (90 + inclination)*(2*Mathf.PI/360);
@@ -20,10 +21,10 @@ public class SphericalCoordinates
 
     // Constructor based on cartesian coordinates
 	/// <summary>
-	/// Initializes a new instance of the <see cref="SphericalCoordinates"/> class using cartesian coordinates.
+	/// Initializes a new instance of the <see cref="SphericalCoordinate"/> class using cartesian coordinates.
 	/// </summary>
 	/// <param name="coordinates">Coordinates.</param>
-    public SphericalCoordinates(Vector3 coordinates)
+    public SphericalCoordinate(Vector3 coordinates)
     {
 
 
@@ -93,9 +94,9 @@ public class SphericalCoordinates
     /// Clones this instance of the class
     /// </summary>
     /// <returns></returns>
-    public SphericalCoordinates Clone()
+    public SphericalCoordinate Clone()
     {
-        return new SphericalCoordinates(this.radius,this.inclination,this.azimuth);
+        return new SphericalCoordinate(this.radius,this.inclination,this.azimuth);
     }
 
     /// <summary>
@@ -106,7 +107,7 @@ public class SphericalCoordinates
     public override bool Equals(object obj)
     {
         double eps = 0.01;
-        SphericalCoordinates other = (SphericalCoordinates)obj;
+        SphericalCoordinate other = (SphericalCoordinate)obj;
         return (Math.Abs(this.azimuth - other.azimuth) < eps
             && Math.Abs(this.inclination - other.inclination) < eps
             && Math.Abs(this.radius - other.radius) < eps);

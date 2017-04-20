@@ -16,18 +16,18 @@ public class LoadManager : MonoBehaviour
 
 
     }
-    public static  Dictionary<float, LinkedList<SphericalCoordinates>> LoadCsv(String filename)
+    public static  Dictionary<float, LinkedList<SphericalCoordinate>> LoadCsv(String filename)
     {
         StreamReader sr = new StreamReader(File.OpenRead(filename));
      
-        Dictionary<float, LinkedList<SphericalCoordinates>> data = new Dictionary<float, LinkedList<SphericalCoordinates>>();
+        Dictionary<float, LinkedList<SphericalCoordinate>> data = new Dictionary<float, LinkedList<SphericalCoordinate>>();
 
         while (!sr.EndOfStream)
         {
             float key = 0;
 
             List<float> values = new List<float>();
-            LinkedList<SphericalCoordinates> coorValues = new LinkedList<SphericalCoordinates>();
+            LinkedList<SphericalCoordinate> coorValues = new LinkedList<SphericalCoordinate>();
             string []columns = sr.ReadLine().Split(';');
 
             for (int i = 0; i < columns.Length; i++)
@@ -39,7 +39,7 @@ public class LoadManager : MonoBehaviour
                 float radius = float.Parse(columns[1]);
                 float inclination = float.Parse(columns[2]);
                 float azimuth = float.Parse( columns[3]);
-                SphericalCoordinates sc = new SphericalCoordinates(radius, inclination, azimuth);
+                SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth);
                 coorValues.AddLast(sc);
             }
             data.Add(key, coorValues); 

@@ -9,15 +9,15 @@ using UnityEngine;
 /// </summary>
 public class LidarStorage {
 
-	private Dictionary<float, LinkedList<SphericalCoordinates>> dataStorage;
-	private LinkedList<SphericalCoordinates> currentHits;
+	private Dictionary<float, LinkedList<SphericalCoordinate>> dataStorage;
+	private LinkedList<SphericalCoordinate> currentHits;
 	private float prevTime; // Timestamp for previous data entry.
 
 
 	public LidarStorage()
 	{
-		this.dataStorage = new Dictionary<float, LinkedList<SphericalCoordinates>>();
-		this.currentHits = new LinkedList<SphericalCoordinates>();
+		this.dataStorage = new Dictionary<float, LinkedList<SphericalCoordinate>>();
+		this.currentHits = new LinkedList<SphericalCoordinate>();
         LidarSensor.OnScanned += AddHits;
         LidarSensor.StoreEvent += Save;
 	}
@@ -25,7 +25,7 @@ public class LidarStorage {
 	/// <summary>
 	/// Adds a single coorninate to the current hits LinkedList. 
 	/// </summary>
-	public void AddHit(SphericalCoordinates hit)
+	public void AddHit(SphericalCoordinate hit)
 	{
 		currentHits.AddLast(hit);
 	}
@@ -33,9 +33,9 @@ public class LidarStorage {
     /// <summary>
     /// Adds coorninates to the currently collected hits. 
     /// </summary>
-    public void AddHits(LinkedList<SphericalCoordinates> hits)
+    public void AddHits(LinkedList<SphericalCoordinate> hits)
     {
-        foreach(SphericalCoordinates hit in hits)
+        foreach(SphericalCoordinate hit in hits)
         {
             currentHits.AddLast(hit);
         }
@@ -61,12 +61,12 @@ public class LidarStorage {
 	/// Returns the last set of coordinates gathered. 
 	/// </summary>
 	/// <returns></returns>
-	public LinkedList<SphericalCoordinates> GetLatestHits()
+	public LinkedList<SphericalCoordinate> GetLatestHits()
 	{
 		return currentHits;
 	}
 
-    public Dictionary<float, LinkedList<SphericalCoordinates>> GetData()
+    public Dictionary<float, LinkedList<SphericalCoordinate>> GetData()
     {
         return dataStorage;
     }

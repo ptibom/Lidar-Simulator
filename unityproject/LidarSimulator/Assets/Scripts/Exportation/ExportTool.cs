@@ -23,7 +23,7 @@ namespace AssemblyCSharp
 		/// <returns><c>true</c>, If the lidar data was saved, <c>false</c> otherwise.</returns>
 		/// <param name="data">Data.</param>
 		/// <param name="fileName">File name.</param>
-        public static Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinates>> data, String fileName)
+        public static Boolean SaveLidarData(Dictionary<float, List<SphericalCoordinate>> data, String fileName)
         {
             BinaryFormatter bf = new BinaryFormatter();
 			FileStream file = File.Create(Application.persistentDataPath + "/"+fileName+".lidar");
@@ -36,12 +36,12 @@ namespace AssemblyCSharp
 		/// </summary>
 		/// <returns>The data.</returns>
 		/// <param name="fileName">File name.</param>
-		public static Dictionary<float, List<SphericalCoordinates>> OpenData(String fileName)
+		public static Dictionary<float, List<SphericalCoordinate>> OpenData(String fileName)
         {
 			if (File.Exists(Application.persistentDataPath + "/" + fileName + ".lidar")) {
             BinaryFormatter bf = new BinaryFormatter();
 			FileStream file = File.Open(Application.persistentDataPath + "/" + fileName + ".lidar", FileMode.Open);
-            Dictionary<float,List<SphericalCoordinates>> data = (Dictionary<float,List<SphericalCoordinates>>) bf.Deserialize(file);
+            Dictionary<float,List<SphericalCoordinate>> data = (Dictionary<float,List<SphericalCoordinate>>) bf.Deserialize(file);
             file.Close();
             return data;
 

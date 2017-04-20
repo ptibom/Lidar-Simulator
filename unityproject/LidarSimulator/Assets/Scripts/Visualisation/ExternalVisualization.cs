@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ExternalVisualization : MonoBehaviour {
-	private Dictionary<float, LinkedList<SphericalCoordinates>> pointTable;
+	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
 	public GameObject pSystemGameObject;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
@@ -90,11 +90,11 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-	private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions)
+	private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinate> positions)
 	{
 		List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
 
-		for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
+		for (LinkedListNode<SphericalCoordinate> it = positions.First; it != null; it = it.Next)
 		{
 			ParticleSystem.Particle particle = new ParticleSystem.Particle();
 			particle.position = it.Value.ToCartesian();

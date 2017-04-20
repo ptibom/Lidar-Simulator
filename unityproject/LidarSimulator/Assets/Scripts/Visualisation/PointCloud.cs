@@ -109,7 +109,7 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinates> positions, int particleSystemID)
+    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinate> positions, int particleSystemID)
     {
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
         ParticleSystem currentParticleSystem = particleSystemIdMap[usedParticleSystem];
@@ -122,7 +122,7 @@ public class PointCloud : MonoBehaviour
             particleCloud.AddRange(oldParticles);
         }
 
-        for (LinkedListNode<SphericalCoordinates> it = positions.First; it != null; it = it.Next)
+        for (LinkedListNode<SphericalCoordinate> it = positions.First; it != null; it = it.Next)
         {
             if (it.Value.GetRadius() != 0)
             {
@@ -161,7 +161,7 @@ public class PointCloud : MonoBehaviour
     /// Updates the points to be added to the point cloud (the latest from the lidar sensor)
     /// </summary>
     /// <param name="points"></param>
-    public void OnUpdatePoints(LinkedList<SphericalCoordinates> points)
+    public void OnUpdatePoints(LinkedList<SphericalCoordinate> points)
     {
         if (isEnabled) {
             UpdateParticleSystemIfNeeded();

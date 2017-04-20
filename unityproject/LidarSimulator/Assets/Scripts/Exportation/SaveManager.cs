@@ -14,25 +14,25 @@ public class SaveManager : MonoBehaviour
     void Start()
     {
        
-        Dictionary<float, List<SphericalCoordinates>> someData = new Dictionary<float, List<SphericalCoordinates>>();
-        List<SphericalCoordinates> tempCoord = new List<SphericalCoordinates>();
-        tempCoord.Add(new SphericalCoordinates(1f, 2f, 3f));
-        tempCoord.Add(new SphericalCoordinates(2f, 3f, 2f));
-        tempCoord.Add(new SphericalCoordinates(4f, 2f, 3f));
+        Dictionary<float, List<SphericalCoordinate>> someData = new Dictionary<float, List<SphericalCoordinate>>();
+        List<SphericalCoordinate> tempCoord = new List<SphericalCoordinate>();
+        tempCoord.Add(new SphericalCoordinate(1f, 2f, 3f));
+        tempCoord.Add(new SphericalCoordinate(2f, 3f, 2f));
+        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f));
         someData.Add(0.1f, tempCoord);
-        tempCoord.Add(new SphericalCoordinates(2f, 5f, 3f));
-        tempCoord.Add(new SphericalCoordinates(3f, 4f, 2f));
-        tempCoord.Add(new SphericalCoordinates(3f, 4f, 3f));
+        tempCoord.Add(new SphericalCoordinate(2f, 5f, 3f));
+        tempCoord.Add(new SphericalCoordinate(3f, 4f, 2f));
+        tempCoord.Add(new SphericalCoordinate(3f, 4f, 3f));
         someData.Add(0.2f, tempCoord);
-        tempCoord.Add(new SphericalCoordinates(1f, 5f, 3f));
-        tempCoord.Add(new SphericalCoordinates(2f, 5f, 2f));
-        tempCoord.Add(new SphericalCoordinates(4f, 2f, 3f));
+        tempCoord.Add(new SphericalCoordinate(1f, 5f, 3f));
+        tempCoord.Add(new SphericalCoordinate(2f, 5f, 2f));
+        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f));
         someData.Add(0.3f, tempCoord);
 
         //SaveToCsv(someData, "/lidardata.csv");
     }
     //public void SaveToCsv(SaveObject[]  datalist, string filname){
-    public static void SaveToCsv(Dictionary<float, LinkedList<SphericalCoordinates>> data, String filename)
+    public static void SaveToCsv(Dictionary<float, LinkedList<SphericalCoordinate>> data, String filename)
     {    
         try
         {
@@ -55,9 +55,9 @@ public class SaveManager : MonoBehaviour
 
 
             List<SaveObject> objlist = new List<SaveObject>();
-            foreach (KeyValuePair<float, LinkedList<SphericalCoordinates>> coordinatePair in data)
+            foreach (KeyValuePair<float, LinkedList<SphericalCoordinate>> coordinatePair in data)
             {
-                foreach (SphericalCoordinates coordinate in coordinatePair.Value)
+                foreach (SphericalCoordinate coordinate in coordinatePair.Value)
                 {
                     string[] rows = new string[5];
                     rows[0] = coordinatePair.Key.ToString(); // The time
