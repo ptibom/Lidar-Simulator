@@ -10,9 +10,16 @@ using UnityEngine.EventSystems;
 /// Creates drag and drop functionality.
 /// </summary>
 public class SceneEditor : MonoBehaviour {
+    public GameObject wayPoint;
+	GameObject instantiatedWayPoint;
+
     private GameObject go;
-    private bool moveGameObject = false;
-    private bool rotateGameObject = false;
+	private GameObject placedNavObj = null;
+	private GameObject previousWayPoint = null;
+
+    private bool isMovingGameObject = false;
+    private bool isRotatingGameObject = false;
+	private bool isPlacingWaypoint = false;
     private float previousMousePos;
     private float lastClick;
 
@@ -26,7 +33,63 @@ public class SceneEditor : MonoBehaviour {
 	void Update ()
     {
         // Check if mouse is not over UI. And if we supposed to move object.
-		if (moveGameObject && !EventSystem.current.IsPointerOverGameObject())
+		if (isPlacingWaypoint && !EventSystem.current.IsPointerOverGameObject())
+		{
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+			if (Physics.Raycast(ray, out hit))
+			{
+				go.transform.position = hit.point + new Vector3(0, 0.5f);
+
+				if (Input.GetMouseButtonDown(0))
+				{
+					if (hit.collider.gameObject.GetComponent<WayPoint>() != null)
+					// Click waypoint in the path.
+					{
+						if (previousWayPoint != null) 
+						{
+                            go.GetComponent<WayPoint>().SetColliderState(true);
+                            go.GetComponent<WayPoint>().ClosePath(hit.collider.gameObject, previousWayPoint);
+                            placedNavObj = null;
+                            previousWayPoint = null;
+							isPlacingWaypoint = false;
+							WayPoint.SetAllColliders (true);
+                            Destroy(go);
+						}
+					}
+					else if(previousWayPoint == null)
+					{	
+						
+						go.GetComponent<WayPoint>().SetStart(true);
+						placedNavObj.GetComponent<AgentTest> ().target = go.transform;
+                        go.GetComponent<WayPoint>().SetColliderState(true);
+						instantiatedWayPoint = Instantiate(wayPoint);
+						previousWayPoint = go;
+						go = instantiatedWayPoint;
+					}
+					else
+					{
+						go.GetComponent<WayPoint>().AddToPath(previousWayPoint);
+                        go.GetComponent<WayPoint>().SetColliderState(true);
+                        instantiatedWayPoint = Instantiate(wayPoint);
+						previousWayPoint = go;
+						go = instantiatedWayPoint;
+					}
+					lastClick = Time.time;
+				}
+				if (Input.GetMouseButtonDown(1))
+				{
+                    // If waypoint exist, destroy and start over.
+					Destroy(go);
+					WayPoint.SetAllColliders (true);
+					isPlacingWaypoint = false;
+					placedNavObj = null;
+					previousWayPoint = null;
+				}
+			}
+		}
+		else if (isMovingGameObject && !EventSystem.current.IsPointerOverGameObject())
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -34,21 +97,36 @@ public class SceneEditor : MonoBehaviour {
             if (Physics.Raycast(ray, out hit))
             {
                 go.transform.position = hit.point;
+                if (go.GetComponent<WayPoint>() != null)
+                {
+                    go.transform.position = hit.point + new Vector3(0, 0.5f);
+                }
 
                 if (Input.GetMouseButtonDown(0))
                 {
                     lastClick = Time.time;
-                    moveGameObject = false;
-                    rotateGameObject = true;
+                    isMovingGameObject = false;
+                    if (go.GetComponent<WayPoint>() == null)
+                    {
+                        isRotatingGameObject = true;
+                    }
+                    else
+                    {
+                        go.GetComponent<WayPoint>().SetColliderState(true);
+                    }
                 }
                 if (Input.GetMouseButtonDown(1))
                 {
+                    if (go.GetComponent<WayPoint>() != null)
+                    {
+                        go.GetComponent<WayPoint>().RemoveFromPath();
+                    }
                     Destroy(go);
-                    moveGameObject = false;
+                    isMovingGameObject = false;
                 }
             }
         }
-        else if (rotateGameObject && !EventSystem.current.IsPointerOverGameObject())
+        else if (isRotatingGameObject && !EventSystem.current.IsPointerOverGameObject())
         {
             if (previousMousePos != 0)
             {
@@ -62,15 +140,24 @@ public class SceneEditor : MonoBehaviour {
                 SetAlpha(1f);
                 ActivateColliders(true);
                 previousMousePos = 0;
-                rotateGameObject = false;
+                isRotatingGameObject = false;
+				if (go.GetComponent<AgentTest>() != null) 
+				{
+					WayPoint.SetAllColliders (false);
+					placedNavObj = go;
+					isPlacingWaypoint = true;
+                    go = Instantiate(wayPoint);
+
+                }
             }
             if (Input.GetMouseButtonDown(1))
             {
                 Destroy(go);
                 previousMousePos = 0;
-                rotateGameObject = false;
+                isRotatingGameObject = false;
             }
         }
+        // Move existing game object.
         else if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButton(0) && lastClick + 0.2 < Time.time)
         {
             RaycastHit hit;
@@ -78,11 +165,19 @@ public class SceneEditor : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.gameObject.CompareTag("EditableObject"))
+                if (hit.collider.gameObject.CompareTag("EditableObject")) // Object is head?
                 {
                     lastClick = Time.time;
+                    MoveObject(hit.collider.gameObject);
+                }
+                else // Check if parent has EditableObject tag.
+                {
                     GameObject o = FindParentEditableObject(hit.collider.gameObject);
-                    MoveObject(o);
+                    if (o != null && o.CompareTag("EditableObject"))
+                    {
+                        lastClick = Time.time;
+                        MoveObject(o);
+                    }
                 }
             }
         }
@@ -94,7 +189,7 @@ public class SceneEditor : MonoBehaviour {
     /// <param name="prefab">A game object prefab</param>
     public void PlaceObject(GameObject prefab)
     {
-        if (!moveGameObject && !rotateGameObject)
+        if (!isMovingGameObject && !isRotatingGameObject)
         {
             MoveObject(Instantiate(prefab));
         }
@@ -106,11 +201,15 @@ public class SceneEditor : MonoBehaviour {
     /// <param name="obj">A game object.</param>
     private void MoveObject(GameObject obj)
     {
-        if (!moveGameObject && !rotateGameObject)
+        if (!isMovingGameObject && !isRotatingGameObject)
         {
+            if (obj.GetComponent<AgentTest>() != null && obj.GetComponent<AgentTest>().target != null)
+            {
+                obj.GetComponent<AgentTest>().target.gameObject.GetComponent<WayPoint>().RemovePath();
+            }
             go = obj;
             SetAlpha(0.33f);
-            moveGameObject = true;
+            isMovingGameObject = true;
             ActivateColliders(false);
         }
     }
@@ -150,10 +249,14 @@ public class SceneEditor : MonoBehaviour {
     /// <returns></returns>
     private GameObject FindParentEditableObject(GameObject o)
     {
-        if (o.transform.parent != null && o.transform.parent.gameObject.CompareTag("EditableObject"))
+        if (o.transform.parent != null && !o.transform.parent.gameObject.CompareTag("EditableObject"))
         {
             return FindParentEditableObject(o.transform.parent.gameObject);
         }
-        return o;
+        if (o.transform.parent == null)
+        {
+            return null;
+        }
+        return o.transform.parent.gameObject;
     }
 }

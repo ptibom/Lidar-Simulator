@@ -9,7 +9,7 @@ public class ExternalVisualization : MonoBehaviour {
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton;
-    public Text lapText, openText, posOpen;
+    public Text lapText, mainText, posOpen;
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
@@ -19,20 +19,31 @@ public class ExternalVisualization : MonoBehaviour {
 		prevButton = GameObject.Find("Prev").GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
         lapText = GameObject.Find("LapText").GetComponent<Text>();
-        openText = GameObject.Find("OpenText").GetComponent<Text>();
+        mainText = GameObject.Find("MainText").GetComponent<Text>();
         posOpen = GameObject.Find("PosOpen").GetComponent<Text>();
 
 
         nextButton.onClick.AddListener(LoadNext);
 		prevButton.onClick.AddListener(LoadPrev);
 		openButton.onClick.AddListener(LoadPoints);
-
-        openText.text = "Please open a data set for viewing";
+        
 
 
 
 
 	}
+
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            LoadNext();
+        }
+        if(Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            LoadPrev();
+        }
+    }
 
 
 
@@ -42,7 +53,7 @@ public class ExternalVisualization : MonoBehaviour {
 	public void LoadPoints()
 	{
         openButton.transform.SetPositionAndRotation(posOpen.transform.position,Quaternion.identity);
-        openText.enabled = false;
+        mainText.enabled = false;
 
 	}
 
@@ -51,25 +62,30 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadNext()
 	{
-		if (currentListPosition+1 < pointTable.Count) {
-			currentListPosition += 1;
-			ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
-			pSystem.SetParticles(particles,particles.Length);
-            lapText.text = "Lap: " + currentListPosition;
-		}
+        if (pointTable != null) {
+            if (currentListPosition + 1 < pointTable.Count) {
+                currentListPosition += 1;
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                pSystem.SetParticles(particles, particles.Length);
+                lapText.text = "Lap: " + currentListPosition;
+            }
+        }
 	}
 	/// <summary>
 	/// Tells the particle system to load the previous set of points. 
 	/// </summary>
 	public void LoadPrev()
 	{
-		if (currentListPosition - 1 >= 0)
-		{
-			currentListPosition -= 1;
-			ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
-			pSystem.SetParticles(particles, particles.Length);
-            lapText.text = "Lap: " + currentListPosition;
+        if (pointTable != null)
+        {
+            if (currentListPosition - 1 >= 0)
+            {
+                currentListPosition -= 1;
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                pSystem.SetParticles(particles, particles.Length);
+                lapText.text = "Lap: " + currentListPosition;
 
+            }
         }
     }
 

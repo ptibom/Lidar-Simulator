@@ -27,10 +27,20 @@ public class WayPoint : MonoBehaviour {
 	/*Tanken är att en path är en lista av waypoints. Som i sin tur lagras i en lista av paths*/
 	//public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
 
+    public static void SetAllColliders(bool b)
+    {
+        foreach(WayPoint wp in waypoints)
+        {
+            if (wp != null)
+            {
+                wp.SetColliderState(b);
+            }
+        }
+    }
 
 	//stäng av eller sätt på waypointens triggercollider.
 	public void SetColliderState(bool b){
-		SphereCollider s = GetComponent<SphereCollider> ();
+		SphereCollider s = GetComponent<SphereCollider>();
 		s.enabled = b;
 	}
 
@@ -61,18 +71,38 @@ public class WayPoint : MonoBehaviour {
 		}
 		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
 		while (true) {
-			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
+			/*if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
 				//Debug.Log ("Breaking2");
 				break;
 			}
 			WayPointsToDestroy.Add (currentWayPointGameObject);
 			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
 			currentWayPointGameObject = currentWayPoint.gameObject;
-			//Debug.Log ("Loop2");
+			//Debug.Log ("Loop2");*/
+
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject)){
+				Debug.Log("Break1");	
+				break;
+
+			}
+			WayPointsToDestroy.Add(currentWayPointGameObject);
+			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
+			currentWayPointGameObject = currentWayPoint.gameObject;
+
+			if (currentWayPoint.GetComponent<WayPoint>().next == null)
+			{	
+
+				WayPointsToDestroy.Add (currentWayPoint.gameObject);
+				//WayPointsToDestroy.Add (currentWayPointGameObject);
+				Debug.Log (currentWayPoint.name);
+				Debug.Log("Break2");
+				break;
+				//TODO FIX ME NULL REFERENCE POINTER:
+			}
 
 		}
 		foreach (GameObject g in WayPointsToDestroy) {
-			g.GetComponent<WayPoint> ().SetColliderState (b);
+			g.GetComponent<WayPoint>().SetColliderState(b);
 		}
 	}
 
@@ -103,14 +133,25 @@ public class WayPoint : MonoBehaviour {
 		}
 		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
 		while (true) {
-			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
-				//Debug.Log ("Breaking2");
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject)){
+				Debug.Log("Break1");	
 				break;
+
 			}
-			WayPointsToDestroy.Add (currentWayPointGameObject);
+			WayPointsToDestroy.Add(currentWayPointGameObject);
 			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
 			currentWayPointGameObject = currentWayPoint.gameObject;
-			//Debug.Log ("Loop2");
+
+			if (currentWayPoint.GetComponent<WayPoint>().next == null)
+			{	
+
+				WayPointsToDestroy.Add (currentWayPoint.gameObject);
+				//WayPointsToDestroy.Add (currentWayPointGameObject);
+				Debug.Log (currentWayPoint.name);
+				Debug.Log("Break2");
+				break;
+				//TODO FIX ME NULL REFERENCE POINTER:
+			}
 
 		}
 		foreach (GameObject g in WayPointsToDestroy) {
@@ -254,7 +295,8 @@ public class WayPoint : MonoBehaviour {
 
 	/*Det är super-hyper-mega-ultra-viktigt att det finns en nod i vägen som är satt till startnod annars kommer du frysa programmet i en oändlig while-loop om du 
 	kallar på den här*/
-	public static void removePath(GameObject wayPointInPath) {
+	public void RemovePath() {
+        GameObject wayPointInPath = this.gameObject;
 		Debug.Log ("RemovePath Called");
 		//int i = 0;
 		//int j = 0;
@@ -279,27 +321,38 @@ public class WayPoint : MonoBehaviour {
 			Debug.Log ("Loop1");
 			//break;
 		}
-		List<GameObject> WayPointsToDestroy = new List<GameObject> ();
-		while (true) {
-			/*j = j + 1;
-			if (j >= 10) {
-				Debug.Log ("Looping too much, breaking");
-			}*/
-			if(WayPointsToDestroy.Contains(currentWayPointGameObject) == true){
-				Debug.Log ("Breaking2");
+		List<GameObject> WayPointsToDestroy = new List<GameObject>();
+		while (true/*!WayPointsToDestroy.Contains(currentWayPointGameObject*/) {
+
+			if(WayPointsToDestroy.Contains(currentWayPointGameObject)){
+				Debug.Log("Break1");	
 				break;
+				
 			}
-			WayPointsToDestroy.Add (currentWayPointGameObject);
-			currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
+            WayPointsToDestroy.Add(currentWayPointGameObject);
+            currentWayPoint = currentWayPoint.GetComponent<WayPoint>().next.GetComponent<WayPoint>();
 			currentWayPointGameObject = currentWayPoint.gameObject;
-			Debug.Log ("Loop2");
-			
+
+            if (currentWayPoint.GetComponent<WayPoint>().next == null)
+            {	
+				
+				WayPointsToDestroy.Add (currentWayPoint.gameObject);
+				//WayPointsToDestroy.Add (currentWayPointGameObject);
+				Debug.Log (currentWayPoint.name);
+				Debug.Log("Break2");
+				break;
+                //TODO FIX ME NULL REFERENCE POINTER:
+            }
 		}
+		int i = 0;
 		foreach (GameObject g in WayPointsToDestroy) {
+			
 			Debug.Log ("Destroying");
 			waypoints.Remove (g.GetComponent<WayPoint> ());
 			Destroy (g);
+			i = i + 1;
 		}
+		Debug.Log (i);
 	}
 	
 	/**/

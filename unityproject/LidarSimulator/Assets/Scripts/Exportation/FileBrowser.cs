@@ -370,6 +370,7 @@ public class FileBrowser
         string filetosave = filename;
         try
         {
+            /**
  
             StreamWriter sr = File.CreateText(filetosave );
            
@@ -377,6 +378,11 @@ public class FileBrowser
             sr.WriteLine("testing the save actually works.");
 
             sr.Close();
+    */
+
+            LidarStorage ls =  GameObject.Find("LidarSensor").GetComponent<LidarSensor>().GetLidarStorage();
+            Debug.Log("Size ls data: " + ls.GetData().Count);
+            SaveManager.SaveToCsv(ls.GetData(), filename);
         }
         catch (IOException e)
         {

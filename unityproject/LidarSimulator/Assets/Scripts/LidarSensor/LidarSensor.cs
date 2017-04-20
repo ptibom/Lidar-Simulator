@@ -12,7 +12,7 @@ using UnityEngine;
 public class LidarSensor : MonoBehaviour {
     private float lastUpdate = 0;
 
-    private List<Laser> lasers = new List<Laser>();
+    private List<Laser> lasers;
     private float horizontalAngle = 0;
    
     public int numberOfLasers = 2;
@@ -41,17 +41,18 @@ public class LidarSensor : MonoBehaviour {
 
     public GameObject lineDrawerPrefab;
 
-
-
-
-
     // Use this for initialization
     private void Start ()
     {
         Time.fixedDeltaTime = 0.0002f; // Necessary for simulation to be detailed. Default is 0.02f.
+        UpdateSettings();
+    }
 
-
+    public void UpdateSettings()
+    {
         // Initialize number of lasers, based on user selection.
+        lasers = new List<Laser>();
+
         float upperTotalAngle = upperFOV / 2;
         float lowerTotalAngle = lowerFOV / 2;
         float upperAngle = upperFOV / (numberOfLasers / 2);
@@ -60,7 +61,7 @@ public class LidarSensor : MonoBehaviour {
         {
             GameObject lineDrawer = Instantiate(lineDrawerPrefab);
             lineDrawer.transform.parent = gameObject.transform; // Set parent of drawer to this gameObject.
-            if (i < numberOfLasers/2)
+            if (i < numberOfLasers / 2)
             {
                 lasers.Add(new Laser(gameObject, lowerTotalAngle + lowerNormal, rayDistance, -offset, lineDrawer));
 
@@ -71,7 +72,6 @@ public class LidarSensor : MonoBehaviour {
                 lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer));
                 upperTotalAngle -= upperAngle;
             }
-            
         }
     }
 
@@ -155,5 +155,10 @@ public class LidarSensor : MonoBehaviour {
             }
            
         }
+    }
+
+    public LidarStorage GetLidarStorage()
+    {
+        return dataStructure;
     }
 }
