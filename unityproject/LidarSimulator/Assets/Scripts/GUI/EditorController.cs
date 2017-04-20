@@ -8,7 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 
 public class EditorController : MonoBehaviour{
-    
+
+    public LidarMenu lidarMenu;
     public GameObject mainCamera;
     public GameObject lidarCamera;
     public GameObject editorMenu;
@@ -82,6 +83,7 @@ public class EditorController : MonoBehaviour{
         else
         {
             mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
+            lidarMenu.PassLidarValuesToPointCloud();
         }
 
         mainCamera.GetComponent<Camera>().enabled = true;
