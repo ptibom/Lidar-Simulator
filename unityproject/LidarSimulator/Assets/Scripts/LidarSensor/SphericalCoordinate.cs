@@ -118,6 +118,10 @@ public class SphericalCoordinate
     /// Override hash code
     /// </summary>
     /// <returns></returns>
+	public String ToString() {
+		return radius.ToString () + ";" + inclination.ToString () + ";" + azimuth.ToString () + ":::";
+	}
+	
     public override int GetHashCode()
     {
         return  (int)Math.Floor(azimuth * 3 + inclination * 13 + radius * 11);
