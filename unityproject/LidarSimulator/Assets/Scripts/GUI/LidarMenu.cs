@@ -10,11 +10,13 @@ using UnityEngine.UI;
 /// </summary>
 public class LidarMenu : MonoBehaviour {
 
-	public static event UpdateMimicValues OnLidarMenuValChanged;
-    public static event PassLidarMenuValues PassGuiValsOnStart;
-    public delegate void UpdateMimicValues(int noLasers, float upFOV, float lowFOV, float offset, float upNorm, float lowNorm);
-    public delegate void PassLidarMenuValues(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
+	public static event UpdateMimicValuesDelegate OnLidarMenuValChanged;
+    public static event PassLidarMenuValuesDelegate PassGuiValsOnStart;
+    public static event StopSimulationDelegate OnStopSimulation;
+    public delegate void UpdateMimicValuesDelegate(int noLasers, float upFOV, float lowFOV, float offset, float upNorm, float lowNorm);
+    public delegate void PassLidarMenuValuesDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
         , float lowerFOV, float offset, float upperNormal, float lowerNormal);
+    public delegate void StopSimulationDelegate();
 
 	public Slider numberOfLasers;
     public Slider rotationSpeedHz;
@@ -66,6 +68,21 @@ public class LidarMenu : MonoBehaviour {
         try
         {
             OnLidarMenuValChanged((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log("Event has no delegates: " + e);
+        }
+    }
+
+    /// <summary>
+    /// Sends an event to let other scripts know to stop simulation mode
+    /// </summary>
+    public void StopSimulation()
+    {
+        try
+        {
+            OnStopSimulation();
         }
         catch (NullReferenceException e)
         {

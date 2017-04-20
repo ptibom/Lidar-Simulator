@@ -44,6 +44,7 @@ public class InputSync : MonoBehaviour {
     /// </summary>
 	public void SyncToInputField()
     {
+        Debug.Log(gameObject.GetComponent<Slider>().value.ToString());
 		inputField.text = SetValueLength (gameObject.GetComponent<Slider> ().value.ToString ());
         SyncToSlider();
 	}

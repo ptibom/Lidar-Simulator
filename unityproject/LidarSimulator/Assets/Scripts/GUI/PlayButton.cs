@@ -19,10 +19,6 @@ public class PlayButton : MonoBehaviour {
     {
         bool toggleIsOn = gameObject.GetComponent<Toggle>().isOn;
         editorController.SetMode(toggleIsOn);
-        if (toggleIsOn)
-        {
-            Invoke("lidarMenu.SendSettingsToLidar", 3f);
-        }
     }
 
 }
