@@ -19,12 +19,14 @@ public class AgentTest : MonoBehaviour {
 		if (target != null) {
 			if (target.GetComponent<WayPoint> () != null) {
 				//Debug.Log ("Target is not null");
-				if (Vector3.Distance (transform.position, target.transform.position) < minDist) {
-					//Debug.Log ("Reached Target, switching");
-					target = target.GetComponent<WayPoint> ().next.transform;
+				if (Vector3.Distance(transform.position, target.transform.position) < minDist) {
+                    //Debug.Log ("Reached Target, switching");
+                    if (target.GetComponent<WayPoint>().next != null)
+                    {
+                        target = target.GetComponent<WayPoint>().next.transform;
+                    }
 				}
-
-				agent.SetDestination (target.position);
+				agent.SetDestination(target.position);
 			}
 		}
 	}
