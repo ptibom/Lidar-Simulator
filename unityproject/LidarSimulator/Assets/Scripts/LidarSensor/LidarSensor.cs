@@ -44,7 +44,7 @@ public class LidarSensor : MonoBehaviour {
     public GameObject lineDrawerPrefab;
 
     // Use this for initialization
-    private void Start ()
+    private void Start()
     {
         LidarMenu.PassGuiValsOnStart += UpdateSettings;
     }
@@ -58,8 +58,10 @@ public class LidarSensor : MonoBehaviour {
         this.rayDistance = rayDistance;
         this.upperFOV = upperFOV;
         this.lowerFOV = lowerFOV;
+        this.offset = offset;
         this.upperNormal = upperNormal;
         this.lowerNormal = lowerNormal;
+        
 
         // Initialize number of lasers, based on user selection.
         lasers = new List<Laser>();
