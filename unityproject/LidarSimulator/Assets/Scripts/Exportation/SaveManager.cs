@@ -94,8 +94,7 @@ public class SaveManager : MonoBehaviour
 
             outputstream.WriteLine(sb);
             outputstream.Close();
-            Debug.Log("datapath" + Application.persistentDataPath);
-            Debug.Log("datapath" + Application.persistentDataPath);
+    
         }
         catch (IOException e)
         {
