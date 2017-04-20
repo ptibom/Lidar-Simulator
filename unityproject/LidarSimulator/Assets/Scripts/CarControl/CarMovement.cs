@@ -36,7 +36,7 @@ public class CarMovement : MonoBehaviour {
     /// Checks if the arrowkeys on the keyboard is pressed and calls all functions based on those actions.
     /// Controlls the movement direction, movement acceleration and rotation direction based on if one is driving forward or backwards.
     /// </summary>
-    void Update ()
+    void FixedUpdate ()
     {
         if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
         {
