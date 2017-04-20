@@ -36,7 +36,7 @@ public class PointCloud : MonoBehaviour
         LidarSensor.OnScanned += OnUpdatePoints;
         LidarSensor.NewRotationEvent += NewLap;
         isEnabled = true;
-        LidarMenu.PassGuiValsOnStart += UpdateSpecs;
+        LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
 
 
     }
@@ -221,8 +221,7 @@ public class PointCloud : MonoBehaviour
 /// <summary>
 /// This method is called when the lidar specifications are changed. Calculates the number of particle systems needed, point size and number of particles / system.
 /// </summary>
-    public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
-        , float lowerFOV, float offset, float upperNormal, float lowerNormal)
+    public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep)
     {
         this.rotationSpeed  = 1.0f / rotationSpeed;
         Debug.Log("sag");

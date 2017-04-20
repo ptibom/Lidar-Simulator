@@ -8,12 +8,14 @@ using UnityEngine.UI;
 /// </summary>
 
 public class EditorController : MonoBehaviour{
-    
+
+    public LidarMenu lidarMenu;
     public GameObject mainCamera;
     public GameObject lidarCamera;
     public GameObject editorMenu;
     public GameObject pointCloud;
-    public GameObject visToggle;
+    public GameObject MainMenuButton;
+    public Toggle visToggle;
     public Toggle pauseToggle;
     public Toggle lidarSensorToggle;
 
@@ -32,7 +34,9 @@ public class EditorController : MonoBehaviour{
         pauseToggle.interactable = simulatorMode;
         editorMenu.SetActive(!simulatorMode);
         lidarCamera.SetActive(lidarSensorToggle.isOn && !simulatorMode);
-        SetVisToggleActive(simulatorMode);
+        SetVisToggleEnabled(simulatorMode);
+        MainMenuButton.SetActive(!simulatorMode);
+
     }
 
     /// <summary>
@@ -55,14 +59,12 @@ public class EditorController : MonoBehaviour{
     /// Toggles the state of the point cloud toggle object and sets the activity of the point cloud object accordingly
     /// </summary>
     /// <param name="state"></param>
-	void SetVisToggleActive(bool state)
+	void SetVisToggleEnabled(bool state)
     {
-        visToggle.SetActive(state);
-        
-        bool visToggleOn = visToggle.GetComponent<Toggle>().isOn;
+        visToggle.interactable = state;
         bool pointCloudActive = pointCloud.activeInHierarchy;
 
-        if ((state && visToggleOn && !pointCloudActive) || (!state && pointCloudActive))
+        if ((state && visToggle.isOn && !pointCloudActive) || (!state && pointCloudActive))
         {
             TogglePointCloudActive();
         }
@@ -82,6 +84,7 @@ public class EditorController : MonoBehaviour{
         else
         {
             mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
+            lidarMenu.PassLidarValuesToPointCloud();
         }
 
         mainCamera.GetComponent<Camera>().enabled = true;

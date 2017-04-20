@@ -11,12 +11,11 @@ using UnityEngine.UI;
 public class LidarMenu : MonoBehaviour {
 
 	public static event UpdateMimicValuesDelegate OnLidarMenuValChanged;
-    public static event PassLidarMenuValuesDelegate PassGuiValsOnStart;
+    public static event PassLidarValuesToPointCloudDelegate OnPassLidarValuesToPointCloud;
     public static event StartSimulationDelegate OnStartSimulation;
     public static event StopSimulationDelegate OnStopSimulation;
     public delegate void UpdateMimicValuesDelegate(int noLasers, float upFOV, float lowFOV, float offset, float upNorm, float lowNorm);
-    public delegate void PassLidarMenuValuesDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
-        , float lowerFOV, float offset, float upperNormal, float lowerNormal);
+    public delegate void PassLidarValuesToPointCloudDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep);
     public delegate void StartSimulationDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
         , float lowerFOV, float offset, float upperNormal, float lowerNormal);
     public delegate void StopSimulationDelegate();
@@ -103,23 +102,25 @@ public class LidarMenu : MonoBehaviour {
         {
             OnStartSimulation((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
                 upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
-
-            //PassGuiValsOnStart((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
-            //upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
         }
         catch (NullReferenceException e)
         {
             Debug.Log("Event has no delegates: " + e);
         }
-        /*
-       sensor.numberOfLasers = (int)numberOfLasers.value;
-       sensor.rotationSpeedHz = rotationSpeedHz.value;
-       sensor.rotationAnglePerStep = rotationAnglePerStep.value;
-       sensor.rayDistance = rayDistance.value;
-       sensor.upperFOV = upperFOV.value;
-       sensor.lowerFOV = lowerFOV.value;
-       sensor.offset = offset.value;
-       sensor.upperNormal = upperNormal.value;
-       sensor.lowerNormal = lowerNormal.value;*/
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void PassLidarValuesToPointCloud()
+    {
+        try
+        {
+            OnPassLidarValuesToPointCloud((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log("Event has no delegates: " + e);
+        }
     }
 }
