@@ -30,7 +30,7 @@ public class LidarMenu : MonoBehaviour {
     public Slider upperNormal;
     public Slider lowerNormal;
 
-    public LidarLineMimic lidarLineMimic;
+    public PreviewLidarRays lidarLineMimic;
 
     private LidarSensor sensor;
 

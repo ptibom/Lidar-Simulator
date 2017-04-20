@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// 
 /// @author: Jonathan Jansson
 /// </summary>
-public class LidarLineMimic : MonoBehaviour {
+public class PreviewLidarRays : MonoBehaviour {
 
 	public GameObject lineDrawerPrefab;
     public Slider numberOfLasersSlider;
@@ -42,7 +42,7 @@ public class LidarLineMimic : MonoBehaviour {
 			lineDrawer.transform.parent = gameObject.transform;
 			lineDrawer.transform.position = transform.position;
 			lineDrawer.transform.rotation = transform.rotation;
-			lasersMimics.Add(new LaserMimic(0,0, lineDrawer, false));
+			lasersMimics.Add(new LaserMimic(0, 0, lineDrawer, false));
 		}
 	}
     
