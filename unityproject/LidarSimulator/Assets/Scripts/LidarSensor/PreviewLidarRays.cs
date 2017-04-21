@@ -15,7 +15,7 @@ public class PreviewLidarRays : MonoBehaviour {
 	private int numberOfLasers;
     private float upperFOV;
     private float lowerFOV;
-    private float offset;
+    private float offsetCm;
     private float upperNormal;
     private float lowerNormal;
 
@@ -61,7 +61,7 @@ public class PreviewLidarRays : MonoBehaviour {
 		this.numberOfLasers = numberOfLasers;
 		this.upperFOV = upperFOV;
 		this.lowerFOV = lowerFOV;
-		this.offset = offset;
+		this.offsetCm = offset;
 		this.upperNormal = upperNormal;
 		this.lowerNormal = lowerNormal;
 
@@ -77,20 +77,20 @@ public class PreviewLidarRays : MonoBehaviour {
 		float lowerTotalAngle = lowerFOV / 2;
 		float upperAngle = upperFOV / (numberOfLasers / 2);
 		float lowerAngle = lowerFOV / (numberOfLasers / 2);
-        float offsetCm = offset / 100; // Converts offset to cm
+        float offset = (offsetCm / 100) / 2; // Converts offset FROM cm
 
 		for (int i = 0; i < numberOfLasers; i++)
 		{
 			if (i < numberOfLasers/2)
 			{
-				lasersMimics[i].SetRayParameters(lowerTotalAngle + lowerNormal, -offsetCm, transform);
-				lasersMimics [i].SetActive (true);
+				lasersMimics[i].SetRayParameters(lowerTotalAngle + lowerNormal, -offset, transform);
+				lasersMimics [i].SetActive(true);
 				lowerTotalAngle -= lowerAngle;
 			}
 			else
 			{
-				lasersMimics[i].SetRayParameters(upperTotalAngle - upperNormal, 0, transform);
-				lasersMimics [i].SetActive (true);
+				lasersMimics[i].SetRayParameters(upperTotalAngle - upperNormal, offset, transform);
+				lasersMimics [i].SetActive(true);
 				upperTotalAngle -= upperAngle;
 			}
 		}

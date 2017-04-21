@@ -83,7 +83,7 @@ public class LidarSensor : MonoBehaviour {
         float lowerTotalAngle = lowerFOV / 2;
         float upperAngle = upperFOV / (numberOfLasers / 2);
         float lowerAngle = lowerFOV / (numberOfLasers / 2);
-        offset = (offset / 100) * 2; // Convert offset to centimeters.
+        offset = (offset / 100) / 2; // Convert offset to centimeters.
         for (int i = 0; i < numberOfLasers; i++)
         {
             GameObject lineDrawer = Instantiate(lineDrawerPrefab);
@@ -96,7 +96,7 @@ public class LidarSensor : MonoBehaviour {
             }
             else
             {
-                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, 0, lineDrawer, i));
+                lasers.Add(new Laser(gameObject, upperTotalAngle - upperNormal, rayDistance, offset, lineDrawer, i));
                 upperTotalAngle -= upperAngle;
             }
         }
