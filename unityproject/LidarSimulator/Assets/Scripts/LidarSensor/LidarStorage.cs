@@ -7,7 +7,7 @@ using UnityEngine;
 /// The data structure in which to save the lidar data.
 ///  @author: Tobias Alldén
 /// </summary>
-public class LidarStorage {
+public class LidarStorage : MonoBehaviour {
 
 	private Dictionary<float, LinkedList<SphericalCoordinate>> dataStorage;
 	private LinkedList<SphericalCoordinate> currentHits;
@@ -35,6 +35,7 @@ public class LidarStorage {
     /// </summary>
     public void AddHits(LinkedList<SphericalCoordinate> hits)
     {
+        Debug.Log("Ping");
         foreach(SphericalCoordinate hit in hits)
         {
             currentHits.AddLast(hit);

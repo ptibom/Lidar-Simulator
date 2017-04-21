@@ -37,8 +37,6 @@ public class LidarSensor : MonoBehaviour {
     private bool isPlaying = false;
 
 	public GameObject pointCloudObject;
-
-    private LidarStorage dataStructure = new LidarStorage();
 	private float previousUpdate;
 
     public GameObject lineDrawerPrefab;
@@ -164,6 +162,11 @@ public class LidarSensor : MonoBehaviour {
                     {
                         NewRotationEvent();
                     }
+                    if(StoreEvent != null)
+                    {
+                        StoreEvent(Time.fixedTime);
+
+                    }
                 }
 
 
@@ -188,15 +191,10 @@ public class LidarSensor : MonoBehaviour {
                 // Notify data structure that it is time to store the collected points
 				if(StoreEvent != null)
                 {
-                    StoreEvent(Time.fixedTime);
-                    previousUpdate = Time.fixedTime;
+                    
+                    //previousUpdate = Time.fixedTime;
                 }
             }
         }
-    }
-
-    public LidarStorage GetLidarStorage()
-    {
-        return dataStructure;
     }
 }
