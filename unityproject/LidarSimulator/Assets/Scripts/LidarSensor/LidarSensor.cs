@@ -172,8 +172,11 @@ public class LidarSensor : MonoBehaviour {
                 {
                     RaycastHit hit = laser.ShootRay();
                     float distance = hit.distance;
-                    float verticalAngle = laser.GetVerticalAngle();
-                    hits.AddLast(new SphericalCoordinate(distance, verticalAngle, horizontalAngle, hit.point, laser.GetLaserId()));
+                    if (distance != 0) // Didn't hit anything, don't add to list.
+                    {
+                        float verticalAngle = laser.GetVerticalAngle();
+                        hits.AddLast(new SphericalCoordinate(distance, verticalAngle, horizontalAngle, hit.point, laser.GetLaserId()));
+                    }
                 }
             }
 
