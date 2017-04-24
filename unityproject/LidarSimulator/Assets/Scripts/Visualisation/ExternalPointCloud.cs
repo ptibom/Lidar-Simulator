@@ -18,26 +18,20 @@ public class ExternalPointCloud : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = startMesh;
     }
 
-    void CreateMesh(LinkedList<SphericalCoordinate> coordinates)
+    void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
+        List<List<Vector3>> chunks = SplitIntoChunks(coordinates);
+        List<string> meshObjects = CreateNeededMeshes(chunks.Count);
 
-        if (coordinates.Count > maxParticlesPerChunk) // Max particle size per mesh 
+        for(int i = 0; i< chunks.Count; i++)
         {
-            List<LinkedList<SphericalCoordinate>> chunks = SplitIntoChunks(coordinates);
+            MeshFilter meshFilter = GameObject.Find(meshObjects[i]).GetComponent<MeshFilter>();
+            Mesh m = new Mesh();
+            m.SetVertices(chunks[i]);
+            m.SetColors(CreateColorsForPointList(chunks[i]));
+            m.SetIndices(CreateIdsForCoordinates(chunks[i]), MeshTopology.Points,0);
+            meshFilter.mesh = m;
         }
-        /**
-        if (worldPoints.Length > maxParticlesPerChunk)
-        {
-            //TODO: 
-        } else
-        {
-            meshes[0].vertices = worldPoints;
-            meshes[0].colors = colors;
-            meshes[0].SetIndices(indices,MeshTopology.Points,0);
-            
-        }      
-    **/
-
     }
 
     /// <summary>
@@ -45,18 +39,19 @@ public class ExternalPointCloud : MonoBehaviour {
     /// </summary>
     /// <param name="coordinates">The coordinates to be split</param>
     /// <returns>A list containing the chunks of points</returns>
-    private List<LinkedList<SphericalCoordinate>> SplitIntoChunks(LinkedList<SphericalCoordinate> coordinates)
+    private List<List<Vector3>> SplitIntoChunks(LinkedList<SphericalCoordinate> coordinates)
     {
-        List<LinkedList<SphericalCoordinate>> chunks = new List<LinkedList<SphericalCoordinate>>();
-        LinkedList<SphericalCoordinate> currentChunk = new LinkedList<SphericalCoordinate>();
+        List<List<Vector3>> chunks = new List<List<Vector3>>();
+        List<Vector3> currentChunk = new List<Vector3>();
+        int i = 0;
 
         for(LinkedListNode<SphericalCoordinate> it = coordinates.First; it != null; it = it.Next)
         {
-            currentChunk.AddLast(it.Value);
+            currentChunk[i] = (it.Value.ToCartesian()); //Remake to use world points 
             if(currentChunk.Count%maxParticlesPerChunk == 0)
             {
                 chunks.Add(currentChunk);
-                currentChunk = new LinkedList<SphericalCoordinate>();
+                currentChunk = new List<Vector3>();
             } else if(it.Next == null)
             {
                 chunks.Add(currentChunk); // final value
@@ -81,6 +76,46 @@ public class ExternalPointCloud : MonoBehaviour {
         }
 
         return nameList;
+    }
+
+    /// <summary>
+    /// Creates a array of colors for a given list of spherical coordinates
+    /// </summary>
+    /// <param name="coordinates"></param>
+    /// <returns>A list of colors, based on their height</returns>
+    private List<Color> CreateColorsForPointList(List<Vector3> coordinates)
+    {
+        List<Color> colorList = new List<Color>();
+
+        for (int i = 0; i<coordinates.Count; i++)
+        {
+            Color c;
+            if (coordinates[i].y < 1)
+            {
+                c = Color.red;
+            }
+            else if (coordinates[i].y > 1 && coordinates[i].y < 3)
+            {
+                c = Color.yellow;
+            }
+            else
+            {
+                c = Color.green;
+            }
+            colorList[i] = c;
+        }
+        return colorList;
+    }
+
+
+    private int[] CreateIdsForCoordinates(List<Vector3> coordinates)
+    {
+        int[] idList = new int[coordinates.Count];
+        for (int i = 0; i<coordinates.Count; i++)
+        {
+            idList[i] = i;
+        }
+        return idList;
     }
 
 
