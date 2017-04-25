@@ -39,7 +39,7 @@ public class AgentTest : MonoBehaviour {
 	}
 
 	public void Resume() {
-		agent.SetDestination (target);
+		agent.SetDestination (target.position);
 		if (anime != null) {
 			anime.enabled = true;
 		}

@@ -21,16 +21,44 @@ public class WayPoint : MonoBehaviour {
 	public int path;
 	public int pathIndex;
 
+
 	/*Ifall man behöver iterara genom alla waypoints som finns, typ om man har någon funktion som ska hitta närmsta waypoint eller något*/
 	public static List<WayPoint> waypoints = new List<WayPoint>();
-
 	/*Tanken är att en path är en lista av waypoints. Som i sin tur lagras i en lista av paths*/
 	//public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
 
 
-	public static void WhenToggle (bool b){
-		WayPoint.SetAllColliders (b);
-		WayPoint.SetGlobalVisibility (b);
+
+
+	// Use this for initialization
+	void awake() {
+		PlayButton.OnPlayToggled += WhenToggle;
+	}
+
+	void Start () {
+		waypoints.Add (this);
+		nextLine = this.GetComponent<LineRenderer> ();
+	}
+
+	// Update is called once per frame
+	void Update () {
+		if (next != null) {
+			Vector3[] g = new Vector3[2];
+			g [0] = transform.position;
+			g [1] = next.transform.position;
+			nextLine.SetPositions(g);
+		}
+
+	}
+
+
+	public void WhenToggle(bool b){
+		//WayPoint.SetAllColliders (b);
+		//WayPoint.SetGlobalVisibility (b);
+		SetVisibility(b);
+		SetColliderState (b);
+
+		Debug.Log ("WhenToggle called");
 	}
 		
 
@@ -198,28 +226,7 @@ public class WayPoint : MonoBehaviour {
 	
 	}
 
-	// Use this for initialization
-	void awake() {
-		PlayButton.OnPlayToggled += WhenToggle;
 
-
-	}
-
-	void Start () {
-		waypoints.Add (this);
-		nextLine = this.GetComponent<LineRenderer> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (next != null) {
-			Vector3[] g = new Vector3[2];
-			g [0] = transform.position;
-			g [1] = next.transform.position;
-			nextLine.SetPositions(g);
-		}
-
-	}
 
 	//väldigt viktigt för att få looparna i remove path att funka. Det måste finnas en startnod.
 	public void SetStart(bool s) {
