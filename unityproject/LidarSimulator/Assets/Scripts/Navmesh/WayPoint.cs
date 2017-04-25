@@ -27,6 +27,14 @@ public class WayPoint : MonoBehaviour {
 	/*Tanken är att en path är en lista av waypoints. Som i sin tur lagras i en lista av paths*/
 	//public static List<List<WayPoint>> paths = new List<List<WayPoint>> ();
 
+
+	public static void WhenToggle (bool b){
+		WayPoint.SetAllColliders (b);
+		WayPoint.SetGlobalVisibility (b);
+	}
+		
+
+
     public static void SetAllColliders(bool b)
     {
         foreach(WayPoint wp in waypoints)
@@ -192,6 +200,7 @@ public class WayPoint : MonoBehaviour {
 
 	// Use this for initialization
 	void awake() {
+		PlayButton.OnPlayToggled += WhenToggle;
 
 
 	}
