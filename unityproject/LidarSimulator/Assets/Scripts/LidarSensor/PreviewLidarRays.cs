@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,7 @@ public class PreviewLidarRays : MonoBehaviour {
 	private int maxLasers = 64;
 	private List<LaserMimic> lasersMimics = new List<LaserMimic>();
 
+    public static Action<bool> tellLidarMenuInitialized;
     /// <summary>
     /// Adds the method UpdateLidarValues to the event in the lidarMenu script to listen on parameter changes in the GUI
     /// </summary>
@@ -33,12 +35,21 @@ public class PreviewLidarRays : MonoBehaviour {
 	void Start()
     {
         maxLasers = (int)numberOfLasersSlider.maxValue;
+        InitializeLaserMimicList();
+        try
+        {
+            tellLidarMenuInitialized(true);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log("Action not initialized: " + e);
+        }
     }
 
 	/// <summary>
     /// Initializing the lidar mimic with the maximum number of lasers set in the slider settings for number of lasers
     /// </summary>
-	public void InitializeLaserMimicList ()
+	public void InitializeLaserMimicList()
     {
 		for (int i = 0; i < maxLasers; i++)
 		{
