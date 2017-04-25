@@ -50,7 +50,7 @@ public class MainMenuScript : MonoBehaviour {
         if(async != null)
         {
             loadWheel.transform.Rotate(Vector3.back * Time.deltaTime * 300);
-            loadProgress.text = (Mathf.Ceil(async.progress) *100).ToString() + "%";
+            loadProgress.text = (async.progress *100).ToString() + "%";
         }
     }
 
