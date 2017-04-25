@@ -9,13 +9,17 @@ using UnityEngine.UI;
 public class SpriteAspect : MonoBehaviour {
     
     /// <summary>
-    /// Sets the initial aspect ratio as eventual image of component
+    /// Sets the initial aspect ratio as image of component
     /// </summary>
     void Start ()
     {
-        if (gameObject.GetComponent<Image>())
+        if (gameObject.GetComponent<Image>() && gameObject.GetComponent<AspectRatioFitter>())
         {
             SetAspectRatioAsImage(gameObject.GetComponent<Image>());
+        }
+        else
+        {
+            Debug.Log("GameObject has no Image or no AspectRatoFitter");
         }
     }
 

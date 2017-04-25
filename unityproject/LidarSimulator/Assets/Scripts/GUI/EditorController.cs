@@ -31,7 +31,7 @@ public class EditorController : MonoBehaviour{
     /// Sets activity of all necessary objects depending on if smulator or editor mode should be "on"
     /// </summary>
     /// <param name="simulatorMode"></param>
-    public void SetMode(bool simulatorMode)
+    void SetMode(bool simulatorMode)
     {
         if (!simulatorMode)
         {
@@ -81,7 +81,7 @@ public class EditorController : MonoBehaviour{
     /// <summary>
     /// Toggles the split screen visualisation through handling the activity of the point cloud and sets the main camera size to split or non split screen size
     /// </summary>
-    void TogglePointCloudActive()
+    public void TogglePointCloudActive()
     {
         pointCloud.SetActive(!pointCloud.activeInHierarchy);    
 
