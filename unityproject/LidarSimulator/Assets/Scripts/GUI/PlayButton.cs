@@ -13,22 +13,20 @@ public class PlayButton : MonoBehaviour {
     public static event PlayToggledDelegate OnPlayToggled;
     public delegate void PlayToggledDelegate(bool toggleIsOn);
 
-    public EditorController editorController;
-    public LidarMenu lidarMenu;
-    public Toggle lidarSensorButton;
-
-    public void OnToggle()
+    void Start()
     {
-        bool toggleIsOn = gameObject.GetComponent<Toggle>().isOn;
+        gameObject.GetComponent<Toggle>().onValueChanged.AddListener(OnToggle);
+    }
+
+    void OnToggle(bool isOn)
+    {
         try
         {
-            OnPlayToggled(toggleIsOn);
+            OnPlayToggled(isOn);
         }
         catch (NullReferenceException e)
         {
             Debug.Log("Event has no delegates: " + e);
         }
-
-
     }
 }

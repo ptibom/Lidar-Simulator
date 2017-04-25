@@ -10,9 +10,14 @@ public class PauseToggle : MonoBehaviour {
 
     public TimeManager timeController;
 
-	public void Toggle()
+    void Start()
     {
-		if(gameObject.GetComponent<Toggle>().isOn)
+        gameObject.GetComponent<Toggle>().onValueChanged.AddListener(Toggle);
+    }
+
+    void Toggle(bool isOn)
+    {
+		if(isOn)
         {
 			timeController.PauseTime();
 		}

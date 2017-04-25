@@ -14,6 +14,8 @@ public class LidarMenu : MonoBehaviour {
     public static event PassLidarValuesToPointCloudDelegate OnPassLidarValuesToPointCloud;
     public static event StartSimulationDelegate OnStartSimulation;
     public static event StopSimulationDelegate OnStopSimulation;
+    public static event InitializeDependencyScripts OnInitializeDependencyScripts;
+    public delegate void InitializeDependencyScripts();
     public delegate void UpdateMimicValuesDelegate(int noLasers, float upFOV, float lowFOV, float offset, float upNorm, float lowNorm);
     public delegate void PassLidarValuesToPointCloudDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep);
     public delegate void StartSimulationDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
@@ -34,14 +36,18 @@ public class LidarMenu : MonoBehaviour {
 
     private LidarSensor sensor;
 
+    void Awake()
+    {
+        PlayButton.OnPlayToggled += StartSimulation;
+        EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
+    }
 
     /// <summary>
     /// Calls all initialization methods which syncs the lidar menu sliders with the lidar sensors initial values, and creates and  updates the lidar mimic system.
     /// </summary>
 	void Start () 
 	{
-        PlayButton.OnPlayToggled += StartSimulation;
-        EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
+       // OnInitializeDependencyScripts.BeginInvoke();
 
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
 		lidarLinePreview.InitializeLaserMimicList ();

@@ -25,10 +25,14 @@ public class PreviewLidarRays : MonoBehaviour {
     /// <summary>
     /// Adds the method UpdateLidarValues to the event in the lidarMenu script to listen on parameter changes in the GUI
     /// </summary>
+    void Awake()
+    {
+        LidarMenu.OnLidarMenuValChanged += UpdateLidarValues;
+    }
+
 	void Start()
     {
         maxLasers = (int)numberOfLasersSlider.maxValue;
-		LidarMenu.OnLidarMenuValChanged += UpdateLidarValues;
     }
 
 	/// <summary>
