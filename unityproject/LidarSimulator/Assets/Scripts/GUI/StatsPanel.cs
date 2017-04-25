@@ -14,22 +14,23 @@ public class StatsPanel : MonoBehaviour {
 
 	private float updateDelay = 0.25f;
 	private float updateTime = 0f;
+    private float lastUpdate = 0f;
 
 	private float timeCounter = 0f;
 	private float frameCounter = 0f;
 
 
 	/// <summary>
-    /// Counts updates and frames for the fps counter every update and handles the delay between GUI updates of values
+    /// Counts frames for the fps counter every update and handles the delay between GUI updates of values
     /// </summary>
 	void Update ()
     {
-		timeCounter += Time.deltaTime;
 		frameCounter += 1;
 
         if (Time.fixedTime > updateTime)
         {
             UpdateTexts();
+            timeCounter = Time.time;
         }
     }
 
@@ -38,13 +39,11 @@ public class StatsPanel : MonoBehaviour {
     /// </summary>
 	void UpdateTexts()
     {
+        float deltaTime = Time.time - timeCounter;
 		timeText.text = "Time: " + ((int)Time.fixedTime).ToString() + " s";	
 		hitPText.text = "Points hit: " + 0;
-		fpsText.text = "Fps: " + (int)(frameCounter / timeCounter);
-
-		timeCounter = 0f;
+		fpsText.text = "Fps: " + (int)(frameCounter / deltaTime);
 		frameCounter = 0f;
-
 		updateTime = Time.fixedTime + updateDelay;
 	}
 }
