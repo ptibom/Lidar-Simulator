@@ -31,7 +31,7 @@ public class WayPoint : MonoBehaviour {
 
 
 	// Use this for initialization
-	void awake() {
+	void Awake() {
 		PlayButton.OnPlayToggled += WhenToggle;
 	}
 
@@ -52,11 +52,11 @@ public class WayPoint : MonoBehaviour {
 	}
 
 
-	public void WhenToggle(bool b){
-		//WayPoint.SetAllColliders (b);
-		//WayPoint.SetGlobalVisibility (b);
-		SetVisibility(b);
-		SetColliderState (b);
+	public static void WhenToggle(bool b){
+		WayPoint.SetAllColliders (!b);
+		WayPoint.SetGlobalVisibility (!b);
+		//SetVisibility(!b);
+		//SetColliderState (!b);
 
 		Debug.Log ("WhenToggle called");
 	}
@@ -213,15 +213,16 @@ public class WayPoint : MonoBehaviour {
 
 	//sätt på eller stäng av waypointens renderer
 	public void SetVisibility(bool b){
-		if (b == true) {
-			nextLine.enabled = true;
-			Renderer r = GetComponent<Renderer> ();
-			r.enabled = true;
-		} 
-		else {
-			nextLine.enabled = false;
-			Renderer r = GetComponent<Renderer> ();
-			r.enabled = false;
+		if (nextLine != null) {
+			if (b == true) {
+				nextLine.enabled = true;
+				Renderer r = GetComponent<Renderer> ();
+				r.enabled = true;
+			} else {
+				nextLine.enabled = false;
+				Renderer r = GetComponent<Renderer> ();
+				r.enabled = false;
+			}
 		}
 	
 	}
