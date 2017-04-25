@@ -5,13 +5,17 @@ using System;
 using System.IO;
 public class TestFileBrowser : MonoBehaviour
 {
+    public ExportManager exportManager;
     Texture2D file, folder, back, drive;
     FileBrowser fb = new FileBrowser();
+    bool active = false;
+
     string output = "no file";
 
     // Use this for initialization
     void Start()
     {
+        exportManager = GetComponent<ExportManager>();
         fb.fileTexture = file;
         fb.directoryTexture = folder;
         fb.backTexture = back;
@@ -21,27 +25,36 @@ public class TestFileBrowser : MonoBehaviour
         
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
+        fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
     }
 
 
     void OnGUI()
     {
-        GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical();
-        
-        GUILayout.EndVertical();
-        GUILayout.Space(80);
-        //GUILayout.Label("Overwrite exiting file: " + output);
-        GUILayout.EndHorizontal();
-        //draw and display output
-      
-        if (fb.Draw())
-        { //true is returned when a file has been selected
-          //the output file is a member if the FileInfo class, if cancel was selected the value is null
+        if (active)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
 
-            output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
-            gameObject.SetActive(false);
+            GUILayout.EndVertical();
+            GUILayout.Space(80);
+            //GUILayout.Label("Overwrite exiting file: " + output);
+            GUILayout.EndHorizontal();
+            //draw and display output
 
+            if (fb.Draw())
+            { //true is returned when a file has been selected
+              //the output file is a member if the FileInfo class, if cancel was selected the value is null
+
+                output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
+                gameObject.SetActive(false);
+
+            }
         }
     }
+    public void SetActive(bool active)
+    {
+        this.active = active;
+    }
+
 }

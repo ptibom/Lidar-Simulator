@@ -15,7 +15,7 @@ public class ExportManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        lidarStorageGameObject = GameObject.Find("LidarStorage");
+        lidarStorageGameObject = GameObject.FindGameObjectWithTag("Lidar");
         lidarStorage = lidarStorageGameObject.GetComponent<LidarStorage>();		
 	}
 

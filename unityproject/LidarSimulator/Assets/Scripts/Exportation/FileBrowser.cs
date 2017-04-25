@@ -7,7 +7,7 @@ using System.IO;
 public class FileBrowser
 {
 
-    public GameObject savePrefab; // Prefab required to save
+    public ExportManager exportManager; // Prefab required to save
 
 
     //public 
@@ -371,27 +371,15 @@ public class FileBrowser
     }
     public void SaveFile(string filename)
     {
-        string filetosave = filename;
-        try
-        {
-            /**
- 
-            StreamWriter sr = File.CreateText(filetosave );
-           
-            sr.WriteLine("This is the existing file which has been ovewritten.");
-            sr.WriteLine("testing the save actually works.");
+        exportManager.Save(filename);
+    }
 
-            sr.Close();
-    */
-
-            //LidarStorage ls =  GameObject.Find("LidarSensor").GetComponent<LidarSensor>().GetLidarStorage();
-            //Debug.Log("Size ls data: " + ls.GetData().Count);
-            //SaveManager.SaveToCsv(ls.GetData(), filename);
-        }
-        catch (IOException e)
-        {
-            Debug.Log("Access violation, printing file.");
-        }
+    /// <summary>
+    /// Sets the export manager needed to export the data
+    /// </summary>
+    public void SetExportManager(ExportManager exportManager)
+    {
+        this.exportManager = exportManager;
     }
 
 
@@ -458,4 +446,6 @@ public class DirectoryInformation1
     public void label() { GUILayout.Label(gc); }
     public bool button(GUIStyle gs) { return GUILayout.Button(gc, gs); }
     public void label(GUIStyle gs) { GUILayout.Label(gc, gs); }
+
+    
 }
