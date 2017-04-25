@@ -16,6 +16,7 @@ public class CarMovement : MonoBehaviour {
     private float moveAcc = 0.2f;
     private float moveDeAcc = 1.1f;
     private float maxMoveSpeed = 35f;
+    private bool accelerate = false;
 
    
     private float baseRotationSpeed;
@@ -31,6 +32,13 @@ public class CarMovement : MonoBehaviour {
         baseMoveSpeed = moveSpeed;
         moveSpeed = 0f;
         baseRotationSpeed = rotationSpeed;
+    }
+
+
+    void Update()
+    {
+        MoveAcc(accelerate);
+        RotateAcc();
     }
 
     /// <summary>
@@ -59,19 +67,17 @@ public class CarMovement : MonoBehaviour {
                 direction = -1;
                 Rotate(-1);
             }
-
-            MoveAcc(true);
+            accelerate = true;
         }
         else
         {
-            MoveAcc(false);
+            accelerate = false;
         }
        
         if (moveSpeed != 0)
         {
             Move(direction);
         }
-        RotateAcc();
 	}
 
     /// <summary>
