@@ -40,8 +40,8 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
 	void Start () 
 	{
-        PlayButton.OnPlay += StartSimulation;
-        PlayButton.OnStop += StopSimulation;
+        PlayButton.OnPlayToggled += StartSimulation;
+        EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
 
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
 		lidarLinePreview.InitializeLaserMimicList ();
@@ -68,7 +68,7 @@ public class LidarMenu : MonoBehaviour {
     /// <summary>
     /// Invokes an event to updates the values of the lidar mimic to the values of the GUI
     /// </summary>
-    public void UpdateLaserMimicValues()
+    void UpdateLaserMimicValues()
     {
         try
         {
@@ -83,7 +83,7 @@ public class LidarMenu : MonoBehaviour {
     /// <summary>
     /// Sends an event to let other scripts know to stop simulation mode
     /// </summary>
-    public void StopSimulation()
+    void StopSimulation()
     {
         try
         {
@@ -98,23 +98,30 @@ public class LidarMenu : MonoBehaviour {
     /// <summary>
     /// Invokes an event with the current values set in the GUI for the lidar sensor and pointcloud to listen to
     /// </summary>
-    public void StartSimulation()
+    void StartSimulation(bool play)
 	{
-        try
+        if (play)
         {
-            OnStartSimulation((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
-                upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+            try
+            {
+                OnStartSimulation((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
+                    upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Event has no delegates: " + e);
+            }
         }
-        catch (NullReferenceException e)
+        else
         {
-            Debug.Log("Event has no delegates: " + e);
+            StopSimulation();
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public void PassLidarValuesToPointCloud()
+    void PassLidarValuesToPointCloud()
     {
         try
         {

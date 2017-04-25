@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 public class EditorController : MonoBehaviour{
 
+    public static event PointCloudToggleDelegate OnPointCloudToggle;
+    public delegate void PointCloudToggleDelegate();
+
     public LidarMenu lidarMenu;
     public GameObject mainCamera;
     public GameObject lidarCamera;
@@ -18,6 +21,11 @@ public class EditorController : MonoBehaviour{
     public Toggle visToggle;
     public Toggle pauseToggle;
     public Toggle lidarSensorToggle;
+
+    void Start()
+    {
+        PlayButton.OnPlayToggled += SetMode;
+    }
 
     /// <summary>
     /// Sets activity of all necessary objects depending on if smulator or editor mode should be "on"
@@ -84,7 +92,7 @@ public class EditorController : MonoBehaviour{
         else
         {
             mainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
-            lidarMenu.PassLidarValuesToPointCloud();
+            OnPointCloudToggle();
         }
 
         mainCamera.GetComponent<Camera>().enabled = true;
