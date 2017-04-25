@@ -6,6 +6,10 @@ using System.IO;
 
 public class FileBrowser
 {
+
+    public GameObject savePrefab; // Prefab required to save
+
+
     //public 
     //Optional Parameters
     public string name = "File Browser"; //Just a name to identify the file browser with
