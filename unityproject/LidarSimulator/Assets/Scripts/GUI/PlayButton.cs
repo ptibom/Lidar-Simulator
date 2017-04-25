@@ -3,48 +3,32 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Controlls all switching of views and UI elements depending on play/stop state. 
-/// Also controlls when the lidarMenu script sends new values
+/// Controlls all switching of views and UI elements depending on Play/Stop state. 
+/// Also invokes events to allert other scripts to act when toggling Play/Stop
 /// 
 /// @author: Jonathan Jansson
 /// </summary>
 public class PlayButton : MonoBehaviour {
 
-    public static event PlayDelegate OnPlay;
-    public static event StopDelegate OnStop;
-    public delegate void PlayDelegate();
-    public delegate void StopDelegate();
+    public static event PlayToggledDelegate OnPlayToggled;
+    public delegate void PlayToggledDelegate(bool toggleIsOn);
+
     public EditorController editorController;
     public LidarMenu lidarMenu;
     public Toggle lidarSensorButton;
 
-    // SUPER QUICK WORKAROUND FIX BELOW!!!!!!!!!!!!!!!!!
-
     public void OnToggle()
     {
         bool toggleIsOn = gameObject.GetComponent<Toggle>().isOn;
-        editorController.SetMode(toggleIsOn);
-        if (toggleIsOn)
+        try
         {
-            try
-            {
-                OnPlay();
-            }
-            catch (NullReferenceException e)
-            {
-                Debug.Log("Event has no delegates: " + e);
-            }
+            OnPlayToggled(toggleIsOn);
         }
-        else
+        catch (NullReferenceException e)
         {
-            try
-            {
-                OnStop();
-            }
-            catch (NullReferenceException e)
-            {
-                Debug.Log("Event has no delegates: " + e);
-            }
+            Debug.Log("Event has no delegates: " + e);
         }
+
+
     }
 }
