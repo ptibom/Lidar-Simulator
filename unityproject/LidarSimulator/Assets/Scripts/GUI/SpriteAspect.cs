@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -7,7 +8,8 @@ using UnityEngine.UI;
 /// @author: Jonathan Jansson
 /// </summary>
 public class SpriteAspect : MonoBehaviour {
-    
+
+  
     /// <summary>
     /// Sets the initial aspect ratio as image of component
     /// </summary>

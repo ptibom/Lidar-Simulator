@@ -15,7 +15,7 @@ public class CarMovement : MonoBehaviour {
     private float baseMoveSpeed = 20f;
     private float moveAcc = 0.2f;
     private float moveDeAcc = 1.1f;
-    private float maxMoveSpeed = 35f;
+    private float maxMoveSpeed = 40f;
     private bool accelerate = false;
 
    

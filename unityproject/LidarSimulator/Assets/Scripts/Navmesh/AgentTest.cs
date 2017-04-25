@@ -6,14 +6,70 @@ using UnityEngine.AI;
 public class AgentTest : MonoBehaviour {
 	public Transform target;
 	public float minDist;
+	bool frozen = false;
+
+	public static List<AgentTest> agents = new List<AgentTest> ();
 
 	UnityEngine.AI.NavMeshAgent agent;
 
-	// Use this for initialization
-	void Start () {
-		agent = GetComponent<UnityEngine.AI.NavMeshAgent> ();
+	public Animator[] anime;
+
+	void Awake() {
+		agents.Add (this);
+		PlayButton.OnPlayToggled += StartOrFreeze;
 	}
-	
+
+	public static void StartOrFreeze(bool b){
+		Debug.Log ("StartOrFreeze called!");
+		if (b == true) {
+			ResumeAll ();
+		} 
+		else if (b == false) {
+			FreezeAll ();
+		}
+	}
+
+	public static void ResumeAll(){
+		agents.RemoveAll(item => item == null);
+		foreach (AgentTest AT in agents) {
+			AT.Resume ();
+		}
+	}
+
+	public static void FreezeAll (){
+		agents.RemoveAll(item => item == null);
+		foreach(AgentTest AT in agents) {
+			AT.Freeze ();
+		}
+	}
+
+	// Use this for initialization
+	void Start() {
+		agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent> ();
+		anime = GetComponentsInChildren<Animator> ();
+		Freeze ();
+	}
+
+	public void Freeze() {
+		Debug.Log ("Freeze called!");
+		agent.SetDestination (transform.position);
+		if (anime != null) {
+			foreach(Animator a in anime){
+				a.enabled = false;
+			}
+		}
+		frozen = true;
+	}
+
+	public void Resume() {
+		Debug.Log ("Resume called!");
+		agent.SetDestination (target.position);
+		foreach(Animator a in anime){
+			a.enabled = true;
+		}
+		frozen = false;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (target != null) {
@@ -28,6 +84,9 @@ public class AgentTest : MonoBehaviour {
 				}
 				agent.SetDestination(target.position);
 			}
+		}
+		if (frozen) {
+			agent.SetDestination (transform.position);
 		}
 	}
 }

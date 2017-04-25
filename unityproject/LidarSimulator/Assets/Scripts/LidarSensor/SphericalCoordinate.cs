@@ -118,9 +118,9 @@ public class SphericalCoordinate
     /// Override hash code
     /// </summary>
     /// <returns></returns>
-	public String ToString() {
+	/*public String ToString() {
 		return radius.ToString () + ";" + inclination.ToString () + ";" + azimuth.ToString () + ":::";
-	}
+	}*/
 	
     public override int GetHashCode()
     {
@@ -128,4 +128,8 @@ public class SphericalCoordinate
     }
 
 
+	public String ToString() {
+		return "Radius: " + radius.ToString () + " Inclination: " + inclination.ToString () + " Azimuth: " + azimuth.ToString () +
+		" World coordinates: " + globalWorldCoordinate.ToString () + " LaserID: " + laserId.ToString () + " ::: ";
+	}
 }

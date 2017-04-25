@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,11 +23,6 @@ public class LidarMenu : MonoBehaviour {
     public static event StartSimulationDelegate OnStartSimulation;
     public static event StopSimulationDelegate OnStopSimulation;
 
-
-    //public static event InitializeDependencyScripts OnInitializeDependencyScripts;
-    //public delegate void InitializeDependencyScripts();
-
-
     public Slider numberOfLasers;
     public Slider rotationSpeedHz;
     public Slider rotationAnglePerStep;
@@ -40,23 +37,30 @@ public class LidarMenu : MonoBehaviour {
 
     private LidarSensor sensor;
 
+    private bool laserMimicInitialized = false;
+    private bool guiValsInitialized = false;
+
     void Awake()
     {
         EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
         PlayButton.OnPlayToggled += StartSimulation;
+        PreviewLidarRays.tellLidarMenuInitialized += LaserMimicIsInitialized;
     }
 
     /// <summary>
-    /// Calls all initialization methods which syncs the lidar menu sliders with the lidar sensors initial values, and creates and  updates the lidar mimic system.
+    /// Calls all initialization methods which syncs the lidar menu sliders with the lidar sensors initial values, and creates and updates the lidar mimic system.
     /// </summary>
 	void Start () 
 	{
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
-		lidarLinePreview.InitializeLaserMimicList ();
         InitializeGUIValues();
-        UpdateLaserMimicValues();
+        if (laserMimicInitialized)
+        {
+            UpdateLaserMimicValues();
+        }
     }
-    
+
+
     /// <summary>
     /// Initializes all the values of the lidar menu with the initial values of the lidar sensor.
     /// </summary>
@@ -71,20 +75,34 @@ public class LidarMenu : MonoBehaviour {
         offset.value = sensor.offset;
         upperNormal.value = sensor.upperNormal;
         lowerNormal.value = sensor.lowerNormal;
+
+        guiValsInitialized = true;
 	}
+
+    void LaserMimicIsInitialized(bool isInitialized)
+    {
+        laserMimicInitialized = true;
+        if (guiValsInitialized)
+        {
+            UpdateLaserMimicValues();
+        }
+    }
 
     /// <summary>
     /// Invokes an event to updates the values of the lidar mimic to the values of the GUI
     /// </summary>
     void UpdateLaserMimicValues()
     {
-        try
+        if (laserMimicInitialized)
         {
-            OnLidarMenuValChanged((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
-        }
-        catch (NullReferenceException e)
-        {
-            Debug.Log("Event has no delegates: " + e);
+            try
+            {
+                OnLidarMenuValChanged((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Event has no delegates: " + e);
+            }
         }
     }
 

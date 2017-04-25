@@ -13,13 +13,13 @@ public class WidthAsChildren : MonoBehaviour {
     /// </summary>
 	void Start ()
     {
-        Invoke("setPreferedWidthAsChildren", 0.01f);
-	}
+        Invoke("SetPreferedWidthAsChildren", 0.01f);
+    }
 
     /// <summary>
     /// Itterates through all children of the gameObject and sets the preferred width of the layoutelement component as the width of the widest child
     /// </summary>
-	private void setPreferedWidthAsChildren()
+	private void SetPreferedWidthAsChildren()
     {
         float maxWidth = 0f;
 
