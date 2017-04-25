@@ -5,28 +5,77 @@ using UnityEngine.UI;
 
 public class ExternalVisualization : MonoBehaviour {
 	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
-	public GameObject pSystemGameObject;
+	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
-	public Button nextButton,prevButton,openButton;
-    public Text lapText, mainText, posOpen;
+	public Button nextButton,prevButton,openButton,backButton;
+    public Text lapText;
+    public Toggle fullCloudToggle, lapToggle;
 
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
-		pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
-		currentListPosition = 0;
-		nextButton = GameObject.Find("Next").GetComponent<Button>();
-		prevButton = GameObject.Find("Prev").GetComponent<Button>();
+        nextBtn = GameObject.Find("Next");
+        prevBtn = GameObject.Find("Prev");
+        backBtn = GameObject.Find("BackButton");
+        mainPanel = GameObject.Find("MainPanel");
+
+        pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
+        nextButton = nextBtn.GetComponent<Button>();
+        prevButton = prevBtn.GetComponent<Button>();
+        backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
         lapText = GameObject.Find("LapText").GetComponent<Text>();
-        mainText = GameObject.Find("MainText").GetComponent<Text>();
-        posOpen = GameObject.Find("PosOpen").GetComponent<Text>();
   
-        nextButton.onClick.AddListener(LoadNext);
-		prevButton.onClick.AddListener(LoadPrev);
+        
 		openButton.onClick.AddListener(LoadPoints);
+        SetState(State.Default);
 	}
+
+    /// <summary>
+    /// The different states the external visualization can be in.
+    /// </summary>
+    private enum State
+    {
+        Default, FullCloud, LapCloud
+    }
+
+    /// <summary>
+    /// Sets the state of the visualization.
+    /// </summary>
+    private void SetState(State state)
+    {
+        if(state == State.Default)
+        {
+            currentListPosition = 0;
+            prevBtn.SetActive(false);
+            nextBtn.SetActive(false);
+            mainPanel.SetActive(true);
+            lapText.enabled = false;
+            backBtn.SetActive(false);
+        } else if(state == State.FullCloud)
+        {
+            prevBtn.SetActive(false);
+            nextBtn.SetActive(false);
+            lapText.enabled = false;
+            mainPanel.SetActive(false);
+            backBtn.SetActive(true);
+            backButton.onClick.AddListener(Reset);
+
+        }
+        else
+        {
+            currentListPosition = 0;
+            prevBtn.SetActive(true);
+            nextBtn.SetActive(true);
+            mainPanel.SetActive(false);
+            lapText.enabled = true;
+            backBtn.SetActive(true);
+            nextButton.onClick.AddListener(LoadNext);
+            prevButton.onClick.AddListener(LoadPrev);
+            backButton.onClick.AddListener(Reset);
+        }
+    }
    
 
     public void Update()
@@ -48,10 +97,44 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-        openButton.transform.SetPositionAndRotation(posOpen.transform.position,Quaternion.identity);
-        mainText.enabled = false;
 
-	}
+        if(fullCloudToggle.isOn)
+        {
+            SetState(State.FullCloud);
+            // Load a full point cloud
+            Debug.Log("yolo");
+        } else
+        {
+            SetState(State.LapCloud);
+
+            // Load partially loaded particle systems. 
+            Debug.Log("Nolo");
+            
+        }
+
+        /**
+        
+        string dataPath = Application.persistentDataPath + "/test.lidardata";
+        ExternalPointCloud eP =  GameObject.Find("PSystBase").GetComponent<ExternalPointCloud>();
+        Dictionary<float, LinkedList<SphericalCoordinate>> data = LoadManager.LoadCsv(dataPath);
+        eP.CreateCloud(createList(data));
+    **/
+
+
+
+    }
+    private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
+    {
+        LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
+        foreach (var entity in data)
+        {
+            for (LinkedListNode<SphericalCoordinate> it = entity.Value.First; it != null; it = it.Next)
+            {
+                newList.AddLast(it.Value);
+            }
+        }
+        return newList;
+    }
 
 	/// <summary>
 	/// Tells the particle system to load the next set of points. 
@@ -83,6 +166,14 @@ public class ExternalVisualization : MonoBehaviour {
 
             }
         }
+    }
+
+    /// <summary>
+    /// Resets the visualization to it's initial state
+    /// </summary>
+    private void Reset()
+    {
+        SetState(State.Default);
     }
 
 

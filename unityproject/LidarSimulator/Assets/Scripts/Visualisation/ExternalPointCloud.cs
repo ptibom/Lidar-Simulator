@@ -18,7 +18,7 @@ public class ExternalPointCloud : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = startMesh;
     }
 
-    void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
+    public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
         List<List<Vector3>> chunks = SplitIntoChunks(coordinates);
         List<string> meshObjects = CreateNeededMeshes(chunks.Count);
