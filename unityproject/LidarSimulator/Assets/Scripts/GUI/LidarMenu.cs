@@ -10,19 +10,23 @@ using UnityEngine.UI;
 /// </summary>
 public class LidarMenu : MonoBehaviour {
 
-	public static event UpdateMimicValuesDelegate OnLidarMenuValChanged;
-    public static event PassLidarValuesToPointCloudDelegate OnPassLidarValuesToPointCloud;
-    public static event StartSimulationDelegate OnStartSimulation;
-    public static event StopSimulationDelegate OnStopSimulation;
-    public static event InitializeDependencyScripts OnInitializeDependencyScripts;
-    public delegate void InitializeDependencyScripts();
     public delegate void UpdateMimicValuesDelegate(int noLasers, float upFOV, float lowFOV, float offset, float upNorm, float lowNorm);
     public delegate void PassLidarValuesToPointCloudDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep);
     public delegate void StartSimulationDelegate(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep, float rayDistance, float upperFOV
         , float lowerFOV, float offset, float upperNormal, float lowerNormal);
     public delegate void StopSimulationDelegate();
 
-	public Slider numberOfLasers;
+    public static event UpdateMimicValuesDelegate OnLidarMenuValChanged;
+    public static event PassLidarValuesToPointCloudDelegate OnPassLidarValuesToPointCloud;
+    public static event StartSimulationDelegate OnStartSimulation;
+    public static event StopSimulationDelegate OnStopSimulation;
+
+
+    //public static event InitializeDependencyScripts OnInitializeDependencyScripts;
+    //public delegate void InitializeDependencyScripts();
+
+
+    public Slider numberOfLasers;
     public Slider rotationSpeedHz;
     public Slider rotationAnglePerStep;
     public Slider rayDistance;
@@ -38,8 +42,8 @@ public class LidarMenu : MonoBehaviour {
 
     void Awake()
     {
-        PlayButton.OnPlayToggled += StartSimulation;
         EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
+        PlayButton.OnPlayToggled += StartSimulation;
     }
 
     /// <summary>
@@ -47,8 +51,6 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
 	void Start () 
 	{
-       // OnInitializeDependencyScripts.BeginInvoke();
-
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
 		lidarLinePreview.InitializeLaserMimicList ();
         InitializeGUIValues();

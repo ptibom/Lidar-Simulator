@@ -22,7 +22,7 @@ public class EditorController : MonoBehaviour{
     public Toggle pauseToggle;
     public Toggle lidarSensorToggle;
 
-    void Start()
+    void Awake()
     {
         PlayButton.OnPlayToggled += SetMode;
     }
