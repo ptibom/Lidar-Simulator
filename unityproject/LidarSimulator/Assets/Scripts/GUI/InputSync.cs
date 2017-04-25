@@ -10,9 +10,9 @@ public class InputSync : MonoBehaviour {
 
     public InputField inputField;
 
-    private int inputFieldMaxChars = 5;
+    private int inputFieldMaxChars;
 
-    void Start()
+    void Awake()
     {
         inputFieldMaxChars = inputField.characterLimit;
     }

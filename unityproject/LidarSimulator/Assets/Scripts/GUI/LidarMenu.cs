@@ -40,6 +40,9 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
 	void Start () 
 	{
+        PlayButton.OnPlay += StartSimulation;
+        PlayButton.OnStop += StopSimulation;
+
         sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
 		lidarLinePreview.InitializeLaserMimicList ();
         InitializeGUIValues();

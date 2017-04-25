@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -9,6 +10,10 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayButton : MonoBehaviour {
 
+    public static event PlayDelegate OnPlay;
+    public static event StopDelegate OnStop;
+    public delegate void PlayDelegate();
+    public delegate void StopDelegate();
     public EditorController editorController;
     public LidarMenu lidarMenu;
     public Toggle lidarSensorButton;
@@ -21,11 +26,25 @@ public class PlayButton : MonoBehaviour {
         editorController.SetMode(toggleIsOn);
         if (toggleIsOn)
         {
-            lidarMenu.StartSimulation();
+            try
+            {
+                OnPlay();
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Event has no delegates: " + e);
+            }
         }
         else
         {
-            lidarMenu.StopSimulation();
+            try
+            {
+                OnStop();
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Event has no delegates: " + e);
+            }
         }
     }
 }
