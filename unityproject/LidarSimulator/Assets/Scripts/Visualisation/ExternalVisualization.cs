@@ -11,6 +11,7 @@ public class ExternalVisualization : MonoBehaviour {
 	public Button nextButton,prevButton,openButton;
     public Text lapText, mainText, posOpen;
 
+
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
 		pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
@@ -21,17 +22,12 @@ public class ExternalVisualization : MonoBehaviour {
         lapText = GameObject.Find("LapText").GetComponent<Text>();
         mainText = GameObject.Find("MainText").GetComponent<Text>();
         posOpen = GameObject.Find("PosOpen").GetComponent<Text>();
-
-
+  
         nextButton.onClick.AddListener(LoadNext);
 		prevButton.onClick.AddListener(LoadPrev);
 		openButton.onClick.AddListener(LoadPoints);
-        
-
-
-
-
 	}
+   
 
     public void Update()
     {
