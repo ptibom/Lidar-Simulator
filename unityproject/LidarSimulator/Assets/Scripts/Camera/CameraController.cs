@@ -193,8 +193,6 @@ public class CameraController : MonoBehaviour
             heldMouseLastFrame = false;
         }
 
-        Debug.Log(smoothingSpeed);
-
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed * Time.deltaTime);
 
         transform.LookAt(followThis.transform);
