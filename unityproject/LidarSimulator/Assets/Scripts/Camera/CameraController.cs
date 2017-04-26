@@ -13,14 +13,14 @@ public class CameraController : MonoBehaviour
     public float aboveheight = 5f;
     public float roamingSpeed = 30f;
     public float roamingHeight = 30f;
-    public float smoothingSpeed = 0.045f; // Ska vara runt 0.045 kör 2
+    float smoothingSpeed = 11f; // Ska vara runt 12
     
 
     private Vector3 targetPosition;
     private Vector3 targetDirection;
     private Vector3 rotation;
     private float previousHorizontalRotationAngle = 0;
-    private float previousVerticalRotationAngle = 0;
+    private float previousVerticalRotationAngle = 25;
 
 
     enum CameraState { FOLLOW, ROAM }
@@ -128,7 +128,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            smoothVelocity = new Vector3(0, 0, 0);
+            smoothVelocity = new Vector3(0, 1, 0);
         }
         
         if (Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) // Left click, and not over GUI.
@@ -168,7 +168,9 @@ public class CameraController : MonoBehaviour
         if (Vector3.Magnitude(targetPosition - transform.position) > smoothingSpeed * Time.deltaTime * 10)
         {
             //transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref smoothVelocity, smoothingSpeed * Time.deltaTime);
-            transform.position = targetPosition;
+            //transform.position = targetPosition;
+			transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed/*13f*/*Time.deltaTime);
+			//Debug.Log("SmoothingSpeed = " + smoothingSpeed.ToString());
         }
         else
         {
