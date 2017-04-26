@@ -6,6 +6,18 @@ using System.IO;
 
 public class FileBrowser
 {
+
+    public ExportManager exportManager; // Prefab required to save
+    BrowseState state;
+
+
+
+    public enum BrowseState
+    {
+        Open, Save
+    }
+
+
     //public 
     //Optional Parameters
     public string name = "File Browser"; //Just a name to identify the file browser with
@@ -307,21 +319,45 @@ public class FileBrowser
     protected bool DrawSearchField()
     {
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
-        if (GUILayout.Button("save"))
+        if(state == BrowseState.Save)
         {
-            if (searchBarString.Length > 0)
+            if (GUILayout.Button("Save"))
             {
-                Debug.Log(currentDirectory + "\\" + searchBarString);
-                SaveFile(currentDirectory + "\\" + searchBarString);
-                return true;
+                if (searchBarString.Length > 0)
+                {
+                    Debug.Log(currentDirectory + "\\" + searchBarString);
+                    SaveFile(currentDirectory + "\\" + searchBarString);
+                    return true;
+                }
+                else
+                {
+                    GetFileList(currentDirectory);
+                    Debug.Log("current dir :" + currentDirectory);
+                }
             }
-            else
+            return false;
+        } else
+        {
+            if (GUILayout.Button("Open"))
             {
-                GetFileList(currentDirectory);
-                Debug.Log("current dir :" + currentDirectory);
+                if (searchBarString.Length > 0)
+                {
+                    Debug.Log(currentDirectory + "\\" + searchBarString);
+                    OpenFile(currentDirectory + "\\" + searchBarString);
+                    return true;
+                }
+                else
+                {
+                    GetFileList(currentDirectory);
+                    Debug.Log("current dir :" + currentDirectory);
+                }
             }
+            return false;
         }
-        return false;
+
+
+
+        
     }
 
     public void GetFileList(DirectoryInfo di)
@@ -367,27 +403,30 @@ public class FileBrowser
     }
     public void SaveFile(string filename)
     {
-        string filetosave = filename;
-        try
-        {
-            /**
- 
-            StreamWriter sr = File.CreateText(filetosave );
-           
-            sr.WriteLine("This is the existing file which has been ovewritten.");
-            sr.WriteLine("testing the save actually works.");
 
-            sr.Close();
-    */
 
-            //LidarStorage ls =  GameObject.Find("LidarSensor").GetComponent<LidarSensor>().GetLidarStorage();
-            //Debug.Log("Size ls data: " + ls.GetData().Count);
-            //SaveManager.SaveToCsv(ls.GetData(), filename);
-        }
-        catch (IOException e)
-        {
-            Debug.Log("Access violation, printing file.");
-        }
+        //Lägg till confirmgrejen här, om ja. kör nedanstående
+
+        exportManager.Save(filename);
+    }
+
+    public void OpenFile(string filePath)
+    {
+        exportManager.Open(filePath);
+
+    }
+
+    /// <summary>
+    /// Sets the export manager needed to export the data
+    /// </summary>
+    public void SetExportManager(ExportManager exportManager)
+    {
+        this.exportManager = exportManager;
+    }
+
+    public void SetState(BrowseState state)
+    {
+        this.state = state;
     }
 
 
@@ -454,4 +493,6 @@ public class DirectoryInformation1
     public void label() { GUILayout.Label(gc); }
     public bool button(GUIStyle gs) { return GUILayout.Button(gc, gs); }
     public void label(GUIStyle gs) { GUILayout.Label(gc, gs); }
+
+    
 }

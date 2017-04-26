@@ -25,6 +25,5 @@ public class PauseToggle : MonoBehaviour {
         {
 			timeController.UnPauseTime();
 		}
-
 	}
 }

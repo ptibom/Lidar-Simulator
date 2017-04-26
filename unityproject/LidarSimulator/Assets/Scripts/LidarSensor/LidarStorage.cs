@@ -72,4 +72,9 @@ public class LidarStorage : MonoBehaviour {
         return dataStorage;
     }
 
+    public void SetData(Dictionary<float,LinkedList<SphericalCoordinate>> data )
+    {
+        this.dataStorage = data;
+    }
+
 }
