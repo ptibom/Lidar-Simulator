@@ -2,7 +2,7 @@
 ### Bachelor Thesis project at Chalmers University of Technology and University of Gothenburg
 Group number: DATX02-17-10
 
-####Group members  
+#### Group members  
 Philip Tibom  
 Tobias Alldén  
 Martin Chemander  
