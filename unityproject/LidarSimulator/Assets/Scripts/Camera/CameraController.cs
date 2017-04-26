@@ -94,19 +94,19 @@ public class CameraController : MonoBehaviour
     void Roam()
     {
         Vector3 moveDirection = new Vector3(0, 0, 0);
-        if (Input.GetKey(KeyCode.UpArrow) || Input.mousePosition.y >= Screen.height - scrollPixelMargin)
+        if (Input.GetAxis("Vertical") > 0 || Input.mousePosition.y >= Screen.height - scrollPixelMargin)
         {
             moveDirection += Vector3.up;
         }
-        else if (Input.GetKey(KeyCode.DownArrow) || Input.mousePosition.y < scrollPixelMargin)
+        else if (Input.GetAxis("Vertical") < 0 || Input.mousePosition.y < scrollPixelMargin)
         {
             moveDirection += Vector3.down;
         }
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.mousePosition.x < scrollPixelMargin)
+        if (Input.GetAxis("Horizontal") < 0 || Input.mousePosition.x < scrollPixelMargin)
         {
             moveDirection += Vector3.left;
         }
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.mousePosition.x >= Screen.width - scrollPixelMargin)
+        else if (Input.GetAxis("Horizontal") > 0 || Input.mousePosition.x >= Screen.width - scrollPixelMargin)
         {
             moveDirection += Vector3.right;
         }
