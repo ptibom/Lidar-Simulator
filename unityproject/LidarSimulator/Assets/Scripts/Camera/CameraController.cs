@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
     public float roamingSpeed = 30f;
     public float roamingHeight = 30f;
 
-    public float smoothingSpeed = 11f;
+    private float smoothingSpeed = 4f;
     private float oldSmoothingSpeed = 0f;
     private float timeClicked = 0f;
     private bool heldMouseLastFrame = false;
@@ -182,7 +182,7 @@ public class CameraController : MonoBehaviour
             if (!heldMouseLastFrame)
             {
                 oldSmoothingSpeed = smoothingSpeed;
-                smoothingSpeed *= 3f;
+                smoothingSpeed *= 4f;
             }
             heldMouseLastFrame = true;
             timeClicked = Time.time;
