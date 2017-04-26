@@ -23,6 +23,7 @@ public class EditorController : MonoBehaviour{
     public Toggle visToggle;
     public Toggle pauseToggle;
     public Toggle lidarSensorToggle;
+    public GameObject sceneEditor;
 
     void Awake()
     {
@@ -46,7 +47,7 @@ public class EditorController : MonoBehaviour{
         lidarCamera.SetActive(lidarSensorToggle.isOn && !simulatorMode);
         SetVisToggleEnabled(simulatorMode);
         MainMenuButton.SetActive(!simulatorMode);
-
+        sceneEditor.SetActive(!simulatorMode);
     }
 
     /// <summary>
