@@ -145,7 +145,7 @@ public class CarMovement : MonoBehaviour {
     /// <param name="dir"></param>
     void Rotate(int dir)
     {
-        if (Input.GetButton("Fire2")) // Left click
+        if (Input.GetButton("Fire2")) // Right click
         {
             float rotationAroundY = Input.GetAxis("Mouse X");
             transform.RotateAround(carPivot.transform.position, transform.up, rotationAroundY * 300 * Time.fixedDeltaTime);
