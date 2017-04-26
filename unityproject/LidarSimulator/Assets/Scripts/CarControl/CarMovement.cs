@@ -39,7 +39,7 @@ public class CarMovement : MonoBehaviour {
     /// Controlls the movement direction, movement acceleration and rotation direction based on if one is driving forward or backwards.
     /// </summary>
     void FixedUpdate ()
-    {
+    {   
         if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
         {
             if (Input.GetKey(KeyCode.UpArrow))
@@ -113,7 +113,7 @@ public class CarMovement : MonoBehaviour {
         {
             if (rotationSpeed < maxRotationSpeed)
             {
-                rotationSpeed += rotationAcc*Time.fixedDeltaTime;
+                rotationSpeed += rotationAcc * Time.fixedDeltaTime;
             }
         }
         else
@@ -124,11 +124,10 @@ public class CarMovement : MonoBehaviour {
             }
             else
             {
-                rotationSpeed -= rotationDeAcc*Time.fixedDeltaTime;
+                rotationSpeed -= rotationDeAcc * Time.fixedDeltaTime;
             }
         }
     }
-
 
     /// <summary>
     /// Translates the gameObject which the script is attached to in corresponding direction to the parameter "dir"
@@ -146,6 +145,12 @@ public class CarMovement : MonoBehaviour {
     /// <param name="dir"></param>
     void Rotate(int dir)
     {
+        if (Input.GetButton("Fire2")) // Left click
+        {
+            float rotationAroundY = Input.GetAxis("Mouse X");
+            transform.RotateAround(carPivot.transform.position, transform.up, rotationAroundY * 300 * Time.fixedDeltaTime);
+        }
+
         if (Input.GetKey(KeyCode.RightArrow) ^ Input.GetKey(KeyCode.LeftArrow))
         {
             if (Input.GetKey(KeyCode.LeftArrow))
