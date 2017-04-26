@@ -40,9 +40,9 @@ public class CarMovement : MonoBehaviour {
     /// </summary>
     void FixedUpdate ()
     {   
-        if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
+        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) ^ (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             {
                 if(direction == -1)
                 {
@@ -109,7 +109,7 @@ public class CarMovement : MonoBehaviour {
     /// </summary>
     void RotateAcc()
     {
-        if (Input.GetKey(KeyCode.LeftArrow) ^ Input.GetKey(KeyCode.RightArrow))
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) ^ (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
         {
             if (rotationSpeed < maxRotationSpeed)
             {
@@ -148,12 +148,12 @@ public class CarMovement : MonoBehaviour {
         if (Input.GetButton("Fire2")) // Right click
         {
             float rotationAroundY = Input.GetAxis("Mouse X");
-            transform.RotateAround(carPivot.transform.position, transform.up, rotationAroundY * 300 * Time.fixedDeltaTime);
+            transform.RotateAround(carPivot.transform.position, transform.up, rotationAroundY * 400 * Time.fixedDeltaTime);
         }
 
-        if (Input.GetKey(KeyCode.RightArrow) ^ Input.GetKey(KeyCode.LeftArrow))
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) ^ (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
         {
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
                 transform.RotateAround(carPivot.transform.position, transform.up, dir * -rotationSpeed * Time.fixedDeltaTime);
             }
