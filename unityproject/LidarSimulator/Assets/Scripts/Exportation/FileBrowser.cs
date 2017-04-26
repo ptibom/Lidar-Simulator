@@ -10,8 +10,7 @@ public class FileBrowser
     public ExportManager exportManager; // Prefab required to save
     BrowseState state;
 
-
-
+ 
     public enum BrowseState
     {
         Open, Save
@@ -168,6 +167,7 @@ public class FileBrowser
                 if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle))
                 {
                     Debug.Log("writing over :" + outputFile);
+                    
                     SaveFile(null + outputFile);
                     return true;
                 }
@@ -321,6 +321,7 @@ public class FileBrowser
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
         if(state == BrowseState.Save)
         {
+           
             if (GUILayout.Button("Save"))
             {
                 if (searchBarString.Length > 0)
@@ -403,9 +404,10 @@ public class FileBrowser
     }
     public void SaveFile(string filename)
     {
-
-
         //Lägg till confirmgrejen här, om ja. kör nedanstående
+        SaveConfirm confirm = new SaveConfirm();
+        
+
 
         exportManager.Save(filename);
     }
