@@ -16,8 +16,6 @@ public class CarMovement : MonoBehaviour {
     private float moveAcc = 20f;
     private float moveDeAcc = 30f;
     private float maxMoveSpeed = 35f;
-    private bool accelerate = false;
-
    
     private float baseRotationSpeed;
     private float rotationAcc = 40f;
@@ -40,9 +38,9 @@ public class CarMovement : MonoBehaviour {
     /// </summary>
     void FixedUpdate ()
     {   
-        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) ^ (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
+        if (Input.GetAxis("Vertical") != 0)
         {
-            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+            if (Input.GetAxis("Vertical") > 0)
             {
                 if(direction == -1)
                 {
@@ -60,21 +58,19 @@ public class CarMovement : MonoBehaviour {
                 direction = -1;
                 Rotate(-1);
             }
-            accelerate = true;
             MoveAcc(true);
         }
         else
         {
-            accelerate = false;
             MoveAcc(false);
         }
-       
+
+        RotateAcc();
+
         if (moveSpeed != 0)
         {
             Move(direction);
         }
-
-        RotateAcc();
     }
 
     /// <summary>
@@ -109,7 +105,7 @@ public class CarMovement : MonoBehaviour {
     /// </summary>
     void RotateAcc()
     {
-        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) ^ (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
+        if (Input.GetAxis("Horizontal") != 0)
         {
             if (rotationSpeed < maxRotationSpeed)
             {
@@ -140,7 +136,7 @@ public class CarMovement : MonoBehaviour {
 
     /// <summary>
     /// Rotates the gameObject which the script is attached to based on the parameter dir which is the driving direction 
-    /// and if the left and right key is being pressed.
+    /// and if the left and right key is being pressed. Also enables steering trough click and drag with the mouse.
     /// </summary>
     /// <param name="dir"></param>
     void Rotate(int dir)
@@ -151,9 +147,9 @@ public class CarMovement : MonoBehaviour {
             transform.RotateAround(carPivot.transform.position, transform.up, rotationAroundY * 400 * Time.fixedDeltaTime);
         }
 
-        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) ^ (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
+        if (Input.GetAxis("Horizontal") != 0)
         {
-            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            if (Input.GetAxis("Horizontal") < 0)
             {
                 transform.RotateAround(carPivot.transform.position, transform.up, dir * -rotationSpeed * Time.fixedDeltaTime);
             }
