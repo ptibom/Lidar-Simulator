@@ -30,7 +30,6 @@ public class LidarSensor : MonoBehaviour {
     public delegate void NewLap();
     public delegate void StorePoints(float timeStamp);
     public delegate void NewPoints(LinkedList<SphericalCoordinate> hits);
-    public float storeInterval = 0.25f; // How often do we want to update the data structure
     public float lapTime = 0;
     private float lastLapTime = 0;
 
@@ -185,19 +184,10 @@ public class LidarSensor : MonoBehaviour {
 
             
             // Notify listeners that the lidar sensor have scanned points. 
-			if (OnScanned != null  && pointCloudObject != null && pointCloudObject.activeInHierarchy)
-            {
+			//if (OnScanned != null  && pointCloudObject != null && pointCloudObject.activeInHierarchy)
+            //{
                 OnScanned(hits);
-            }
-            
-            if (Time.fixedTime - previousUpdate > storeInterval) {
-                // Notify data structure that it is time to store the collected points
-				if(StoreEvent != null)
-                {
-                    
-                    //previousUpdate = Time.fixedTime;
-                }
-            }
+            //}
         }
     }
 }
