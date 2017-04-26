@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ExternalVisualization : MonoBehaviour {
 	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
     private LidarStorage lidarStorage;
+    private ExternalPointCloud externalPointCloud;
 	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
@@ -29,6 +30,7 @@ public class ExternalVisualization : MonoBehaviour {
         lapText = GameObject.Find("LapText").GetComponent<Text>();
         fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
         lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
+        externalPointCloud = GetComponent<ExternalPointCloud>();
 
         openButton.onClick.AddListener(LoadPoints);
         SetState(State.Default);
@@ -103,13 +105,22 @@ public class ExternalVisualization : MonoBehaviour {
         if(fullCloudToggle.isOn)
         {
             SetState(State.FullCloud);
+            while (lidarStorage.GetData() == null || lidarStorage.GetData().Count == 0)
+            {
+                //wait
+            }
             pointTable = lidarStorage.GetData();
         }
         else
         {
             SetState(State.LapCloud);
+            while(lidarStorage.GetData() == null || lidarStorage.GetData().Count == 0)
+            {
+                //wait
+            } 
             pointTable = lidarStorage.GetData();
-            
+            externalPointCloud.CreateCloud(SquashTable(pointTable));
+
         }
 
         /**
@@ -136,15 +147,36 @@ public class ExternalVisualization : MonoBehaviour {
         return newList;
     }
 
+    /// <summary>
+    /// Creates a single linked list filled with spherical coordinates from a data tablöe
+    /// </summary>
+    /// <returns></returns>
+    private LinkedList<SphericalCoordinate> SquashTable(Dictionary<float, LinkedList<SphericalCoordinate>> data)
+    {
+        LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
+
+        foreach(var entity in data)
+        {
+            foreach(SphericalCoordinate s in entity.Value)
+            {
+                newList.AddLast(s);
+            }
+        }
+        return newList;
+    }
+
+
+
 	/// <summary>
 	/// Tells the particle system to load the next set of points. 
 	/// </summary>
 	public void LoadNext()
 	{
-        if (pointTable != null) {
+        if (pointTable != null && pointTable.Count != 0) {
+            Debug.Log(pointTable.Count);
             if (currentListPosition + 1 < pointTable.Count) {
                 currentListPosition += 1;
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
                 pSystem.SetParticles(particles, particles.Length);
                 lapText.text = "Lap: " + currentListPosition;
             }
@@ -163,8 +195,10 @@ public class ExternalVisualization : MonoBehaviour {
             if (currentListPosition - 1 >= 0)
             {
                 currentListPosition -= 1;
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
                 pSystem.SetParticles(particles, particles.Length);
+                pSystem.Play();
                 lapText.text = "Lap: " + currentListPosition;
 
             }
@@ -183,31 +217,41 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-	private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinate> positions)
+	private ParticleSystem.Particle[] CreateParticles(Dictionary<float,LinkedList<SphericalCoordinate>> data, int position)
 	{
 		List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+        LinkedList<SphericalCoordinate> list = new LinkedList<SphericalCoordinate>();
+        int pos = 0;
+        foreach(var v in data)
+        {
+            if(pos == position)
+            {
+                list = v.Value;
+            }
+            pos++;
+        }
 
-		for (LinkedListNode<SphericalCoordinate> it = positions.First; it != null; it = it.Next)
-		{
-			ParticleSystem.Particle particle = new ParticleSystem.Particle();
-			particle.position = it.Value.ToCartesian();
-			if (it.Value.GetInclination() < 3)
-			{
-				particle.startColor = Color.red;
-			}
-			else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
-			{
-				particle.startColor = Color.yellow;
-			}
-			else
-			{
-				particle.startColor = Color.green;
-			}
+		for (LinkedListNode<SphericalCoordinate> it = list.First; it != null; it = it.Next)
+		{           
+                ParticleSystem.Particle particle = new ParticleSystem.Particle();
+                particle.position = it.Value.ToCartesian();
+                if (it.Value.GetInclination() < 3)
+                {
+                    particle.startColor = Color.red;
+                }
+                else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
+                {
+                    particle.startColor = Color.yellow;
+                }
+                else
+                {
+                    particle.startColor = Color.green;
+                }
 
-			particle.startSize = 0.1f;
-			particle.startLifetime = 0.2f;
-			particle.remainingLifetime = 1f;
-			particleCloud.Add(particle);
+                particle.startSize = 0.1f;
+                particle.startLifetime =100f;
+                particle.remainingLifetime = 100f;
+                particleCloud.Add(particle);            
 		}
 
 		return particleCloud.ToArray();
