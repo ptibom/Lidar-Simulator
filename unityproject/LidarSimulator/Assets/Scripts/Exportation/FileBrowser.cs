@@ -9,6 +9,8 @@ public class FileBrowser
 
     public ExportManager exportManager; // Prefab required to save
     BrowseState state;
+    public static event Disable DisableFilebrowseer;
+    public delegate void Disable();
 
 
 
@@ -163,15 +165,27 @@ public class FileBrowser
                 {
                     outputFile = null;
                     return true;
-                }
-                GUILayout.FlexibleSpace();
-                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle))
+                }                
+                if(state == BrowseState.Save)
                 {
-                    Debug.Log("writing over :" + outputFile);
-                    SaveFile(null + outputFile);
-                    return true;
+                    GUILayout.FlexibleSpace();
+                    if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
+                    {
+                        //Debug.Log("writing over :" + outputFile);
+                        SaveFile(null + outputFile);
+                        return true;
+                    }
+                } else
+                {
+                    if ((selectStyle == null) ? GUILayout.Button("Open") : GUILayout.Button("Open", selectStyle))
+                    {
+                       // Debug.Log("writing over :" + outputFile);
+                        OpenFile(null + outputFile);
+                        return true;
+                    }
+                    GUILayout.FlexibleSpace();
                 }
-                GUILayout.FlexibleSpace();
+                
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
@@ -233,11 +247,11 @@ public class FileBrowser
                 }
                 GUILayout.EndScrollView();
 
-                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle)) { Debug.Log(outputFile); return true; }
+                //if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle)) { Debug.Log(outputFile); return true; }
 
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
-                    outputFile = null;
+                    DisableFilebrowseer();
                     return true;
                 }
                 break;
@@ -327,6 +341,7 @@ public class FileBrowser
                 {
                     Debug.Log(currentDirectory + "\\" + searchBarString);
                     SaveFile(currentDirectory + "\\" + searchBarString);
+                    DisableFilebrowseer();
                     return true;
                 }
                 else
@@ -344,6 +359,7 @@ public class FileBrowser
                 {
                     Debug.Log(currentDirectory + "\\" + searchBarString);
                     OpenFile(currentDirectory + "\\" + searchBarString);
+                    DisableFilebrowseer();
                     return true;
                 }
                 else

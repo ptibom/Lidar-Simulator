@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class ExternalVisualization : MonoBehaviour {
 	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
+    private LidarStorage lidarStorage;
 	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton,backButton;
     public Text lapText;
     public Toggle fullCloudToggle, lapToggle;
-
+    public TestFileBrowser fileBrowser;
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
@@ -26,9 +27,10 @@ public class ExternalVisualization : MonoBehaviour {
         backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
         lapText = GameObject.Find("LapText").GetComponent<Text>();
-  
-        
-		openButton.onClick.AddListener(LoadPoints);
+        fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
+        lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
+
+        openButton.onClick.AddListener(LoadPoints);
         SetState(State.Default);
 	}
 
@@ -97,18 +99,16 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-
+        fileBrowser.SetActive(true);
         if(fullCloudToggle.isOn)
         {
             SetState(State.FullCloud);
-            // Load a full point cloud
-            Debug.Log("yolo");
-        } else
+            pointTable = lidarStorage.GetData();
+        }
+        else
         {
             SetState(State.LapCloud);
-
-            // Load partially loaded particle systems. 
-            Debug.Log("Nolo");
+            pointTable = lidarStorage.GetData();
             
         }
 
@@ -148,8 +148,11 @@ public class ExternalVisualization : MonoBehaviour {
                 pSystem.SetParticles(particles, particles.Length);
                 lapText.text = "Lap: " + currentListPosition;
             }
+        } else
+        {
+            pointTable = lidarStorage.GetData();
         }
-	}
+    }
 	/// <summary>
 	/// Tells the particle system to load the previous set of points. 
 	/// </summary>
@@ -165,6 +168,9 @@ public class ExternalVisualization : MonoBehaviour {
                 lapText.text = "Lap: " + currentListPosition;
 
             }
+        } else
+        {
+            this.pointTable = lidarStorage.GetData();
         }
     }
 
