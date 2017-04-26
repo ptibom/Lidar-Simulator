@@ -40,7 +40,8 @@ public class SceneEditor : MonoBehaviour {
 
 			if (Physics.Raycast(ray, out hit))
 			{
-				go.transform.position = hit.point + new Vector3(0, 0.5f);
+				//go.transform.position = hit.point + new Vector3(0, 0.5f);
+				go.transform.position = new Vector3(hit.point.x, 0.3f, hit.point.z) + new Vector3(0, 0.5f);
 
 				if (Input.GetMouseButtonDown(0))
 				{
