@@ -8,7 +8,6 @@ using UnityEngine;
 public class ExportManager : MonoBehaviour {
 
     public GameObject lidarStorageGameObject;
-
     private LidarStorage lidarStorage;
 
 

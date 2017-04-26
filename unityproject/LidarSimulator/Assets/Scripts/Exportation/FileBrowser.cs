@@ -8,6 +8,14 @@ public class FileBrowser
 {
 
     public ExportManager exportManager; // Prefab required to save
+    BrowseState state;
+
+
+
+    public enum BrowseState
+    {
+        Open, Save
+    }
 
 
     //public 
@@ -311,21 +319,45 @@ public class FileBrowser
     protected bool DrawSearchField()
     {
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
-        if (GUILayout.Button("save"))
+        if(state == BrowseState.Save)
         {
-            if (searchBarString.Length > 0)
+            if (GUILayout.Button("Save"))
             {
-                Debug.Log(currentDirectory + "\\" + searchBarString);
-                SaveFile(currentDirectory + "\\" + searchBarString);
-                return true;
+                if (searchBarString.Length > 0)
+                {
+                    Debug.Log(currentDirectory + "\\" + searchBarString);
+                    SaveFile(currentDirectory + "\\" + searchBarString);
+                    return true;
+                }
+                else
+                {
+                    GetFileList(currentDirectory);
+                    Debug.Log("current dir :" + currentDirectory);
+                }
             }
-            else
+            return false;
+        } else
+        {
+            if (GUILayout.Button("Open"))
             {
-                GetFileList(currentDirectory);
-                Debug.Log("current dir :" + currentDirectory);
+                if (searchBarString.Length > 0)
+                {
+                    Debug.Log(currentDirectory + "\\" + searchBarString);
+                    OpenFile(currentDirectory + "\\" + searchBarString);
+                    return true;
+                }
+                else
+                {
+                    GetFileList(currentDirectory);
+                    Debug.Log("current dir :" + currentDirectory);
+                }
             }
+            return false;
         }
-        return false;
+
+
+
+        
     }
 
     public void GetFileList(DirectoryInfo di)
@@ -371,7 +403,17 @@ public class FileBrowser
     }
     public void SaveFile(string filename)
     {
+
+
+        //Lägg till confirmgrejen här, om ja. kör nedanstående
+
         exportManager.Save(filename);
+    }
+
+    public void OpenFile(string filePath)
+    {
+        exportManager.Open(filePath);
+
     }
 
     /// <summary>
@@ -380,6 +422,11 @@ public class FileBrowser
     public void SetExportManager(ExportManager exportManager)
     {
         this.exportManager = exportManager;
+    }
+
+    public void SetState(BrowseState state)
+    {
+        this.state = state;
     }
 
 

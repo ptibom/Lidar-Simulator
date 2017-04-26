@@ -9,6 +9,10 @@ public class TestFileBrowser : MonoBehaviour
     Texture2D file, folder, back, drive;
     FileBrowser fb = new FileBrowser();
     bool active = false;
+    public BrowseState state;
+
+
+
 
     string output = "no file";
 
@@ -22,10 +26,18 @@ public class TestFileBrowser : MonoBehaviour
         fb.driveTexture = drive;
         //show the search bar
         fb.showSearch = true;
-        
+
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
         fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
+        if(state == BrowseState.Open)
+        {
+            fb.SetState(FileBrowser.BrowseState.Open);
+        } else
+        {
+            fb.SetState(FileBrowser.BrowseState.Save);
+
+        }
     }
 
 
@@ -52,6 +64,12 @@ public class TestFileBrowser : MonoBehaviour
             }
         }
     }
+
+    public enum BrowseState {
+        Open,Save
+    }
+
+
     public void SetActive(bool active)
     {
         this.active = active;
