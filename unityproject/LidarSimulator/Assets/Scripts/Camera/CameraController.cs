@@ -13,8 +13,13 @@ public class CameraController : MonoBehaviour
     public float aboveheight = 5f;
     public float roamingSpeed = 30f;
     public float roamingHeight = 30f;
-    float smoothingSpeed = 11f; // Ska vara runt 12
-    
+
+    public float smoothingSpeed = 11f;
+    private float oldSmoothingSpeed = 0f;
+    private float timeClicked = 0f;
+    private bool heldMouseLastFrame = false;
+
+
 
     private Vector3 targetPosition;
     private Vector3 targetDirection;
@@ -23,12 +28,14 @@ public class CameraController : MonoBehaviour
     private float previousVerticalRotationAngle = 25;
 
 
+
     enum CameraState { FOLLOW, ROAM }
     CameraState state = CameraState.FOLLOW;
     // Use this for initialization
     void Start()
     {
         rotation = followThis.transform.forward;
+        oldSmoothingSpeed = smoothingSpeed;
         Cursor.visible = true;
         SetRoam();
     }
@@ -160,14 +167,35 @@ public class CameraController : MonoBehaviour
             hitEnvironment = true;
         }
 
-        if (hitEnvironment == false)
+        if (!hitEnvironment)
         {
             targetPosition = followerPosition;  // ingenting var ivägen och andra spökpositionen tar samma värde som första
         }
-
-        //smoothingSpeed = 100f;
         
-		transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed/*13f*/*Time.deltaTime);
+        if (hitEnvironment)
+        {
+            smoothingSpeed = oldSmoothingSpeed;
+            heldMouseLastFrame = false;
+        }
+        else if (!hitEnvironment && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) // Resolves sliding.
+        {
+            if (!heldMouseLastFrame)
+            {
+                oldSmoothingSpeed = smoothingSpeed;
+                smoothingSpeed *= 3f;
+            }
+            heldMouseLastFrame = true;
+            timeClicked = Time.time;
+        }
+        else if (!hitEnvironment && Time.time - timeClicked > 1f)
+        {
+            smoothingSpeed = oldSmoothingSpeed;
+            heldMouseLastFrame = false;
+        }
+
+        Debug.Log(smoothingSpeed);
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed * Time.deltaTime);
 
         transform.LookAt(followThis.transform);
     }

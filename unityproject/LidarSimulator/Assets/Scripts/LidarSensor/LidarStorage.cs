@@ -35,7 +35,7 @@ public class LidarStorage : MonoBehaviour {
     /// </summary>
     public void AddHits(LinkedList<SphericalCoordinate> hits)
     {
-        Debug.Log("Ping");
+        //Debug.Log("Ping");
         foreach(SphericalCoordinate hit in hits)
         {
             currentHits.AddLast(hit);
