@@ -13,15 +13,15 @@ public class CarMovement : MonoBehaviour {
 
     private int direction = 1;
     private float baseMoveSpeed = 20f;
-    private float moveAcc = 0.2f;
-    private float moveDeAcc = 1.1f;
-    private float maxMoveSpeed = 40f;
+    private float moveAcc = 20f;
+    private float moveDeAcc = 30f;
+    private float maxMoveSpeed = 35f;
     private bool accelerate = false;
 
    
     private float baseRotationSpeed;
-    private float rotationAcc = 0.6f;
-    private float rotationDeAcc = 1.015f;
+    private float rotationAcc = 40f;
+    private float rotationDeAcc = 60f;
     private float maxRotationSpeed = 140f;
 
     /// <summary>
@@ -32,13 +32,6 @@ public class CarMovement : MonoBehaviour {
         baseMoveSpeed = moveSpeed;
         moveSpeed = 0f;
         baseRotationSpeed = rotationSpeed;
-    }
-
-
-    void Update()
-    {
-        MoveAcc(accelerate);
-        RotateAcc();
     }
 
     /// <summary>
@@ -68,17 +61,21 @@ public class CarMovement : MonoBehaviour {
                 Rotate(-1);
             }
             accelerate = true;
+            MoveAcc(true);
         }
         else
         {
             accelerate = false;
+            MoveAcc(false);
         }
        
         if (moveSpeed != 0)
         {
             Move(direction);
         }
-	}
+
+        RotateAcc();
+    }
 
     /// <summary>
     /// Controlls the forwards and backwards driving acceleration and deacceleration
@@ -94,13 +91,13 @@ public class CarMovement : MonoBehaviour {
             }
             else if (moveSpeed < maxMoveSpeed)
             {
-                moveSpeed += moveAcc;
+                moveSpeed += moveAcc*Time.fixedDeltaTime;
             }
         }
         else if(moveSpeed > 0)
         {
-            moveSpeed /= moveDeAcc;
-            if (moveSpeed < 2)
+            moveSpeed -= moveDeAcc*(moveSpeed/5)*Time.fixedDeltaTime;
+            if (moveSpeed <= 1f)
             {
                 moveSpeed = 0;
             }
@@ -116,7 +113,7 @@ public class CarMovement : MonoBehaviour {
         {
             if (rotationSpeed < maxRotationSpeed)
             {
-                rotationSpeed += rotationAcc;
+                rotationSpeed += rotationAcc*Time.fixedDeltaTime;
             }
         }
         else
@@ -127,7 +124,7 @@ public class CarMovement : MonoBehaviour {
             }
             else
             {
-                rotationSpeed /= rotationDeAcc;
+                rotationSpeed -= rotationDeAcc*Time.fixedDeltaTime;
             }
         }
     }
@@ -139,7 +136,7 @@ public class CarMovement : MonoBehaviour {
     /// <param name="dir"></param>
     void Move(int dir)
     {
-        transform.Translate(dir * Vector3.forward * moveSpeed * Time.deltaTime);
+        transform.Translate(dir * Vector3.forward * moveSpeed * Time.fixedDeltaTime);
     }
 
     /// <summary>
@@ -153,11 +150,11 @@ public class CarMovement : MonoBehaviour {
         {
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                transform.RotateAround(carPivot.transform.position, transform.up, dir * -rotationSpeed * Time.deltaTime);
+                transform.RotateAround(carPivot.transform.position, transform.up, dir * -rotationSpeed * Time.fixedDeltaTime);
             }
             else
             {
-                transform.RotateAround(carPivot.transform.position, transform.up, dir * rotationSpeed * Time.deltaTime);
+                transform.RotateAround(carPivot.transform.position, transform.up, dir * rotationSpeed * Time.fixedDeltaTime);
             }
         }
     }
