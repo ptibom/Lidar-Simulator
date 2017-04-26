@@ -165,7 +165,7 @@ public class CameraController : MonoBehaviour
             targetPosition = followerPosition;  // ingenting var ivägen och andra spökpositionen tar samma värde som första
         }
 
-        if (Vector3.Magnitude(targetPosition - transform.position) > smoothingSpeed * Time.deltaTime * 10)
+        if (/*Vector3.Magnitude(targetPosition - transform.position) > smoothingSpeed * Time.deltaTime * 10*/true)
         {
             //transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref smoothVelocity, smoothingSpeed * Time.deltaTime);
             //transform.position = targetPosition;
