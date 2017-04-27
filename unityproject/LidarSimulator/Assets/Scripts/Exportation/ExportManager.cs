@@ -8,14 +8,15 @@ using UnityEngine;
 public class ExportManager : MonoBehaviour {
 
     public GameObject lidarStorageGameObject;
+
+
     private LidarStorage lidarStorage;
-
-
 
 	// Use this for initialization
 	void Start () {
         lidarStorageGameObject = GameObject.FindGameObjectWithTag("Lidar");
         lidarStorage = lidarStorageGameObject.GetComponent<LidarStorage>();		
+
 	}
 
 

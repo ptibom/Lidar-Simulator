@@ -101,13 +101,23 @@ public class FileBrowser
             case 0:
                 GUILayout.BeginHorizontal("box");
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("Saving to: " + currentDirectory.FullName + "\\" + searchBarString);
+                if(state == BrowseState.Save)
+                {
+                    GUILayout.Label("Saving to: " + currentDirectory.FullName + "\\" + searchBarString + ".txt");
+
+                } else
+                {
+                    GUILayout.Label("Opening file: " + outputFile);
+
+                }
                 GUILayout.FlexibleSpace();
 
-                if (DrawSearchField())
-                {
-                    outputFile = null;
-                    return true;
+                if (state == BrowseState.Save) {
+                    if (DrawSearchField())
+                    {
+                        outputFile = null;
+                        return true;
+                    }
                 }
                 GUILayout.Space(10);
 
@@ -333,43 +343,7 @@ public class FileBrowser
     protected bool DrawSearchField()
     {
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
-        if(state == BrowseState.Save)
-        {
-            if (GUILayout.Button("Save"))
-            {
-                if (searchBarString.Length > 0)
-                {
-                    Debug.Log(currentDirectory + "\\" + searchBarString);
-                    SaveFile(currentDirectory + "\\" + searchBarString);
-                    DisableFilebrowseer();
-                    return true;
-                }
-                else
-                {
-                    GetFileList(currentDirectory);
-                    Debug.Log("current dir :" + currentDirectory);
-                }
-            }
-            return false;
-        } else
-        {
-            if (GUILayout.Button("Open"))
-            {
-                if (searchBarString.Length > 0)
-                {
-                    Debug.Log(currentDirectory + "\\" + searchBarString);
-                    OpenFile(currentDirectory + "\\" + searchBarString);
-                    DisableFilebrowseer();
-                    return true;
-                }
-                else
-                {
-                    GetFileList(currentDirectory);
-                    Debug.Log("current dir :" + currentDirectory);
-                }
-            }
-            return false;
-        }
+        return false;
 
 
 
@@ -423,12 +397,16 @@ public class FileBrowser
 
         //Lägg till confirmgrejen här, om ja. kör nedanstående
 
+        DisableFilebrowseer();
         exportManager.Save(filename);
+
     }
 
     public void OpenFile(string filePath)
     {
+        DisableFilebrowseer();
         exportManager.Open(filePath);
+
 
     }
 

@@ -38,6 +38,7 @@ public class TestFileBrowser : MonoBehaviour
             fb.SetState(FileBrowser.BrowseState.Save);
 
         }
+        FileBrowser.DisableFilebrowseer += Disable;
     }
 
 
