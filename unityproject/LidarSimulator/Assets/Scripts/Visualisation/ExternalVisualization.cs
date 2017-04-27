@@ -34,6 +34,9 @@ public class ExternalVisualization : MonoBehaviour {
 
         openButton.onClick.AddListener(LoadPoints);
         SetState(State.Default);
+
+
+        LidarStorage.HaveData += DataExists;
 	}
 
     /// <summary>
@@ -102,37 +105,6 @@ public class ExternalVisualization : MonoBehaviour {
 	public void LoadPoints()
 	{
         fileBrowser.SetActive(true);
-        if(fullCloudToggle.isOn)
-        {
-            SetState(State.FullCloud);
-            while (lidarStorage.GetData() == null || lidarStorage.GetData().Count == 0)
-            {
-                //wait
-            }
-            pointTable = lidarStorage.GetData();
-        }
-        else
-        {
-            SetState(State.LapCloud);
-            while(lidarStorage.GetData() == null || lidarStorage.GetData().Count == 0)
-            {
-                //wait
-            } 
-            pointTable = lidarStorage.GetData();
-            externalPointCloud.CreateCloud(SquashTable(pointTable));
-
-        }
-
-        /**
-        
-        string dataPath = Application.persistentDataPath + "/test.lidardata";
-        ExternalPointCloud eP =  GameObject.Find("PSystBase").GetComponent<ExternalPointCloud>();
-        Dictionary<float, LinkedList<SphericalCoordinate>> data = LoadManager.LoadCsv(dataPath);
-        eP.CreateCloud(createList(data));
-    **/
-
-
-
     }
     private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
     {
@@ -173,7 +145,6 @@ public class ExternalVisualization : MonoBehaviour {
 	public void LoadNext()
 	{
         if (pointTable != null && pointTable.Count != 0) {
-            Debug.Log(pointTable.Count);
             if (currentListPosition + 1 < pointTable.Count) {
                 currentListPosition += 1;
                 ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
@@ -197,6 +168,7 @@ public class ExternalVisualization : MonoBehaviour {
                 currentListPosition -= 1;
                 
                 ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
+                pSystem.Clear();
                 pSystem.SetParticles(particles, particles.Length);
                 pSystem.Play();
                 lapText.text = "Lap: " + currentListPosition;
@@ -227,6 +199,7 @@ public class ExternalVisualization : MonoBehaviour {
             if(pos == position)
             {
                 list = v.Value;
+                break;
             }
             pos++;
         }
@@ -259,7 +232,21 @@ public class ExternalVisualization : MonoBehaviour {
 
 
 
+    private void DataExists()
+    {
+        this.pointTable = lidarStorage.GetData();
+        if (fullCloudToggle.isOn)
+        {
+            SetState(State.FullCloud);
+        }
+        else
+        {
+            SetState(State.LapCloud);
+            pointTable = lidarStorage.GetData();
 
+        }
+
+    }
 
 
 

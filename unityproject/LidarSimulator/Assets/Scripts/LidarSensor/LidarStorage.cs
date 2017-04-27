@@ -9,9 +9,16 @@ using UnityEngine;
 /// </summary>
 public class LidarStorage : MonoBehaviour {
 
+    public delegate void Filled();
+    public static event Filled HaveData;
+
+
 	private Dictionary<float, LinkedList<SphericalCoordinate>> dataStorage;
 	private LinkedList<SphericalCoordinate> currentHits;
 	private float prevTime; // Timestamp for previous data entry.
+
+
+
 
 
 	public LidarStorage()
@@ -75,6 +82,10 @@ public class LidarStorage : MonoBehaviour {
     public void SetData(Dictionary<float,LinkedList<SphericalCoordinate>> data )
     {
         this.dataStorage = data;
+        if(HaveData != null)
+        {
+            HaveData();
+        }
     }
 
 }
