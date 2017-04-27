@@ -16,19 +16,14 @@ public class LoadManager : MonoBehaviour
 
 
     }
-    public static  Dictionary<float, LinkedList<SphericalCoordinate>> LoadCsv(String filename)
+    public static  IEnumerator LoadCsv(String filename, LidarStorage storage)
     {
         StreamReader sr = new StreamReader(File.OpenRead(filename));
         Dictionary<float, LinkedList<SphericalCoordinate>> data = new Dictionary<float, LinkedList<SphericalCoordinate>>();
         int line = 0;
         while (!sr.EndOfStream)
         {
-            if (line < 3)
-            {
-                line++;
-            }
-            else 
-            {
+            try {
                 float key = 0;
 
                 List<float> values = new List<float>();
@@ -40,12 +35,27 @@ public class LoadManager : MonoBehaviour
                     {
                         try
                         {
+                            /**UNCOMMENT FOR KITTY DATA
+                             * 
                             //float id = columns[2];
                             float radius = float.Parse(columns[2]);
                             float inclination = float.Parse(columns[3]);
                             float azimuth = float.Parse(columns[4]);
-                            SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth, new Vector3(), 0); // TODO: load world coordinate and ID??
+                            SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth); // TODO: load world coordinate and ID??
+                            coorValues.AddLast(sc);                       
+
+                        **/
+
+
+                            float x = float.Parse(columns[1]);
+                            float y = float.Parse(columns[2]);
+                            float z = float.Parse(columns[3]);
+                            Vector3 vector = new Vector3(x,y,z);
+
+                            SphericalCoordinate sc = new SphericalCoordinate(vector);
                             coorValues.AddLast(sc);
+
+
                         }
                         catch (FormatException e)
                         {
@@ -74,9 +84,14 @@ public class LoadManager : MonoBehaviour
                         }
                     }
                 }
+            } catch(Exception e)
+            {
+                Debug.Log("Unreadable data: " + e);
             }
         }
-        return data;
+        storage.SetData(data);
+
+        yield return null;
         }
     }
 
