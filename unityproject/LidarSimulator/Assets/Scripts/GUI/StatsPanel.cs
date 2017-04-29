@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -14,23 +15,52 @@ public class StatsPanel : MonoBehaviour {
 
 	private float updateDelay = 0.25f;
 	private float updateTime = 0f;
-    private float lastUpdate = 0f;
+    private bool simulationModeOn = false;
 
 	private float timeCounter = 0f;
 	private float frameCounter = 0f;
 
+    private float startTime = 0f;
 
-	/// <summary>
+    private int pointsHit = 0;
+
+    private void Awake()
+    {
+        PlayButton.OnPlayToggled += Reset;
+    }
+
+
+    /// <summary>
+    /// Resets relevant values and starts the updating of stats when simulation starts
+    /// </summary>
+    /// <param name="simulationMode"></param>
+    private void Reset(bool simulationMode)
+    {
+        simulationModeOn = simulationMode;
+        if (simulationMode)
+        {
+            startTime = Time.fixedTime;
+            pointsHit = 0;
+            frameCounter = 0f;
+            timeCounter = Time.fixedTime;
+            updateTime = Time.fixedTime + updateDelay;
+        }
+    }
+
+    /// <summary>
     /// Counts frames for the fps counter every update and handles the delay between GUI updates of values
     /// </summary>
-	void Update ()
+    void Update ()
     {
-		frameCounter += 1;
-
-        if (Time.fixedTime > updateTime)
+        if (simulationModeOn)
         {
-            UpdateTexts();
-            timeCounter = Time.time;
+            frameCounter += 1;
+
+            if (Time.fixedTime > updateTime)
+            {
+                UpdateTexts();
+                timeCounter = Time.fixedTime;
+            }
         }
     }
 
@@ -39,9 +69,9 @@ public class StatsPanel : MonoBehaviour {
     /// </summary>
 	void UpdateTexts()
     {
-        float deltaTime = Time.time - timeCounter;
-		timeText.text = "Time: " + ((int)Time.fixedTime).ToString() + " s";	
-		hitPText.text = "Points hit: " + 0;
+        float deltaTime = Time.fixedTime - timeCounter;
+		timeText.text = "Time: " + ((int)(Time.fixedTime - startTime)).ToString() + " s";	
+		hitPText.text = "Points hit: " + pointsHit;
 		fpsText.text = "Fps: " + (int)(frameCounter / deltaTime);
 		frameCounter = 0f;
 		updateTime = Time.fixedTime + updateDelay;
