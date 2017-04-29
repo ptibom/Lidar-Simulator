@@ -22,6 +22,20 @@ public class CarMovement : MonoBehaviour {
     private float rotationDeAcc = 60f;
     private float maxRotationSpeed = 140f;
 
+    private bool simulationModeOn = false;
+
+    private void Awake()
+    {
+        PlayButton.OnPlayToggled += SetControllerActive;
+    }
+
+
+    void SetControllerActive(bool simulationMode)
+    {
+        simulationModeOn = simulationMode;
+    }
+
+
     /// <summary>
     /// Initializes the base move and rotationspeed
     /// </summary>
@@ -36,40 +50,43 @@ public class CarMovement : MonoBehaviour {
     /// Checks if the arrowkeys on the keyboard is pressed and calls all functions based on those actions.
     /// Controlls the movement direction, movement acceleration and rotation direction based on if one is driving forward or backwards.
     /// </summary>
-    void FixedUpdate ()
-    {   
-        if (Input.GetAxis("Vertical") != 0)
+    void FixedUpdate()
+    {
+        if (simulationModeOn)
         {
-            if (Input.GetAxis("Vertical") > 0)
+            if (Input.GetAxis("Vertical") != 0)
             {
-                if(direction == -1)
+                if (Input.GetAxis("Vertical") > 0)
                 {
-                    moveSpeed = 0;
+                    if (direction == -1)
+                    {
+                        moveSpeed = 0;
+                    }
+                    direction = 1;
+                    Rotate(1);
                 }
-                direction = 1;
-                Rotate(1);
+                else
+                {
+                    if (direction == 1)
+                    {
+                        moveSpeed = 0;
+                    }
+                    direction = -1;
+                    Rotate(-1);
+                }
+                MoveAcc(true);
             }
             else
             {
-                if(direction == 1)
-                {
-                    moveSpeed = 0;
-                }
-                direction = -1;
-                Rotate(-1);
+                MoveAcc(false);
             }
-            MoveAcc(true);
-        }
-        else
-        {
-            MoveAcc(false);
-        }
 
-        RotateAcc();
+            RotateAcc();
 
-        if (moveSpeed != 0)
-        {
-            Move(direction);
+            if (moveSpeed != 0)
+            {
+                Move(direction);
+            }
         }
     }
 
