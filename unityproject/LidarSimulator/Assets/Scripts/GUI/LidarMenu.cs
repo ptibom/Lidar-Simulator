@@ -18,9 +18,9 @@ public class LidarMenu : MonoBehaviour {
         , float lowerFOV, float offset, float upperNormal, float lowerNormal);
     public delegate void StopSimulationDelegate();
 
-    public static event UpdateMimicValuesDelegate OnLidarMenuValChanged;
+    public static event UpdateMimicValuesDelegate OnPassValuesToLaserMimic;
     public static event PassLidarValuesToPointCloudDelegate OnPassLidarValuesToPointCloud;
-    public static event StartSimulationDelegate OnStartSimulation;
+    public static event StartSimulationDelegate OnPassValuesToLidarSensor;
     public static event StopSimulationDelegate OnStopSimulation;
 
     public Slider numberOfLasers;
@@ -43,7 +43,7 @@ public class LidarMenu : MonoBehaviour {
     void Awake()
     {
         EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
-        PlayButton.OnPlayToggled += StartSimulation;
+        PlayButton.OnPlayToggled += PassValuesToLidarSensor;
         PreviewLidarRays.tellLidarMenuInitialized += LaserMimicIsInitialized;
     }
 
@@ -97,7 +97,7 @@ public class LidarMenu : MonoBehaviour {
         {
             try
             {
-                OnLidarMenuValChanged((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
+                OnPassValuesToLaserMimic((int)numberOfLasers.value, upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
             }
             catch (NullReferenceException e)
             {
@@ -106,41 +106,23 @@ public class LidarMenu : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Sends an event to let other scripts know to stop simulation mode
-    /// </summary>
-    void StopSimulation()
-    {
-        try
-        {
-            OnStopSimulation();
-        }
-        catch (NullReferenceException e)
-        {
-            Debug.Log("Event has no delegates: " + e);
-        }
-    }
 
     /// <summary>
     /// Invokes an event with the current values set in the GUI for the lidar sensor and pointcloud to listen to
     /// </summary>
-    void StartSimulation(bool play)
+    void PassValuesToLidarSensor(bool play)
 	{
         if (play)
         {
             try
             {
-                OnStartSimulation((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
+                OnPassValuesToLidarSensor((int)numberOfLasers.value, rotationSpeedHz.value, rotationAnglePerStep.value, rayDistance.value,
                     upperFOV.value, lowerFOV.value, offset.value, upperNormal.value, lowerNormal.value);
             }
             catch (NullReferenceException e)
             {
                 Debug.Log("Event has no delegates: " + e);
             }
-        }
-        else
-        {
-            StopSimulation();
         }
     }
 

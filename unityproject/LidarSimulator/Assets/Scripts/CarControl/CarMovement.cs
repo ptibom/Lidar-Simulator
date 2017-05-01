@@ -18,11 +18,13 @@ public class CarMovement : MonoBehaviour {
     private float maxMoveSpeed = 35f;
    
     private float baseRotationSpeed;
-    private float rotationAcc = 40f;
-    private float rotationDeAcc = 60f;
+    private float rotationAcc = 70f;
+    private float rotationDeAcc = 70f;
     private float maxRotationSpeed = 140f;
 
     private bool simulationModeOn = false;
+
+    private Vector3 startPos;
 
     private void Awake()
     {
@@ -32,6 +34,10 @@ public class CarMovement : MonoBehaviour {
 
     void SetControllerActive(bool simulationMode)
     {
+        if (!simulationMode)
+        {
+            transform.position = startPos;
+        }
         simulationModeOn = simulationMode;
     }
 
@@ -44,6 +50,7 @@ public class CarMovement : MonoBehaviour {
         baseMoveSpeed = moveSpeed;
         moveSpeed = 0f;
         baseRotationSpeed = rotationSpeed;
+        startPos = transform.position;
     }
 
     /// <summary>

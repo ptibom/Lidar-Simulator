@@ -43,8 +43,8 @@ public class LidarSensor : MonoBehaviour {
     // Use this for initialization
     private void Start()
     {
-        LidarMenu.OnStartSimulation += UpdateSettings;
-        LidarMenu.OnStopSimulation += PauseSensor;
+        LidarMenu.OnPassValuesToLidarSensor += UpdateSettings;
+        PlayButton.OnPlayToggled += PauseSensor;
     }
 
     public void UpdateSettings(int numberOfLasers, float rotationSpeedHz, float rotationAnglePerStep, float rayDistance, float upperFOV,
@@ -101,9 +101,9 @@ public class LidarSensor : MonoBehaviour {
         isPlaying = true;
     }
 
-    public void PauseSensor()
+    public void PauseSensor(bool simulationModeOn)
     {
-        isPlaying = false;
+        isPlaying = simulationModeOn;
     }
 
     // Update is called once per frame

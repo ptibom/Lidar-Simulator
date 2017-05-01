@@ -29,7 +29,7 @@ public class PreviewLidarRays : MonoBehaviour {
     /// </summary>
     void Awake()
     {
-        LidarMenu.OnLidarMenuValChanged += UpdateLidarValues;
+        LidarMenu.OnPassValuesToLaserMimic += UpdateLidarValues;
     }
 
 	void Start()

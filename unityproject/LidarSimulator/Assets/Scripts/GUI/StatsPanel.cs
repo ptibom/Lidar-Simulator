@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,8 +31,13 @@ public class StatsPanel : MonoBehaviour {
     private void Awake()
     {
         PlayButton.OnPlayToggled += Reset;
+        LidarSensor.OnScanned += UpdatePointsHitCounter;
     }
 
+    void UpdatePointsHitCounter(LinkedList<SphericalCoordinate> hits)
+    {
+        pointsHit += hits.Count;
+    }
 
     /// <summary>
     /// Resets relevant values and starts the updating of stats when simulation starts
@@ -79,11 +85,27 @@ public class StatsPanel : MonoBehaviour {
     {
         float deltaTime = Time.time - timeCounter;
 		timeText.text = "Time: " + ((int)(Time.time - startTime)).ToString() + " s";	
-		hitPText.text = "Points hit: " + pointsHit;
+		hitPText.text = "Points hit: " + UpdatePointsHitPrefixText();
 		fpsText.text = "Fps: " + (int)(frameCounter / deltaTime);
         tickText.text = "Ticks: " + (int)(tickCounter/deltaTime) + "/s";
 		frameCounter = 0f;
         tickCounter = 0;
 		updateTime = Time.time + updateDelay;
 	}
+
+    String UpdatePointsHitPrefixText()
+    {
+        if(pointsHit < 1000)
+        {
+            return pointsHit.ToString();
+        }
+        else if(pointsHit < 1000000)
+        {
+            return ((float)pointsHit / 1000).ToString().Substring(0, 4) + " K";
+        }
+        else
+        {
+            return ((float)pointsHit / 1000000).ToString().Substring(0, 4) + " M";
+        }
+    }
 }
