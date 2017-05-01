@@ -13,6 +13,9 @@ public class TransperentMaterialFix : MonoBehaviour {
     public Material mat3;
     public Material mat4;
     public Material mat5;
+    public Material mat6;
+    public Material mat7;
+    public Material mat8;
 
     void Start()
     {
@@ -21,5 +24,8 @@ public class TransperentMaterialFix : MonoBehaviour {
         mat3.SetInt("_ZWrite", 1);
         mat4.SetInt("_ZWrite", 1);
         mat5.SetInt("_ZWrite", 1);
+        mat6.SetInt("_ZWrite", 1);
+        mat7.SetInt("_ZWrite", 1);
+        mat8.SetInt("_ZWrite", 1);
     }
 }

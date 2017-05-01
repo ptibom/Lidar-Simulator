@@ -12,6 +12,7 @@ public class StatsPanel : MonoBehaviour {
     public Text fpsText;
     public Text timeText;
 	public Text hitPText;
+    public Text tickText;
 
 	private float updateDelay = 0.25f;
 	private float updateTime = 0f;
@@ -19,6 +20,8 @@ public class StatsPanel : MonoBehaviour {
 
 	private float timeCounter = 0f;
 	private float frameCounter = 0f;
+
+    private int tickCounter = 0;
 
     private float startTime = 0f;
 
@@ -56,12 +59,17 @@ public class StatsPanel : MonoBehaviour {
         {
             frameCounter += 1;
 
-            if (Time.fixedTime > updateTime)
+            if (Time.time > updateTime)
             {
                 UpdateTexts();
-                timeCounter = Time.fixedTime;
+                timeCounter = Time.time;
             }
         }
+    }
+
+    void FixedUpdate()
+    {
+        tickCounter += 1;
     }
 
     /// <summary>
@@ -69,11 +77,13 @@ public class StatsPanel : MonoBehaviour {
     /// </summary>
 	void UpdateTexts()
     {
-        float deltaTime = Time.fixedTime - timeCounter;
-		timeText.text = "Time: " + ((int)(Time.fixedTime - startTime)).ToString() + " s";	
+        float deltaTime = Time.time - timeCounter;
+		timeText.text = "Time: " + ((int)(Time.time - startTime)).ToString() + " s";	
 		hitPText.text = "Points hit: " + pointsHit;
 		fpsText.text = "Fps: " + (int)(frameCounter / deltaTime);
+        tickText.text = "Ticks: " + (int)(tickCounter/deltaTime) + "/s";
 		frameCounter = 0f;
-		updateTime = Time.fixedTime + updateDelay;
+        tickCounter = 0;
+		updateTime = Time.time + updateDelay;
 	}
 }
