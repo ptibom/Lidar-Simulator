@@ -103,7 +103,10 @@ public class LidarSensor : MonoBehaviour {
 
     public void PauseSensor(bool simulationModeOn)
     {
-        isPlaying = simulationModeOn;
+        if (!simulationModeOn)
+        {
+            isPlaying = simulationModeOn;
+        }
     }
 
     // Update is called once per frame
