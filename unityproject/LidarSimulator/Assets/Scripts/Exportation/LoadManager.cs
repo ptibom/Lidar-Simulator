@@ -20,7 +20,17 @@ public class LoadManager : MonoBehaviour
     {
         StreamReader sr = new StreamReader(File.OpenRead(filename));
         Dictionary<float, LinkedList<SphericalCoordinate>> data = new Dictionary<float, LinkedList<SphericalCoordinate>>();
-        int line = 0;
+        bool internalData = false; //The data to be read was created by our program
+
+
+        if(sr.Peek().Equals('s')) // First line starts with "sep..." internal representation.
+        {
+            internalData = true;
+            for(int i = 0; i<2;i++)
+            {
+                sr.ReadLine(); // Discard first two lines
+            }
+        }
         while (!sr.EndOfStream)
         {
             try {
@@ -28,7 +38,7 @@ public class LoadManager : MonoBehaviour
 
                 List<float> values = new List<float>();
                 LinkedList<SphericalCoordinate> coorValues = new LinkedList<SphericalCoordinate>();
-                string[] columns = sr.ReadLine().Split(';');
+                string[] columns = sr.ReadLine().Split(' ');
 
                 if (columns.Length == 5) {
                     for (int i = 0; i < columns.Length; i++)

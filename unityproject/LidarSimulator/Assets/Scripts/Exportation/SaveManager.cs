@@ -34,6 +34,12 @@ public class SaveManager : MonoBehaviour
     //public void SaveToCsv(SaveObject[]  datalist, string filname){
     public static void SaveToCsv(Dictionary<float, LinkedList<SphericalCoordinate>> data, String filename)
     {    
+        if(filename.Equals(null))
+        {
+            Debug.Log("EMPTY!");
+        } 
+
+
         try
         {
           
@@ -46,17 +52,27 @@ public class SaveManager : MonoBehaviour
             /// header in csv file
             string[] header = new string[5];
 
+            /** UNCOMMENT FOR NON KITTYDATA
             header[0] = "Time";
             header[1] = "ID";
             header[2] = "Radius";
             header[3] = "Inclination";
             header[4] = "Azimuth";
             dataTable.Add(header);
+            **/
+            header[0] = "Time";
+            header[1] = "x";
+            header[2] = "y";
+            header[3] = "z";
+            header[4] = "reflection";
+
+
 
 
             List<SaveObject> objlist = new List<SaveObject>();
             foreach (KeyValuePair<float, LinkedList<SphericalCoordinate>> coordinatePair in data)
             {
+                /** UNCOMMENT THIS FOR NON-KITTY DATA
                 foreach (SphericalCoordinate coordinate in coordinatePair.Value)
                 {
                     string[] rows = new string[5];
@@ -67,6 +83,21 @@ public class SaveManager : MonoBehaviour
                     rows[4] = coordinate.GetAzimuth().ToString();
                     dataTable.Add(rows);
                 }
+    **/
+
+                foreach (SphericalCoordinate coordinate in coordinatePair.Value)
+                {
+                    Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
+                    string[] rows = new string[4];
+                    rows[0] = coordinatePair.Key.ToString(); // The time
+                    rows[1] = worldCoordinate.x.ToString();
+                    rows[2] = worldCoordinate.y.ToString();
+                    rows[3] = worldCoordinate.z.ToString();
+                    rows[3] = 1.ToString();
+                    dataTable.Add(rows);
+                }
+
+
             }
 
             ///put each row in data table to an array
@@ -80,7 +111,7 @@ public class SaveManager : MonoBehaviour
             StringBuilder sb = new StringBuilder();
 
             int length = output.GetLength(0);
-            string delimiter = ";";
+            string delimiter = " ";
             for (int r = 0; r < length; r++)
             {
 
@@ -89,7 +120,7 @@ public class SaveManager : MonoBehaviour
             ///write lines to output file
             StreamWriter outputstream = System.IO.File.CreateText(filename);
             /// write separator as the first  line in the file för CSV file to be oppened correctly
-            outputstream.WriteLine("sep=;");
+            outputstream.WriteLine("sep= ");
 
             outputstream.WriteLine(sb);
             outputstream.Close();

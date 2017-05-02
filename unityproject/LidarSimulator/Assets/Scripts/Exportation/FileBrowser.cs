@@ -182,7 +182,7 @@ public class FileBrowser
                     if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
                     {
                         //Debug.Log("writing over :" + outputFile);
-                        SaveFile(null + outputFile);
+                        SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
                         return true;
                     }
                 } else
