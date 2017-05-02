@@ -26,10 +26,11 @@ public class TestFileBrowser : MonoBehaviour
         fb.driveTexture = drive;
         //show the search bar
         fb.showSearch = true;
-
+        FileBrowser.DisableFilebrowseer += Disable;
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
         fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
+        
         if(state == BrowseState.Open)
         {
             fb.SetState(FileBrowser.BrowseState.Open);
@@ -38,6 +39,7 @@ public class TestFileBrowser : MonoBehaviour
             fb.SetState(FileBrowser.BrowseState.Save);
 
         }
+        FileBrowser.DisableFilebrowseer += Disable;
     }
 
 
@@ -69,6 +71,10 @@ public class TestFileBrowser : MonoBehaviour
         Open,Save
     }
 
+    public void Disable()
+    {
+        this.enabled = false;
+    }
 
     public void SetActive(bool active)
     {

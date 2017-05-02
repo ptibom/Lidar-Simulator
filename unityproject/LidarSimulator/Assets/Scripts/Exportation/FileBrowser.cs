@@ -9,6 +9,8 @@ public class FileBrowser
 
     public ExportManager exportManager; // Prefab required to save
     BrowseState state;
+    public static event Disable DisableFilebrowseer;
+    public delegate void Disable();
 
  
     public enum BrowseState
@@ -98,13 +100,23 @@ public class FileBrowser
             case 0:
                 GUILayout.BeginHorizontal("box");
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("Saving to: " + currentDirectory.FullName + "\\" + searchBarString);
+                if(state == BrowseState.Save)
+                {
+                    GUILayout.Label("Saving to: " + currentDirectory.FullName + "\\" + searchBarString + ".txt");
+
+                } else
+                {
+                    GUILayout.Label("Opening file: " + outputFile);
+
+                }
                 GUILayout.FlexibleSpace();
 
-                if (DrawSearchField())
-                {
-                    outputFile = null;
-                    return true;
+                if (state == BrowseState.Save) {
+                    if (DrawSearchField())
+                    {
+                        outputFile = null;
+                        return true;
+                    }
                 }
                 GUILayout.Space(10);
 
@@ -162,16 +174,29 @@ public class FileBrowser
                 {
                     outputFile = null;
                     return true;
-                }
-                GUILayout.FlexibleSpace();
-                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle))
+                }                
+                if(state == BrowseState.Save)
                 {
-                    Debug.Log("writing over :" + outputFile);
-                    
                     SaveFile(null + outputFile);
                     return true;
+                    GUILayout.FlexibleSpace();
+                    if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
+                    {
+                        //Debug.Log("writing over :" + outputFile);
+                        SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
+                        return true;
+                    }
+                } else
+                {
+                    if ((selectStyle == null) ? GUILayout.Button("Open") : GUILayout.Button("Open", selectStyle))
+                    {
+                       // Debug.Log("writing over :" + outputFile);
+                        OpenFile(null + outputFile);
+                        return true;
+                    }
+                    GUILayout.FlexibleSpace();
                 }
-                GUILayout.FlexibleSpace();
+                
                 GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
@@ -233,11 +258,11 @@ public class FileBrowser
                 }
                 GUILayout.EndScrollView();
 
-                if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle)) { Debug.Log(outputFile); return true; }
+                //if ((selectStyle == null) ? GUILayout.Button("Overwrite exiting file") : GUILayout.Button("Overwrite exiting file", selectStyle)) { Debug.Log(outputFile); return true; }
 
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
-                    outputFile = null;
+                    DisableFilebrowseer();
                     return true;
                 }
                 break;
@@ -355,10 +380,7 @@ public class FileBrowser
             }
             return false;
         }
-
-
-
-        
+        return false;        
     }
 
     public void GetFileList(DirectoryInfo di)
@@ -405,16 +427,20 @@ public class FileBrowser
     public void SaveFile(string filename)
     {
         //Lägg till confirmgrejen här, om ja. kör nedanstående
-        SaveConfirm confirm = new SaveConfirm();
+        //SaveConfirm confirm = new SaveConfirm();
         
 
 
+        DisableFilebrowseer();
         exportManager.Save(filename);
+
     }
 
     public void OpenFile(string filePath)
     {
+        DisableFilebrowseer();
         exportManager.Open(filePath);
+
 
     }
 

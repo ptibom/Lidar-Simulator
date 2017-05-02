@@ -20,12 +20,13 @@ public class ExternalPointCloud : MonoBehaviour {
 
     public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
+        Debug.Log("Splitting into chunks...");
         List<List<Vector3>> chunks = SplitIntoChunks(coordinates);
         List<string> meshObjects = CreateNeededMeshes(chunks.Count);
-
+        Debug.Log("Creating meshes");
         for(int i = 0; i< chunks.Count; i++)
         {
-            MeshFilter meshFilter = GameObject.Find(meshObjects[i]).GetComponent<MeshFilter>();
+            MeshFilter meshFilter = GameObject.Find("MeshObject" + i).GetComponent<MeshFilter>();
             Mesh m = new Mesh();
             m.SetVertices(chunks[i]);
             m.SetColors(CreateColorsForPointList(chunks[i]));
@@ -47,7 +48,7 @@ public class ExternalPointCloud : MonoBehaviour {
 
         for(LinkedListNode<SphericalCoordinate> it = coordinates.First; it != null; it = it.Next)
         {
-            currentChunk[i] = (it.Value.ToCartesian()); //Remake to use world points 
+            currentChunk.Add(it.Value.GetWorldCoordinate()); //Remake to use world points 
             if(currentChunk.Count%maxParticlesPerChunk == 0)
             {
                 chunks.Add(currentChunk);
@@ -56,6 +57,7 @@ public class ExternalPointCloud : MonoBehaviour {
             {
                 chunks.Add(currentChunk); // final value
             }
+            i++;
         }
         return chunks;
     }
@@ -73,6 +75,7 @@ public class ExternalPointCloud : MonoBehaviour {
         {
             GameObject newGO = Instantiate(meshObject, new Vector3(0,0,0), Quaternion.identity);
             newGO.name = "MeshObject" + i;
+            nameList.Add(newGO.name);
         }
 
         return nameList;
@@ -102,7 +105,7 @@ public class ExternalPointCloud : MonoBehaviour {
             {
                 c = Color.green;
             }
-            colorList[i] = c;
+            colorList.Add(c);
         }
         return colorList;
     }

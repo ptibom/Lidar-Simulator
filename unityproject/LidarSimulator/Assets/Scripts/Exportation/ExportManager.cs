@@ -8,14 +8,17 @@ using UnityEngine;
 public class ExportManager : MonoBehaviour {
 
     public GameObject lidarStorageGameObject;
+    public static event LoadingPoints Loading;
+    public delegate void LoadingPoints(Coroutine load);
+
+
     private LidarStorage lidarStorage;
-
-
 
 	// Use this for initialization
 	void Start () {
         lidarStorageGameObject = GameObject.FindGameObjectWithTag("Lidar");
         lidarStorage = lidarStorageGameObject.GetComponent<LidarStorage>();		
+
 	}
 
 
@@ -42,16 +45,13 @@ public class ExportManager : MonoBehaviour {
     /// <param name="filePath"></param>
     public void Open(string filePath)
     {
-        Dictionary<float, LinkedList<SphericalCoordinate>> data = LoadManager.LoadCsv(filePath);
-
-        if (data.Equals(null) || data.Count == 0)
+        
+        Coroutine async = StartCoroutine(LoadManager.LoadCsv(filePath, lidarStorage));
+        if (Loading != null)
         {
-            Debug.Log("Empty on nonexisting data");
+            Loading(async);
         }
-        else
-        {
-            lidarStorage.SetData(data);
-        }
+        
     }
 
 }

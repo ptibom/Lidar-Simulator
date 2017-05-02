@@ -5,13 +5,17 @@ using UnityEngine.UI;
 
 public class ExternalVisualization : MonoBehaviour {
 	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
-	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn;
+    private LidarStorage lidarStorage;
+    private ExternalPointCloud externalPointCloud;
+	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn, loadingPanel, loadWheel;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton,backButton;
     public Text lapText;
     public Toggle fullCloudToggle, lapToggle;
+    public TestFileBrowser fileBrowser;
 
+    private Coroutine loadingPoints;
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
@@ -26,11 +30,21 @@ public class ExternalVisualization : MonoBehaviour {
         backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
         lapText = GameObject.Find("LapText").GetComponent<Text>();
-  
-        
-		openButton.onClick.AddListener(LoadPoints);
+        fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
+        lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
+        externalPointCloud = GetComponent<ExternalPointCloud>();
+        loadingPanel = GameObject.Find("LoadingPanel");
+        loadWheel = GameObject.Find("LoadImage");
+
+
+        openButton.onClick.AddListener(LoadPoints);
         SetState(State.Default);
+
+        ExportManager.Loading += Loading;
+        LidarStorage.HaveData += DataExists;
 	}
+
+
 
     /// <summary>
     /// The different states the external visualization can be in.
@@ -88,6 +102,19 @@ public class ExternalVisualization : MonoBehaviour {
         {
             LoadPrev();
         }
+
+        if (loadingPoints != null)
+        {
+            loadingPanel.SetActive(true);
+            loadWheel.transform.Rotate(Vector3.back * Time.deltaTime * 300);
+            //loadProgress.text = (async.progress * 100).ToString() + "%";
+        }
+        else
+        {
+            loadingPanel.SetActive(false);
+        }
+
+
     }
 
 
@@ -97,31 +124,7 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-
-        if(fullCloudToggle.isOn)
-        {
-            SetState(State.FullCloud);
-            // Load a full point cloud
-            Debug.Log("yolo");
-        } else
-        {
-            SetState(State.LapCloud);
-
-            // Load partially loaded particle systems. 
-            Debug.Log("Nolo");
-            
-        }
-
-        /**
-        
-        string dataPath = Application.persistentDataPath + "/test.lidardata";
-        ExternalPointCloud eP =  GameObject.Find("PSystBase").GetComponent<ExternalPointCloud>();
-        Dictionary<float, LinkedList<SphericalCoordinate>> data = LoadManager.LoadCsv(dataPath);
-        eP.CreateCloud(createList(data));
-    **/
-
-
-
+        fileBrowser.SetActive(true);
     }
     private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
     {
@@ -136,20 +139,44 @@ public class ExternalVisualization : MonoBehaviour {
         return newList;
     }
 
+    /// <summary>
+    /// Creates a single linked list filled with spherical coordinates from a data tablöe
+    /// </summary>
+    /// <returns></returns>
+    private LinkedList<SphericalCoordinate> SquashTable(Dictionary<float, LinkedList<SphericalCoordinate>> data)
+    {
+        Debug.Log("Squashing table for: " + data.Count);
+        LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
+
+        foreach(var entity in data)
+        {
+            foreach(SphericalCoordinate s in entity.Value)
+            {
+                newList.AddLast(s);
+            }
+        }
+        return newList;
+    }
+
+
+
 	/// <summary>
 	/// Tells the particle system to load the next set of points. 
 	/// </summary>
 	public void LoadNext()
 	{
-        if (pointTable != null) {
+        if (pointTable != null && pointTable.Count != 0) {
             if (currentListPosition + 1 < pointTable.Count) {
                 currentListPosition += 1;
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
                 pSystem.SetParticles(particles, particles.Length);
                 lapText.text = "Lap: " + currentListPosition;
             }
+        } else
+        {
+            pointTable = lidarStorage.GetData();
         }
-	}
+    }
 	/// <summary>
 	/// Tells the particle system to load the previous set of points. 
 	/// </summary>
@@ -160,11 +187,17 @@ public class ExternalVisualization : MonoBehaviour {
             if (currentListPosition - 1 >= 0)
             {
                 currentListPosition -= 1;
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable[currentListPosition]);
+                
+                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
+                pSystem.Clear();
                 pSystem.SetParticles(particles, particles.Length);
+                pSystem.Play();
                 lapText.text = "Lap: " + currentListPosition;
 
             }
+        } else
+        {
+            this.pointTable = lidarStorage.GetData();
         }
     }
 
@@ -177,39 +210,77 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-	private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinate> positions)
+	private ParticleSystem.Particle[] CreateParticles(Dictionary<float,LinkedList<SphericalCoordinate>> data, int position)
 	{
 		List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+        LinkedList<SphericalCoordinate> list = new LinkedList<SphericalCoordinate>();
+        int pos = 0;
+        foreach(var v in data)
+        {
+            if(pos == position)
+            {
+                list = v.Value;
+                break;
+            }
+            pos++;
+        }
 
-		for (LinkedListNode<SphericalCoordinate> it = positions.First; it != null; it = it.Next)
-		{
-			ParticleSystem.Particle particle = new ParticleSystem.Particle();
-			particle.position = it.Value.ToCartesian();
-			if (it.Value.GetInclination() < 3)
-			{
-				particle.startColor = Color.red;
-			}
-			else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
-			{
-				particle.startColor = Color.yellow;
-			}
-			else
-			{
-				particle.startColor = Color.green;
-			}
+		for (LinkedListNode<SphericalCoordinate> it = list.First; it != null; it = it.Next)
+		{           
+                ParticleSystem.Particle particle = new ParticleSystem.Particle();
+                particle.position = it.Value.ToCartesian();
+                if (it.Value.GetInclination() < 3)
+                {
+                    particle.startColor = Color.red;
+                }
+                else if (it.Value.GetInclination() > 3 && it.Value.GetInclination() < 7)
+                {
+                    particle.startColor = Color.yellow;
+                }
+                else
+                {
+                    particle.startColor = Color.green;
+                }
 
-			particle.startSize = 0.1f;
-			particle.startLifetime = 0.2f;
-			particle.remainingLifetime = 1f;
-			particleCloud.Add(particle);
+                particle.startSize = 0.1f;
+                particle.startLifetime =100f;
+                particle.remainingLifetime = 100f;
+                particleCloud.Add(particle);            
 		}
 
 		return particleCloud.ToArray();
 	}
 
+    /// <summary>
+    /// Shows the loading dialog
+    /// </summary>
+    private void Loading(Coroutine async)
+    {
+        this.loadingPoints = async;
+
+    }
 
 
 
+    private void DataExists()
+    {
+        loadingPoints = null;
+        this.pointTable = lidarStorage.GetData();
+        Debug.Log("Have Data: EX" );
+        if (fullCloudToggle.isOn)
+        {
+            SetState(State.FullCloud);
+            externalPointCloud.CreateCloud(SquashTable(pointTable));
+        }
+        else
+        {
+            SetState(State.LapCloud);
+            currentListPosition = -1;
+            LoadNext();      
+
+        }
+
+    }
 
 
 

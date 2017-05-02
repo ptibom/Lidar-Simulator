@@ -16,35 +16,102 @@ public class LoadManager : MonoBehaviour
 
 
     }
-    public static  Dictionary<float, LinkedList<SphericalCoordinate>> LoadCsv(String filename)
+    public static  IEnumerator LoadCsv(String filename, LidarStorage storage)
     {
         StreamReader sr = new StreamReader(File.OpenRead(filename));
-     
         Dictionary<float, LinkedList<SphericalCoordinate>> data = new Dictionary<float, LinkedList<SphericalCoordinate>>();
+        bool internalData = false; //The data to be read was created by our program
 
+
+        if(sr.Peek().Equals('s')) // First line starts with "sep..." internal representation.
+        {
+            internalData = true;
+            for(int i = 0; i<2;i++)
+            {
+                sr.ReadLine(); // Discard first two lines
+            }
+        }
         while (!sr.EndOfStream)
         {
-            float key = 0;
-
-            List<float> values = new List<float>();
-            LinkedList<SphericalCoordinate> coorValues = new LinkedList<SphericalCoordinate>();
-            string []columns = sr.ReadLine().Split(';');
-
-            for (int i = 0; i < columns.Length; i++)
+            try
             {
-                key = float.Parse(columns[0]);
+                float key = 0;
 
-                //float id = columns[2];
-                float radius = float.Parse(columns[1]);
-                float inclination = float.Parse(columns[2]);
-                float azimuth = float.Parse( columns[3]);
-                SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth, new Vector3(), 0); // TODO: load world coordinate and ID??
-                coorValues.AddLast(sc);
-            }
-            data.Add(key, coorValues); 
 
+
+                List<float> values = new List<float>();
+                LinkedList<SphericalCoordinate> coorValues = new LinkedList<SphericalCoordinate>();
+                string[] columns = sr.ReadLine().Split(' ');
+
+
+                try
+                {
+                    /**UNCOMMENT FOR KITTY DATA
+                     * 
+                    //float id = columns[2];
+                    float radius = float.Parse(columns[2]);
+                    float inclination = float.Parse(columns[3]);
+                    float azimuth = float.Parse(columns[4]);
+                    SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth); // TODO: load world coordinate and ID??
+                    coorValues.AddLast(sc);                       
+
+                **/
+                    if (columns.Length >= 4)
+                    {
+                        key = float.Parse(columns[0]);
+                        float x = float.Parse(columns[1]);
+                        float y = float.Parse(columns[2]);
+                        float z = float.Parse(columns[3]);
+                        Vector3 vector = new Vector3(x, y, z);
+                        SphericalCoordinate sc = new SphericalCoordinate(vector);
+                        coorValues.AddLast(sc);
+                    } else
+                    {
+                        foreach(string s in columns)
+                        {
+                            Debug.Log(s);
+                        }
+                        break;
+                    }
+
+
+                }
+                catch (FormatException e)
+                {
+                    Debug.Log("Exception! |time|radius|inclination|azimuth" + "|" + columns[0] + "|" + columns[2] + "|" + columns[3] + "|" + columns[4]);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Debug.Log("Length:" + columns.Length);
+                }
+            
+ 
+
+                    LinkedList<SphericalCoordinate> oldList;
+                    if (!data.TryGetValue(key, out oldList))
+                    {
+                        data.Add(key, coorValues);
+
+                    }
+                    else
+                    {
+                        foreach (var v in coorValues)
+                        {
+                            oldList.AddLast(v);
+                        }
+
+                    }
+                
+            } catch(Exception e)
+            {
+                Debug.Log("Unreadable data: " + e);
             }
-        return data;
+        }
+
+        Debug.Log("Setting data in: " + storage.GetHashCode() + " with length" + data.Count);
+            storage.SetData(data);
+
+        yield return null;
         }
     }
 
