@@ -13,12 +13,12 @@ public class CarMovement : MonoBehaviour {
 
     private int direction = 1;
     private float baseMoveSpeed = 20f;
-    private float moveAcc = 20f;
-    private float moveDeAcc = 30f;
-    private float maxMoveSpeed = 35f;
+    private float moveAcc = 25f;
+    private float moveDeAcc = 25f;
+    private float maxMoveSpeed = 30f;
    
     private float baseRotationSpeed;
-    private float rotationAcc = 70f;
+    private float rotationAcc = 90f;
     private float rotationDeAcc = 70f;
     private float maxRotationSpeed = 140f;
 
