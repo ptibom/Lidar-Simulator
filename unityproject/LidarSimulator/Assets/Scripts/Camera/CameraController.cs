@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 
     private float smoothingSpeed = 4f;
     private float oldSmoothingSpeed = 0f;
+    private float oldSmoothingSpeed2 = 0f;
+
     private float timeClicked = 0f;
     private bool heldMouseLastFrame = false;
 
@@ -146,6 +148,7 @@ public class CameraController : MonoBehaviour
             previousVerticalRotationAngle += rotationAroundX * 10;
         }
         behindDistance -= Input.GetAxis("Mouse ScrollWheel") * 10; // Sets the zoom.
+        
 
         rotation = Quaternion.AngleAxis(previousHorizontalRotationAngle, Vector3.up) * 
             Quaternion.AngleAxis(previousVerticalRotationAngle, followThis.transform.right) * followThis.transform.forward;
@@ -177,7 +180,7 @@ public class CameraController : MonoBehaviour
             smoothingSpeed = oldSmoothingSpeed;
             heldMouseLastFrame = false;
         }
-        else if (!hitEnvironment && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject()) // Resolves sliding.
+        else if (!hitEnvironment && Input.GetButton("Fire1") && !EventSystem.current.IsPointerOverGameObject() || Input.GetAxis("Vertical") < 0) // Resolves sliding.
         {
             if (!heldMouseLastFrame)
             {
@@ -187,7 +190,7 @@ public class CameraController : MonoBehaviour
             heldMouseLastFrame = true;
             timeClicked = Time.time;
         }
-        else if (!hitEnvironment && Time.time - timeClicked > 1f)
+        else if (!hitEnvironment && Time.time - timeClicked > 0.2f)
         {
             smoothingSpeed = oldSmoothingSpeed;
             heldMouseLastFrame = false;

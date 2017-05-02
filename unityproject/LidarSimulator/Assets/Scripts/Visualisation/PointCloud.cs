@@ -37,8 +37,7 @@ public class PointCloud : MonoBehaviour
         LidarSensor.NewRotationEvent += NewLap;
         isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
-
-
+        PlayButton.OnPlayToggled += ToggleCloud;
     }
 
     /// <summary>
@@ -284,6 +283,22 @@ public class PointCloud : MonoBehaviour
         }       
 
     }
+
+    /// <summary>
+    /// Toggles whether the point cloud should be active
+    /// </summary>
+    private void ToggleCloud(bool active)
+    {
+        if(active)
+        {
+            Play();
+        } else
+        {
+            Pause();
+        }
+    }
+
+
 
     /// <summary>
     /// Is signalled when the lidar sensor has completed a lap, increments lap counter, used to distinguish wether a new particle system will be created.

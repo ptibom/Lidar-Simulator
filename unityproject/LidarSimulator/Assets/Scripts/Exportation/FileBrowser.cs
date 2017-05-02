@@ -30,7 +30,7 @@ public class FileBrowser
     public Color selectedColor = new Color(0.5f, 0.5f, 0.9f); //the color of the selected file
     public bool isVisible { get { return visible; } } //check if the file browser is currently visible
                                                       //File Options
-    public string searchPattern = "*"; //search pattern used to find files
+    public string searchPattern = "*.txt"; //search pattern used to find files
                                        //Output
     public FileInfo outputFile; //the selected output file
                                 //Search
@@ -73,8 +73,7 @@ public class FileBrowser
     #endif
     public FileBrowser(Rect guiRect) : this() { guiSize = guiRect; }
     public FileBrowser(int layoutStyle) : this(Directory.GetCurrentDirectory(), layoutStyle) { }
-    public FileBrowser() : this(Directory.GetCurrentDirectory()) { }
-
+    public FileBrowser() : this(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) { }
     //set variables
     public void setDirectory(string dir) { currentDirectory = new DirectoryInfo(dir); }
     //public void setLayout(int l){	layout=l;	}
@@ -177,9 +176,6 @@ public class FileBrowser
                 }                
                 if(state == BrowseState.Save)
                 {
-                    SaveFile(null + outputFile);
-                    return true;
-                    GUILayout.FlexibleSpace();
                     if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
                     {
                         //Debug.Log("writing over :" + outputFile);
@@ -344,43 +340,7 @@ public class FileBrowser
     protected bool DrawSearchField()
     {
         searchBarString = GUILayout.TextField(searchBarString, GUILayout.MinWidth(150));
-        if(state == BrowseState.Save)
-        {
-           
-            if (GUILayout.Button("Save"))
-            {
-                if (searchBarString.Length > 0)
-                {
-                    Debug.Log(currentDirectory + "\\" + searchBarString);
-                    SaveFile(currentDirectory + "\\" + searchBarString);
-                    return true;
-                }
-                else
-                {
-                    GetFileList(currentDirectory);
-                    Debug.Log("current dir :" + currentDirectory);
-                }
-            }
-            return false;
-        } else
-        {
-            if (GUILayout.Button("Open"))
-            {
-                if (searchBarString.Length > 0)
-                {
-                    Debug.Log(currentDirectory + "\\" + searchBarString);
-                    OpenFile(currentDirectory + "\\" + searchBarString);
-                    return true;
-                }
-                else
-                {
-                    GetFileList(currentDirectory);
-                    Debug.Log("current dir :" + currentDirectory);
-                }
-            }
-            return false;
-        }
-        return false;        
+        return false;
     }
 
     public void GetFileList(DirectoryInfo di)
