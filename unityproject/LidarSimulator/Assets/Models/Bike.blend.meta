@@ -1,39 +1,10 @@
 fileFormatVersion: 2
 guid: ce2839b42b61f35408f143967bba4b50
-timeCreated: 1493728954
+timeCreated: 1493737464
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: Riding_001_MeshPart0
-    100004: Riding_001_MeshPart1
-    100006: Riding_001_MeshPart2
-    100008: Riding_001_MeshPart3
-    100010: Riding_001_MeshPart4
-    400000: //RootNode
-    400002: Riding_001_MeshPart0
-    400004: Riding_001_MeshPart1
-    400006: Riding_001_MeshPart2
-    400008: Riding_001_MeshPart3
-    400010: Riding_001_MeshPart4
-    2300000: Riding_001_MeshPart0
-    2300002: Riding_001_MeshPart1
-    2300004: Riding_001_MeshPart2
-    2300006: Riding_001_MeshPart3
-    2300008: Riding_001_MeshPart4
-    3300000: Riding_001_MeshPart0
-    3300002: Riding_001_MeshPart1
-    3300004: Riding_001_MeshPart2
-    3300006: Riding_001_MeshPart3
-    3300008: Riding_001_MeshPart4
-    4300000: Riding_001_MeshPart0
-    4300002: Riding_001_MeshPart1
-    4300004: Riding_001_MeshPart2
-    4300006: Riding_001_MeshPart3
-    4300008: Riding_001_MeshPart4
-    7400000: Default Take
-    9500000: //RootNode
+  fileIDToRecycleName: {}
   materials:
     importMaterials: 1
     materialName: 0
