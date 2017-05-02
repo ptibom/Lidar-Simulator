@@ -7,13 +7,15 @@ public class ExternalVisualization : MonoBehaviour {
 	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
     private LidarStorage lidarStorage;
     private ExternalPointCloud externalPointCloud;
-	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn;
+	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn, loadingPanel, loadWheel;
 	private ParticleSystem pSystem;
 	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton,backButton;
     public Text lapText;
     public Toggle fullCloudToggle, lapToggle;
     public TestFileBrowser fileBrowser;
+
+    private Coroutine loadingPoints;
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
@@ -31,13 +33,18 @@ public class ExternalVisualization : MonoBehaviour {
         fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
         lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
         externalPointCloud = GetComponent<ExternalPointCloud>();
+        loadingPanel = GameObject.Find("LoadingPanel");
+        loadWheel = GameObject.Find("LoadImage");
+
 
         openButton.onClick.AddListener(LoadPoints);
         SetState(State.Default);
 
-
+        ExportManager.Loading += Loading;
         LidarStorage.HaveData += DataExists;
 	}
+
+
 
     /// <summary>
     /// The different states the external visualization can be in.
@@ -95,6 +102,19 @@ public class ExternalVisualization : MonoBehaviour {
         {
             LoadPrev();
         }
+
+        if (loadingPoints != null)
+        {
+            loadingPanel.SetActive(true);
+            loadWheel.transform.Rotate(Vector3.back * Time.deltaTime * 300);
+            //loadProgress.text = (async.progress * 100).ToString() + "%";
+        }
+        else
+        {
+            loadingPanel.SetActive(false);
+        }
+
+
     }
 
 
@@ -125,6 +145,7 @@ public class ExternalVisualization : MonoBehaviour {
     /// <returns></returns>
     private LinkedList<SphericalCoordinate> SquashTable(Dictionary<float, LinkedList<SphericalCoordinate>> data)
     {
+        Debug.Log("Squashing table for: " + data.Count);
         LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
 
         foreach(var entity in data)
@@ -230,19 +251,32 @@ public class ExternalVisualization : MonoBehaviour {
 		return particleCloud.ToArray();
 	}
 
+    /// <summary>
+    /// Shows the loading dialog
+    /// </summary>
+    private void Loading(Coroutine async)
+    {
+        this.loadingPoints = async;
+
+    }
+
 
 
     private void DataExists()
     {
+        loadingPoints = null;
         this.pointTable = lidarStorage.GetData();
+        Debug.Log("Have Data: EX" );
         if (fullCloudToggle.isOn)
         {
             SetState(State.FullCloud);
+            externalPointCloud.CreateCloud(SquashTable(pointTable));
         }
         else
         {
             SetState(State.LapCloud);
-            pointTable = lidarStorage.GetData();
+            currentListPosition = -1;
+            LoadNext();      
 
         }
 

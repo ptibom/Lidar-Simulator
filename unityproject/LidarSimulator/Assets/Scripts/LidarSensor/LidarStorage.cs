@@ -42,7 +42,6 @@ public class LidarStorage : MonoBehaviour {
     /// </summary>
     public void AddHits(LinkedList<SphericalCoordinate> hits)
     {
-        Debug.Log("Ping");
         foreach(SphericalCoordinate hit in hits)
         {
             currentHits.AddLast(hit);
@@ -82,8 +81,9 @@ public class LidarStorage : MonoBehaviour {
     public void SetData(Dictionary<float,LinkedList<SphericalCoordinate>> data )
     {
         this.dataStorage = data;
-        if(HaveData != null)
+        if(HaveData != null && data != null)
         {
+            Debug.Log("Sending message: Length: " + data.Count);
             HaveData();
         }
     }

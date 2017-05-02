@@ -30,6 +30,7 @@ public class TestFileBrowser : MonoBehaviour
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
         fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
+        
         if(state == BrowseState.Open)
         {
             fb.SetState(FileBrowser.BrowseState.Open);

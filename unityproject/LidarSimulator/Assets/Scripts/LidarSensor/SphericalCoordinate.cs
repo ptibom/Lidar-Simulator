@@ -22,6 +22,14 @@ public class SphericalCoordinate
         this.laserId = laserId;
     }
 
+
+    public SphericalCoordinate(float radius, float inclination, float azimuth)
+    {
+        this.radius = radius;
+        this.inclination = (90+inclination)*(2*Mathf.PI/360);
+        this.azimuth = azimuth/(2*Mathf.PI/360);
+    }
+
     // Constructor based on cartesian coordinates
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SphericalCoordinate"/> class using cartesian coordinates.
@@ -50,6 +58,9 @@ public class SphericalCoordinate
                 this.azimuth = 0;
             }
         }
+
+        globalWorldCoordinate = coordinates;
+
     }
 
     /// <summary>
@@ -89,6 +100,13 @@ public class SphericalCoordinate
     {
         return this.azimuth;
     }
+
+    public Vector3 GetWorldCoordinate()
+    {
+        return this.globalWorldCoordinate;
+    }
+
+
 
     /// <summary>
     /// Clones this instance of the class
