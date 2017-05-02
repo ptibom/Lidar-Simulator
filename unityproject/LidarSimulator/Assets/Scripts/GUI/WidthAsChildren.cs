@@ -22,7 +22,7 @@ public class WidthAsChildren : MonoBehaviour {
 	private void SetPreferedWidthAsChildren()
     {
         float maxWidth = 0f;
-
+        
         foreach (RectTransform childRect in transform.GetComponentsInChildren<RectTransform>())
         {
             if (!childRect.name.Equals(transform.name) && childRect.rect.width + childRect.localPosition.x > maxWidth)
