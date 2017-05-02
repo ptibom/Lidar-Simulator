@@ -23,7 +23,7 @@ public class SaveLoadTester : MonoBehaviour {
 		}
 
 		SaveManager.SaveToCsv(randomData, "savedRandomData");
-		loadedData = LoadManager.LoadCsv ("savedRandomData");
+		//loadedData = LoadManager.LoadCsv ("savedRandomData");
 
 		foreach (KeyValuePair<float, LinkedList<SphericalCoordinate>>  kv in loadedData) {
 			foreach(SphericalCoordinate sc in kv.Value) {
