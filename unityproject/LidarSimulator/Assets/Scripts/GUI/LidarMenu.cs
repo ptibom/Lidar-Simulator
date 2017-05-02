@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
 
