@@ -9,7 +9,7 @@ using System;
 
 public class SaveLoadTester : MonoBehaviour {
 
-	public Dictionary<float, LinkedList<SphericalCoordinate>> randomData;
+	/*public Dictionary<float, LinkedList<SphericalCoordinate>> randomData;
 	public Dictionary<float, LinkedList<SphericalCoordinate>> loadedData;
 	// Use this for initialization
 	void Start () {
@@ -36,5 +36,5 @@ public class SaveLoadTester : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-	}
+	}*/
 }
