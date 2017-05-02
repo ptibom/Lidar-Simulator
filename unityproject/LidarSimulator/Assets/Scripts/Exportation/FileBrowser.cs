@@ -28,7 +28,7 @@ public class FileBrowser
     public Texture2D fileTexture, directoryTexture, backTexture, driveTexture; //textures used to represent file types
     public GUIStyle backStyle, cancelStyle, selectStyle; //styles used for specific buttons
     public Color selectedColor = new Color(0.5f, 0.5f, 0.9f); //the color of the selected file
-    public bool isVisible { get { return visible; } } //check if the file browser is currently visible
+   // public bool isVisible { get { return visible; } } //check if the file browser is currently visible
                                                       //File Options
     public string searchPattern = "*.txt"; //search pattern used to find files
                                        //Output
@@ -44,7 +44,7 @@ public class FileBrowser
     protected int layout;
     protected Rect guiSize;
     protected GUISkin oldSkin;
-    protected bool visible = false;
+   // protected bool visible = false;
     //Search
     //protected string saveBarString = ""; //string used in search bar
     protected string searchBarString = ""; //string used in search bar
@@ -399,6 +399,7 @@ public class FileBrowser
     public void OpenFile(string filePath)
     {
         DisableFilebrowseer();
+        Debug.Log("Opening");
         exportManager.Open(filePath);
 
 
@@ -434,7 +435,7 @@ public class FileBrowser
     //to string
     public override string ToString()
     {
-        return "Name: " + name + "\nVisible: " + isVisible.ToString() + "\nDirectory: " + currentDirectory + "\nLayout: " + layout.ToString() + "\nGUI Size: " + guiSize.ToString() + "\nDirectories: " + directories.Length.ToString() + "\nFiles: " + files.Length.ToString();
+       return "Name: " + name  + "\nDirectory: " + currentDirectory + "\nLayout: " + layout.ToString() + "\nGUI Size: " + guiSize.ToString() + "\nDirectories: " + directories.Length.ToString() + "\nFiles: " + files.Length.ToString();
     }
 }
 

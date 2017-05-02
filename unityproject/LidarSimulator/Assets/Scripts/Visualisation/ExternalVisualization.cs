@@ -18,23 +18,23 @@ public class ExternalVisualization : MonoBehaviour {
     private Coroutine loadingPoints;
 
 	public void Start() {
-		pSystemGameObject  = GameObject.Find("particlesSyst");
-        nextBtn = GameObject.Find("Next");
-        prevBtn = GameObject.Find("Prev");
+		//pSystemGameObject  = GameObject.Find("particlesSyst");
+        //nextBtn = GameObject.Find("Next");
+        //prevBtn = GameObject.Find("Prev");
         backBtn = GameObject.Find("BackButton");
         mainPanel = GameObject.Find("MainPanel");
 
-        pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
-        nextButton = nextBtn.GetComponent<Button>();
-        prevButton = prevBtn.GetComponent<Button>();
+        //pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
+        //nextButton = nextBtn.GetComponent<Button>();
+        //prevButton = prevBtn.GetComponent<Button>();
         backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
-        lapText = GameObject.Find("LapText").GetComponent<Text>();
+        //lapText = GameObject.Find("LapText").GetComponent<Text>();
         fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
         lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
         externalPointCloud = GetComponent<ExternalPointCloud>();
-        loadingPanel = GameObject.Find("LoadingPanel");
-        loadWheel = GameObject.Find("LoadImage");
+        //loadingPanel = GameObject.Find("LoadingPanel");
+        //loadWheel = GameObject.Find("LoadImage");
 
 
         openButton.onClick.AddListener(LoadPoints);
@@ -62,16 +62,16 @@ public class ExternalVisualization : MonoBehaviour {
         if(state == State.Default)
         {
             currentListPosition = 0;
-            prevBtn.SetActive(false);
-            nextBtn.SetActive(false);
+            //prevBtn.SetActive(false);
+            //nextBtn.SetActive(false);
             mainPanel.SetActive(true);
-            lapText.enabled = false;
+            //lapText.enabled = false;
             backBtn.SetActive(false);
         } else if(state == State.FullCloud)
         {
-            prevBtn.SetActive(false);
-            nextBtn.SetActive(false);
-            lapText.enabled = false;
+            //prevBtn.SetActive(false);
+            //nextBtn.SetActive(false);
+            //lapText.enabled = false;
             mainPanel.SetActive(false);
             backBtn.SetActive(true);
             backButton.onClick.AddListener(Reset);
@@ -101,17 +101,6 @@ public class ExternalVisualization : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.LeftAlt))
         {
             LoadPrev();
-        }
-
-        if (loadingPoints != null)
-        {
-            loadingPanel.SetActive(true);
-            loadWheel.transform.Rotate(Vector3.back * Time.deltaTime * 300);
-            //loadProgress.text = (async.progress * 100).ToString() + "%";
-        }
-        else
-        {
-            loadingPanel.SetActive(false);
         }
 
 
@@ -266,12 +255,10 @@ public class ExternalVisualization : MonoBehaviour {
     {
         loadingPoints = null;
         this.pointTable = lidarStorage.GetData();
-        Debug.Log("Have Data: EX" );
-        if (fullCloudToggle.isOn)
-        {
+        
             SetState(State.FullCloud);
             externalPointCloud.CreateCloud(SquashTable(pointTable));
-        }
+        /**
         else
         {
             SetState(State.LapCloud);
@@ -279,6 +266,7 @@ public class ExternalVisualization : MonoBehaviour {
             LoadNext();      
 
         }
+    **/
 
     }
 
