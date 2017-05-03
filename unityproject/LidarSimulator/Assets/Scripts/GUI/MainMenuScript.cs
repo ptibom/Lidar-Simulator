@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 /// author: Tobias Alldén
 /// </summary>
 public class MainMenuScript : MonoBehaviour {
-    public Button simulationButton, visualizationButton, exitButton ;
+    public Button simulationButton, visualizationButton, creditsButton, exitButton ;
     public GameObject loadWheel, loadingTextObject, buttonPanel, loadPanel;
 
     private Text loadProgress;
@@ -23,6 +23,7 @@ public class MainMenuScript : MonoBehaviour {
         simulationButton = GameObject.Find("Simulation").GetComponent<Button>();
         visualizationButton = GameObject.Find("Visualization").GetComponent<Button>();
         exitButton = GameObject.Find("Exit").GetComponent<Button>();
+        creditsButton = GameObject.Find("Credits").GetComponent<Button>();
         loadWheel = GameObject.Find("LoadImage");
         loadingTextObject = GameObject.Find("LoadText");
         buttonPanel = GameObject.Find("ButtonPanel");
@@ -31,6 +32,7 @@ public class MainMenuScript : MonoBehaviour {
         loadProgress = loadingTextObject.GetComponent<Text>();
         simulationButton.onClick.AddListener(StartSimulation);
         visualizationButton.onClick.AddListener(StartVisualization);
+        creditsButton.onClick.AddListener(StartCredits);
         exitButton.onClick.AddListener(Exit);
 
         loadPanel.SetActive(false);
@@ -74,6 +76,17 @@ public class MainMenuScript : MonoBehaviour {
         buttonPanel.SetActive(false);
         StartCoroutine(LoadALevel("ExternalVisualization"));
         
+    }
+
+    /// <summary>
+    /// Starts the Credits
+    /// </summary>
+    public void StartCredits()
+    {
+        loadPanel.SetActive(true);
+        buttonPanel.SetActive(false);
+        StartCoroutine(LoadALevel("Credits"));
+
     }
 
     /// <summary>
