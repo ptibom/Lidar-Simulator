@@ -256,19 +256,10 @@ public class ExternalVisualization : MonoBehaviour {
     {
         loadingPoints = null;
         this.pointTable = lidarStorage.GetData();
-        Debug.Log("Have Data: EX" );
-        if (fullCloudToggle.isOn)
-        {
+        
             SetState(State.FullCloud);
             externalPointCloud.CreateCloud(SquashTable(pointTable));
-        }
-        else
-        {
-            SetState(State.LapCloud);
-            currentListPosition = -1;
-            LoadNext();      
-
-        }
+        
 
     }
 

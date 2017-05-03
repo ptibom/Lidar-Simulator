@@ -45,23 +45,13 @@ public class LoadManager : MonoBehaviour
 
 
                 try
-                {
-                    /**UNCOMMENT FOR KITTY DATA
-                     * 
-                    //float id = columns[2];
-                    float radius = float.Parse(columns[2]);
-                    float inclination = float.Parse(columns[3]);
-                    float azimuth = float.Parse(columns[4]);
-                    SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth); // TODO: load world coordinate and ID??
-                    coorValues.AddLast(sc);                       
-
-                **/
-                    if (columns.Length >= 4)
+                { 
+                    if (columns.Length >= 3)
                     {
-                        key = float.Parse(columns[0]);
-                        float x = float.Parse(columns[1]);
+                        key = 1;
+                        float x = float.Parse(columns[0]);
+                        float z = float.Parse(columns[1]);
                         float y = float.Parse(columns[2]);
-                        float z = float.Parse(columns[3]);
                         Vector3 vector = new Vector3(x, y, z);
                         SphericalCoordinate sc = new SphericalCoordinate(vector);
                         coorValues.AddLast(sc);
