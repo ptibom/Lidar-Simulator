@@ -26,7 +26,7 @@ public class TestFileBrowser : MonoBehaviour
         fb.driveTexture = drive;
         //show the search bar
         fb.showSearch = true;
-        FileBrowser.DisableFilebrowseer += Disable;
+        FileBrowser.ToggleFileBrowser += ToggleFileBrowser;
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
         fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
@@ -39,7 +39,7 @@ public class TestFileBrowser : MonoBehaviour
             fb.SetState(FileBrowser.BrowseState.Save);
 
         }
-        FileBrowser.DisableFilebrowseer += Disable;
+        FileBrowser.ToggleFileBrowser += Disable;
     }
 
 
@@ -60,8 +60,8 @@ public class TestFileBrowser : MonoBehaviour
             { //true is returned when a file has been selected
               //the output file is a member if the FileInfo class, if cancel was selected the value is null
 
-                output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
-                gameObject.SetActive(false);
+                //output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
+                //gameObject.SetActive(false);
 
             }
         }
@@ -73,12 +73,19 @@ public class TestFileBrowser : MonoBehaviour
 
     public void Disable()
     {
-        this.enabled = false;
+        //this.enabled = false;
     }
 
-    public void SetActive(bool active)
+    public void ToggleFileBrowser()
     {
-        this.active = active;
+        if (active)
+        {
+            active = false;
+        }
+        else
+        {
+            active = true;
+        }
     }
 
 }

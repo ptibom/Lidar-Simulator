@@ -19,22 +19,22 @@ public class ExternalVisualization : MonoBehaviour {
 
 	public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
-        nextBtn = GameObject.Find("Next");
-        prevBtn = GameObject.Find("Prev");
+        //nextBtn = GameObject.Find("Next");
+        //prevBtn = GameObject.Find("Prev");
         backBtn = GameObject.Find("BackButton");
         mainPanel = GameObject.Find("MainPanel");
 
         pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
-        nextButton = nextBtn.GetComponent<Button>();
-        prevButton = prevBtn.GetComponent<Button>();
+        //nextButton = nextBtn.GetComponent<Button>();
+        //prevButton = prevBtn.GetComponent<Button>();
         backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
-        lapText = GameObject.Find("LapText").GetComponent<Text>();
+        //lapText = GameObject.Find("LapText").GetComponent<Text>();
         fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
         lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
         externalPointCloud = GetComponent<ExternalPointCloud>();
-        loadingPanel = GameObject.Find("LoadingPanel");
-        loadWheel = GameObject.Find("LoadImage");
+        //loadingPanel = GameObject.Find("LoadingPanel");
+        //loadWheel = GameObject.Find("LoadImage");
 
 
         openButton.onClick.AddListener(LoadPoints);
@@ -61,17 +61,17 @@ public class ExternalVisualization : MonoBehaviour {
     {
         if(state == State.Default)
         {
-            currentListPosition = 0;
-            prevBtn.SetActive(false);
-            nextBtn.SetActive(false);
+            //currentListPosition = 0;
+            //prevBtn.SetActive(false);
+            //nextBtn.SetActive(false);
             mainPanel.SetActive(true);
-            lapText.enabled = false;
+            //lapText.enabled = false;
             backBtn.SetActive(false);
         } else if(state == State.FullCloud)
         {
-            prevBtn.SetActive(false);
-            nextBtn.SetActive(false);
-            lapText.enabled = false;
+            //prevBtn.SetActive(false);
+            //nextBtn.SetActive(false);
+            //lapText.enabled = false;
             mainPanel.SetActive(false);
             backBtn.SetActive(true);
             backButton.onClick.AddListener(Reset);
@@ -80,14 +80,14 @@ public class ExternalVisualization : MonoBehaviour {
         else
         {
             currentListPosition = 0;
-            prevBtn.SetActive(true);
-            nextBtn.SetActive(true);
+            //prevBtn.SetActive(true);
+            //nextBtn.SetActive(true);
             mainPanel.SetActive(false);
-            lapText.enabled = true;
+            //lapText.enabled = true;
             backBtn.SetActive(true);
-            nextButton.onClick.AddListener(LoadNext);
-            prevButton.onClick.AddListener(LoadPrev);
-            backButton.onClick.AddListener(Reset);
+            //nextButton.onClick.AddListener(LoadNext);
+            //prevButton.onClick.AddListener(LoadPrev);
+            //backButton.onClick.AddListener(Reset);
         }
     }
    
@@ -102,17 +102,7 @@ public class ExternalVisualization : MonoBehaviour {
         {
             LoadPrev();
         }
-
-        if (loadingPoints != null)
-        {
-            loadingPanel.SetActive(true);
-            loadWheel.transform.Rotate(Vector3.back * Time.deltaTime * 300);
-            //loadProgress.text = (async.progress * 100).ToString() + "%";
-        }
-        else
-        {
-            loadingPanel.SetActive(false);
-        }
+        
 
 
     }
@@ -124,7 +114,7 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-        fileBrowser.SetActive(true);
+        fileBrowser.ToggleFileBrowser();
     }
     private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
     {

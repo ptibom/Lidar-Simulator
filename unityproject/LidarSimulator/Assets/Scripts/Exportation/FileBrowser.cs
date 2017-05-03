@@ -9,8 +9,8 @@ public class FileBrowser
 
     public ExportManager exportManager; // Prefab required to save
     BrowseState state;
-    public static event Disable DisableFilebrowseer;
-    public delegate void Disable();
+    public static event Toggle ToggleFileBrowser;
+    public delegate void Toggle();
 
  
     public enum BrowseState
@@ -172,7 +172,8 @@ public class FileBrowser
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
                     outputFile = null;
-                    return true;
+                    ToggleFileBrowser();
+                    return false;
                 }                
                 if(state == BrowseState.Save)
                 {
@@ -180,15 +181,18 @@ public class FileBrowser
                     {
                         //Debug.Log("writing over :" + outputFile);
                         SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
-                        return true;
+                        ToggleFileBrowser();
+                        return false;
                     }
                 } else
                 {
                     if ((selectStyle == null) ? GUILayout.Button("Open") : GUILayout.Button("Open", selectStyle))
                     {
-                       // Debug.Log("writing over :" + outputFile);
+                        // Debug.Log("writing over :" + outputFile);
+                        ToggleFileBrowser();
+
                         OpenFile(null + outputFile);
-                        return true;
+                        return false;
                     }
                     GUILayout.FlexibleSpace();
                 }
@@ -258,8 +262,8 @@ public class FileBrowser
 
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
-                    DisableFilebrowseer();
-                    return true;
+                    ToggleFileBrowser();
+                    return false;
                 }
                 break;
                 case 2:
@@ -320,7 +324,7 @@ public class FileBrowser
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
                     outputFile = null;
-                    return true;
+                    return false;
                 }
                 GUILayout.FlexibleSpace();
                 if ((selectStyle == null) ? GUILayout.Button("Select") : GUILayout.Button("Select", selectStyle)) { return true; }
@@ -388,17 +392,14 @@ public class FileBrowser
     {
         //Lägg till confirmgrejen här, om ja. kör nedanstående
         //SaveConfirm confirm = new SaveConfirm();
-        
-
-
-        DisableFilebrowseer();
+       
         exportManager.Save(filename);
+        outputFile = null;
 
     }
 
     public void OpenFile(string filePath)
     {
-        DisableFilebrowseer();
         exportManager.Open(filePath);
 
 

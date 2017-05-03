@@ -20,6 +20,6 @@ public class SaveButtonScript : MonoBehaviour {
 	
 	public void InitializeSave()
     {
-        fileBrowser.GetComponent<TestFileBrowser>().SetActive(true);
+        fileBrowser.GetComponent<TestFileBrowser>().ToggleFileBrowser();
     }
 }
