@@ -89,10 +89,10 @@ public class SaveManager : MonoBehaviour
                 {
                     Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
                     string[] rows = new string[4];
-                    rows[0] = coordinatePair.Key.ToString(); // The time
-                    rows[1] = worldCoordinate.x.ToString();
+                    //rows[0] = coordinatePair.Key.ToString(); // The time
+                    rows[0] = worldCoordinate.x.ToString();
+                    rows[1] = worldCoordinate.z.ToString();
                     rows[2] = worldCoordinate.y.ToString();
-                    rows[3] = worldCoordinate.z.ToString();
                     rows[3] = 1.ToString();
                     dataTable.Add(rows);
                 }

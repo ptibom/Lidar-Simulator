@@ -4,33 +4,41 @@ using UnityEngine;
 
 public class ExternalPointCloud : MonoBehaviour {
     public GameObject meshObject;
-
-
-    private List<Mesh> meshes;
     private int maxParticlesPerChunk = 65000;
     
 
     // Use this for initialization
     void Start()
     {
-        meshes = new List<Mesh>();
-        Mesh startMesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = startMesh;
+
     }
 
     public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
-        Debug.Log("Splitting into chunks...");
+        Debug.Log("Creating Chunks");
         List<List<Vector3>> chunks = SplitIntoChunks(coordinates);
-        List<string> meshObjects = CreateNeededMeshes(chunks.Count);
-        Debug.Log("Creating meshes");
+        Debug.Log("Created: " + chunks.Count + " Chunks");
+
+        Debug.Log("Creating needed Meshobjects");
+        List<MeshFilter> meshFilterList = CreateNeededMeshes(chunks.Count);
+        Debug.Log("Created: " + meshFilterList.Count + " Meshobjects");
+
+
+        List<Mesh> meshes = new List<Mesh>();
+
+        Debug.Log("Creating VerticeList");
+        List<int[]> vertices = CreateVertices(chunks);
+        Debug.Log("Created: " + vertices.Count + " VerticeLists");
+         
+
         for(int i = 0; i< chunks.Count; i++)
         {
-            MeshFilter meshFilter = GameObject.Find("MeshObject" + i).GetComponent<MeshFilter>();
+            MeshFilter meshFilter = meshFilterList[i];
             Mesh m = new Mesh();
             m.SetVertices(chunks[i]);
             m.SetColors(CreateColorsForPointList(chunks[i]));
-            m.SetIndices(CreateIdsForCoordinates(chunks[i]), MeshTopology.Points,0);
+            m.SetIndices(vertices[i], MeshTopology.Points,0);
+            meshes.Add(m);
             meshFilter.mesh = m;
         }
     }
@@ -42,22 +50,21 @@ public class ExternalPointCloud : MonoBehaviour {
     /// <returns>A list containing the chunks of points</returns>
     private List<List<Vector3>> SplitIntoChunks(LinkedList<SphericalCoordinate> coordinates)
     {
-        List<List<Vector3>> chunks = new List<List<Vector3>>();
         List<Vector3> currentChunk = new List<Vector3>();
-        int i = 0;
+        List<List<Vector3>> chunks = new List<List<Vector3>>();
 
-        for(LinkedListNode<SphericalCoordinate> it = coordinates.First; it != null; it = it.Next)
+        for (LinkedListNode<SphericalCoordinate> it = coordinates.First; it != null; it = it.Next)
         {
             currentChunk.Add(it.Value.GetWorldCoordinate()); //Remake to use world points 
-            if(currentChunk.Count%maxParticlesPerChunk == 0)
+
+            if (currentChunk.Count%maxParticlesPerChunk == 0)
             {
                 chunks.Add(currentChunk);
                 currentChunk = new List<Vector3>();
             } else if(it.Next == null)
             {
                 chunks.Add(currentChunk); // final value
-            }
-            i++;
+            } 
         }
         return chunks;
     }
@@ -68,17 +75,16 @@ public class ExternalPointCloud : MonoBehaviour {
     /// </summary>
     /// <param name="count"></param>
     /// <returns>A list containing the names of the created prefabs</returns>
-    private List<string> CreateNeededMeshes(int count)
+    private List<MeshFilter> CreateNeededMeshes(int count)
     {
-        List<string> nameList = new List<string>();
-        for(int i = 0; i< count; i++)
+    List<MeshFilter> meshFilterList = new List<MeshFilter>();
+        for(int i = 0; i < count; i++)
         {
             GameObject newGO = Instantiate(meshObject, new Vector3(0,0,0), Quaternion.identity);
-            newGO.name = "MeshObject" + i;
-            nameList.Add(newGO.name);
+            newGO.transform.SetParent(GameObject.Find("PSystBase").transform);
+            meshFilterList.Add(newGO.GetComponent<MeshFilter>());
         }
-
-        return nameList;
+    return meshFilterList;
     }
 
     /// <summary>
@@ -93,11 +99,11 @@ public class ExternalPointCloud : MonoBehaviour {
         for (int i = 0; i<coordinates.Count; i++)
         {
             Color c;
-            if (coordinates[i].y < 1)
+            if (coordinates[i].y < 0.5)
             {
                 c = Color.red;
             }
-            else if (coordinates[i].y > 1 && coordinates[i].y < 3)
+            else if (coordinates[i].y > 0.5 && coordinates[i].y < 0.7)
             {
                 c = Color.yellow;
             }
@@ -111,16 +117,24 @@ public class ExternalPointCloud : MonoBehaviour {
     }
 
 
-    private int[] CreateIdsForCoordinates(List<Vector3> coordinates)
+    private List<int[]> CreateVertices(List<List<Vector3>> chunks)
     {
-        int[] idList = new int[coordinates.Count];
-        for (int i = 0; i<coordinates.Count; i++)
+        List<int[]> verticeList = new List<int[]>();
+        int startIndex = 0;
+        for(int j = 0; j<chunks.Count; j++) 
         {
-            idList[i] = i;
+            int[] currentList = new int[chunks[j].Count];
+            for (int i = 0; i< chunks[j].Count ; i++)
+            {
+                currentList[i] = startIndex+i;
+            }
+            verticeList.Add(currentList);
         }
-        return idList;
+        
+        return verticeList;
     }
 
 
 }
+
 
