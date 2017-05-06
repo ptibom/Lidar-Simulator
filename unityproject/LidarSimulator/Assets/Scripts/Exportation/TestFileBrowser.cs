@@ -24,6 +24,8 @@ public class TestFileBrowser : MonoBehaviour
         fb.directoryTexture = folder;
         fb.backTexture = back;
         fb.driveTexture = drive;
+      
+
         //show the search bar
         fb.showSearch = true;
         FileBrowser.ToggleFileBrowser += ToggleFileBrowser;
@@ -42,19 +44,40 @@ public class TestFileBrowser : MonoBehaviour
         FileBrowser.ToggleFileBrowser += Disable;
     }
 
+    void OnDestroy()
+    {
+        FileBrowser.ToggleFileBrowser -= ToggleFileBrowser;
+        FileBrowser.ToggleFileBrowser -= Disable;
+    }
 
     void OnGUI()
     {
         if (active)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
+            if (fb.showConfirm)
+            {
 
-            GUILayout.EndVertical();
-            GUILayout.Space(80);
-            //GUILayout.Label("Overwrite exiting file: " + output);
-            GUILayout.EndHorizontal();
-            //draw and display output
+                GUI.BeginGroup(new Rect((Screen.width + 100) / 2, (Screen.height - 100) / 2, 200, 100));
+            
+                GUI.Box(new Rect(0, 0, 200, 100), "");
+                GUI.Label(new Rect(10, 10, 200, 100), "Do you want to save?");
+                if (GUI.Button(new Rect(30, 40 , 60, 30), "Cancel")) { fb.okToSave = false; fb.showConfirm = false;};
+                if (GUI.Button(new Rect(100, 40, 60 , 30), "Save")) { fb.okToSave = true;Debug.Log(fb.okToSave); fb.showConfirm = false; ToggleFileBrowser(); };
+                GUI.EndGroup();
+            }
+            if (fb.showExit)
+            {
+                
+                GUI.BeginGroup(new Rect((Screen.width +100) / 2, (Screen.height - 100) / 2, 200, 100));
+               
+                GUI.Box(new Rect(0, 0, 200, 100), "");
+                GUI.Label(new Rect(10 , 10, 200, 100), "Do you want to Exit?");
+                if (GUI.Button(new Rect(30, 40 , 60, 30), "Cancel")) {  fb.showExit = false; };   
+                if (GUI.Button(new Rect(100, 40, 60,30), "Exit")) { fb.showExit = false; ToggleFileBrowser();};
+
+                GUI.EndGroup();
+            }
+       
 
             if (fb.Draw())
             { //true is returned when a file has been selected

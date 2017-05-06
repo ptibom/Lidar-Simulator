@@ -33,7 +33,11 @@ public class FileBrowser
     public string searchPattern = "*.txt"; //search pattern used to find files
                                        //Output
     public FileInfo outputFile; //the selected output file
-                                //Search
+                                //Confirm save
+    public bool showConfirm = false;
+    public bool showExit = false;
+    public bool okToSave = false;
+    //Search
     public bool showSearch = true; //show the search bar
     public bool showPopUp;
     public bool searchRecursively = true; //search current folder and sub folders
@@ -68,7 +72,7 @@ public class FileBrowser
 		public FileBrowser(string directory,int layoutStyle):this(directory,layoutStyle,new Rect(0,0,Screen.width,Screen.height)){}
 		public FileBrowser(string directory):this(directory,1){}
     #else
-    public FileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.75f)) { }
+    public FileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.13f, Screen.height * 0.13f, Screen.width * 0.42f, Screen.height * 0.42f)) { }
     public FileBrowser(string directory) : this(directory, 0) { }
     #endif
     public FileBrowser(Rect guiRect) : this() { guiSize = guiRect; }
@@ -172,7 +176,8 @@ public class FileBrowser
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
                     outputFile = null;
-                    ToggleFileBrowser();
+                    showExit = true;
+                    //ToggleFileBrowser();
                     return false;
                 }                
                 if(state == BrowseState.Save)
@@ -180,8 +185,11 @@ public class FileBrowser
                     if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
                     {
                         //Debug.Log("writing over :" + outputFile);
-                        SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
-                        ToggleFileBrowser();
+                        showConfirm = true;
+                        Debug.Log(okToSave);
+                        if (okToSave) { SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt"); SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");okToSave = false; }
+                        //SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
+                        //ToggleFileBrowser();
                         return false;
                     }
                 } else
@@ -189,7 +197,8 @@ public class FileBrowser
                     if ((selectStyle == null) ? GUILayout.Button("Open") : GUILayout.Button("Open", selectStyle))
                     {
                         // Debug.Log("writing over :" + outputFile);
-                        ToggleFileBrowser();
+                        showExit = true;
+                        //ToggleFileBrowser();
 
                         OpenFile(null + outputFile);
                         return false;
@@ -262,8 +271,9 @@ public class FileBrowser
 
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
-                    ToggleFileBrowser();
-                    return false;
+                    //ToggleFileBrowser();
+                    showExit = true;
+                    return true;
                 }
                 break;
                 case 2:
@@ -323,12 +333,19 @@ public class FileBrowser
                 GUILayout.FlexibleSpace();
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
+                    showExit = true;
                     outputFile = null;
                     return false;
                 }
                 GUILayout.FlexibleSpace();
-                if ((selectStyle == null) ? GUILayout.Button("Select") : GUILayout.Button("Select", selectStyle)) { return true; }
-                    SaveFile(currentDirectory + "\\" + searchBarString);
+                if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle)) {
+                    showConfirm = true;
+                    Debug.Log(okToSave);
+                    if (okToSave) { SaveFile(currentDirectory + "\\" + searchBarString); okToSave = false; }
+
+                    return true;
+                }
+                    //SaveFile(currentDirectory + "\\" + searchBarString);
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
