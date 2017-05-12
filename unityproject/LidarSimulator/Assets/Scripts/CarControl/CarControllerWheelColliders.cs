@@ -27,7 +27,7 @@ public class CarControllerWheelColliders : MonoBehaviour
 
     void Decelerate()
     {
-        Debug.Log("deaccelerate");
+        //Debug.Log("deaccelerate");
         //deaccelete
 
         if (!Input.GetKey(KeyCode.UpArrow) && !isBraked || speed > maxSpeed)
