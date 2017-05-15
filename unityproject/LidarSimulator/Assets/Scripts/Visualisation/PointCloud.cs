@@ -129,19 +129,19 @@ public class PointCloud : MonoBehaviour
                 particle.position = it.Value.ToCartesian();
                 if (it.Value.GetRadius() < 5)
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.red;
                     particle.startSize = particleSize/5;
 
                 }
                 else if (it.Value.GetRadius() > 5 && it.Value.GetRadius() < 10)
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.yellow;
                     particle.startSize = particleSize;
 
                 }
                 else
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.green;
                     particle.startSize = particleSize*2;
 
                 }
