@@ -190,8 +190,14 @@ public class FileBrowser
                     {
                         // Debug.Log("writing over :" + outputFile);
                         ToggleFileBrowser();
+                        if(Application.isEditor)
+                        {
+                            OpenFile(null + outputFile);
+                        } else
+                        {
+                            OpenFile(null + currentDirectory.FullName + "\\" + outputFile);
 
-                        OpenFile(null + currentDirectory.FullName + "\\" + outputFile);
+                        }
                         return false;
                     }
                     GUILayout.FlexibleSpace();
