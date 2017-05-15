@@ -105,7 +105,7 @@ public class FileBrowser
 
                 } else
                 {
-                    GUILayout.Label("Opening file: " + outputFile);
+                    GUILayout.Label("Opening file: " + currentDirectory.FullName + "\\" + outputFile);
 
                 }
                 GUILayout.FlexibleSpace();
@@ -191,7 +191,7 @@ public class FileBrowser
                         // Debug.Log("writing over :" + outputFile);
                         ToggleFileBrowser();
 
-                        OpenFile(null + outputFile);
+                        OpenFile(null + currentDirectory.FullName + "\\" + outputFile);
                         return false;
                     }
                     GUILayout.FlexibleSpace();
