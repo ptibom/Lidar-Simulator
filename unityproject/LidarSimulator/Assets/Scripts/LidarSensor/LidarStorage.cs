@@ -29,6 +29,12 @@ public class LidarStorage : MonoBehaviour {
         LidarSensor.StoreEvent += Save;
 	}
 
+    void OnDestroy()
+    {
+        LidarSensor.OnScanned -= AddHits;
+        LidarSensor.StoreEvent -= Save;
+    }
+
 	/// <summary>
 	/// Adds a single coorninate to the current hits LinkedList. 
 	/// </summary>

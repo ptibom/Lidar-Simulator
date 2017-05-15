@@ -47,6 +47,12 @@ public class LidarSensor : MonoBehaviour {
         PlayButton.OnPlayToggled += PauseSensor;
     }
 
+    void OnDestroy()
+    {
+        LidarMenu.OnPassValuesToLidarSensor -= UpdateSettings;
+        PlayButton.OnPlayToggled -= PauseSensor;
+    }
+
     public void UpdateSettings(int numberOfLasers, float rotationSpeedHz, float rotationAnglePerStep, float rayDistance, float upperFOV,
         float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {

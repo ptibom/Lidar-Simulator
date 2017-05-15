@@ -58,7 +58,6 @@ public class LidarMenu : MonoBehaviour {
         }
     }
 
-
     /// <summary>
     /// Initializes all the values of the lidar menu with the initial values of the lidar sensor.
     /// </summary>
@@ -137,5 +136,12 @@ public class LidarMenu : MonoBehaviour {
         {
             Debug.Log("Event has no delegates: " + e);
         }
+    }
+
+    void OnDestroy()
+    {
+        EditorController.OnPointCloudToggle -= PassLidarValuesToPointCloud;
+        PlayButton.OnPlayToggled -= PassValuesToLidarSensor;
+        PreviewLidarRays.tellLidarMenuInitialized -= LaserMimicIsInitialized;
     }
 }

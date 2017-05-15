@@ -34,6 +34,12 @@ public class StatsPanel : MonoBehaviour {
         LidarSensor.OnScanned += UpdatePointsHitCounter;
     }
 
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= Reset;
+        LidarSensor.OnScanned -= UpdatePointsHitCounter;
+    }
+
     void UpdatePointsHitCounter(LinkedList<SphericalCoordinate> hits)
     {
         pointsHit += hits.Count;

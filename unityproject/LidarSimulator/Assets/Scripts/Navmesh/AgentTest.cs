@@ -19,8 +19,12 @@ public class AgentTest : MonoBehaviour {
 		PlayButton.OnPlayToggled += StartOrFreeze;
 	}
 
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= StartOrFreeze;
+    }
+
 	public static void StartOrFreeze(bool b){
-		Debug.Log ("StartOrFreeze called!");
 		if (b == true) {
 			ResumeAll ();
 		} 
@@ -51,7 +55,6 @@ public class AgentTest : MonoBehaviour {
 	}
 
 	public void Freeze() {
-		Debug.Log ("Freeze called!");
 		agent.SetDestination (transform.position);
 		if (anime != null) {
 			foreach(Animator a in anime){
@@ -62,7 +65,6 @@ public class AgentTest : MonoBehaviour {
 	}
 
 	public void Resume() {
-		Debug.Log ("Resume called!");
 		agent.SetDestination (target.position);
 		foreach(Animator a in anime){
 			a.enabled = true;

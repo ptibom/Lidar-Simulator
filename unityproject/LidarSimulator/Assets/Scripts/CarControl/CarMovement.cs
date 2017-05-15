@@ -30,6 +30,10 @@ public class CarMovement : MonoBehaviour {
     {
         PlayButton.OnPlayToggled += SetControllerActive;
     }
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= SetControllerActive;
+    }
 
 
     void SetControllerActive(bool simulationMode)

@@ -35,6 +35,11 @@ public class WayPoint : MonoBehaviour {
 		PlayButton.OnPlayToggled += WhenToggle;
 	}
 
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= WhenToggle;
+    }
+
 	void Start () {
 		waypoints.Add (this);
 		nextLine = this.GetComponent<LineRenderer> ();
@@ -57,8 +62,6 @@ public class WayPoint : MonoBehaviour {
 		WayPoint.SetGlobalVisibility (!b);
 		//SetVisibility(!b);
 		//SetColliderState (!b);
-
-		Debug.Log ("WhenToggle called");
 	}
 		
 

@@ -22,12 +22,7 @@ public class SceneEditor : MonoBehaviour {
 	private bool isPlacingWaypoint = false;
     private float previousMousePos;
     private float lastClick;
-
-	// Use this for initialization
-	void Start ()
-    {
-		
-	}
+    
 	
 	// Update is called once per frame
 	void Update ()

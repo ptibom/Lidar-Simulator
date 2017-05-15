@@ -100,4 +100,9 @@ public class EditorController : MonoBehaviour{
 
         mainCamera.GetComponent<Camera>().enabled = true;
     }
+
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= SetMode;
+    }
 }
