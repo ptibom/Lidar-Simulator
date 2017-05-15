@@ -40,6 +40,14 @@ public class PointCloud : MonoBehaviour
         PlayButton.OnPlayToggled += ToggleCloud;
     }
 
+    void OnDestroy()
+    {
+        LidarSensor.OnScanned -= OnUpdatePoints;
+        LidarSensor.NewRotationEvent -= NewLap;
+        LidarMenu.OnPassLidarValuesToPointCloud -= UpdateSpecs;
+        PlayButton.OnPlayToggled -= ToggleCloud;
+    }
+
     /// <summary>
     /// Either updates the used particle system, or creates a new one if it is nesescary.
     /// </summary>
@@ -129,19 +137,19 @@ public class PointCloud : MonoBehaviour
                 particle.position = it.Value.ToCartesian();
                 if (it.Value.GetRadius() < 5)
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.red;
                     particle.startSize = particleSize/5;
 
                 }
                 else if (it.Value.GetRadius() > 5 && it.Value.GetRadius() < 10)
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.yellow;
                     particle.startSize = particleSize;
 
                 }
                 else
                 {
-                    particle.startColor = Color.black;
+                    particle.startColor = Color.green;
                     particle.startSize = particleSize*2;
 
                 }
