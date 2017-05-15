@@ -50,7 +50,7 @@ public class SaveManager : MonoBehaviour
             /// object list
             /// 
             /// header in csv file
-            string[] header = new string[5];
+            string[] header = new string[8];
 
             /** UNCOMMENT FOR NON KITTYDATA
             header[0] = "Time";
@@ -64,7 +64,10 @@ public class SaveManager : MonoBehaviour
             header[1] = "x";
             header[2] = "y";
             header[3] = "z";
-            header[4] = "reflection";
+            header[4] = "radius";
+            header[5] = "inclination";
+            header[6] = "azimuth";
+            header[7] = "laserId";
 
 
 
@@ -88,12 +91,15 @@ public class SaveManager : MonoBehaviour
                 foreach (SphericalCoordinate coordinate in coordinatePair.Value)
                 {
                     Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
-                    string[] rows = new string[4];
-                    //rows[0] = coordinatePair.Key.ToString(); // The time
-                    rows[0] = worldCoordinate.x.ToString();
-                    rows[1] = worldCoordinate.z.ToString();
-                    rows[2] = worldCoordinate.y.ToString();
-                    rows[3] = 1.ToString();
+                    string[] rows = new string[8];
+                    rows[0] = coordinatePair.Key.ToString(); // The time
+                    rows[1] = worldCoordinate.x.ToString();
+                    rows[2] = worldCoordinate.z.ToString();
+                    rows[3] = worldCoordinate.y.ToString();
+                    rows[4] = coordinate.GetRadius().ToString();
+                    rows[5] = coordinate.GetInclination().ToString();
+                    rows[6] = coordinate.GetAzimuth().ToString();
+                    rows[7] = coordinate.GetLaserId().ToString();
                     dataTable.Add(rows);
                 }
 
