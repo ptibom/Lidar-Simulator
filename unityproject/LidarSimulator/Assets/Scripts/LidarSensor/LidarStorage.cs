@@ -59,7 +59,7 @@ public class LidarStorage : MonoBehaviour {
 		{
 			dataStorage[newTime] = currentHits;
 			prevTime = newTime;
-            currentHits.Clear();
+            currentHits = new LinkedList<SphericalCoordinate>();
 		}
 	}
 
