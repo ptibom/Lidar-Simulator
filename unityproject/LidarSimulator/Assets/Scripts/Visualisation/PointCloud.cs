@@ -317,8 +317,6 @@ public class PointCloud : MonoBehaviour
         { 
             lapCounter++;
         }
-        Debug.Log("lap");
-
     }
 
     private void OnDisable()
