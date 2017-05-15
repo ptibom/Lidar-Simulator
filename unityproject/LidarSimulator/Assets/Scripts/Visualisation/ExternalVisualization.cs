@@ -258,6 +258,15 @@ public class ExternalVisualization : MonoBehaviour {
         this.pointTable = lidarStorage.GetData();
         
             SetState(State.FullCloud);
+        //Set Camera 
+        foreach (var v in pointTable)
+        {
+            Vector3 firstCoordinate = v.Value.First.Value.GetWorldCoordinate();
+            GameObject.Find("Main Camera").GetComponent<Camera>().transform.position = new Vector3(firstCoordinate.x - 5, 10, firstCoordinate.y);
+
+        }
+
+
             externalPointCloud.CreateCloud(SquashTable(pointTable));
         
 

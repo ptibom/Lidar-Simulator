@@ -15,7 +15,7 @@ public class ExternalPointCloud : MonoBehaviour {
 
     public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
-        Debug.Log("Creating Chunks");
+        Debug.Log("Creating Chunks for :" + coordinates.Count + " coordinates");
         List<List<Vector3>> chunks = SplitIntoChunks(coordinates);
         Debug.Log("Created: " + chunks.Count + " Chunks");
 
@@ -99,17 +99,17 @@ public class ExternalPointCloud : MonoBehaviour {
         for (int i = 0; i<coordinates.Count; i++)
         {
             Color c;
-            if (coordinates[i].y < 0.5)
+            if (coordinates[i].y < 0.2)
             {
                 c = Color.red;
             }
-            else if (coordinates[i].y > 0.5 && coordinates[i].y < 0.7)
+            else if (coordinates[i].y > 0.5 && coordinates[i].y < 2)
             {
-                c = Color.yellow;
+                c = Color.red;
             }
             else
             {
-                c = Color.green;
+                c = Color.red;
             }
             colorList.Add(c);
         }
