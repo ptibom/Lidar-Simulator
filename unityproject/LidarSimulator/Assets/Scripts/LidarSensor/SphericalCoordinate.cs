@@ -84,6 +84,11 @@ public class SphericalCoordinate
         return this.globalWorldCoordinate;
     }
 
+    public int GetLaserId()
+    {
+        return this.laserId;
+    }
+
 
 
     /// <summary>
