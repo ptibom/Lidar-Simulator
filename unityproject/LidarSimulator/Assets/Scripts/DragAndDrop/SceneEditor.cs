@@ -217,6 +217,10 @@ public class SceneEditor : MonoBehaviour {
     /// <param name="value">Alpha value 0 to 1</param>
     private void SetAlpha(float value)
     {
+        if (go.GetComponent<WayPoint>() != null)
+        {
+            return; // Don't do anything if its a waypoint.
+        }
         MeshRenderer[] allParts = go.GetComponentsInChildren<MeshRenderer>();
         foreach (MeshRenderer o in allParts)
         {
