@@ -6,7 +6,7 @@ public class WidthAsAspectOfObject : MonoBehaviour {
 
     public float aspect = 1f;
     public RectTransform objectRectTransform;
-
+    public float normalizedRealAspect = 0f;
 	// Use this for initialization
 	void Start () {
         SetWidthAsAspectOfObject();
@@ -15,6 +15,6 @@ public class WidthAsAspectOfObject : MonoBehaviour {
     void SetWidthAsAspectOfObject()
     {
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(objectRectTransform.rect.width * aspect, rectTransform.rect.height);
+        rectTransform.sizeDelta = new Vector2(Mathf.Sqrt(objectRectTransform.rect.height) * aspect, rectTransform.rect.height);
     }
 }

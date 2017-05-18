@@ -257,15 +257,23 @@ public class WayPoint : MonoBehaviour {
 	///*tar bort waypointen från path listan och fixar till next och previous referenserna och förstör gameobjectet*/
 	/*Om du har någon funktion som ska ta bort en waypoint så är det bäst att kalla på den här funktionen för den fixar så att vägen i övrigt är intakt*/
 	public void RemoveFromPath() {
-		/* för att det här ska funka får det aldrig finnas ett scenario när en next eller previous referens pekar på ett GameObject
+        /* för att det här ska funka får det aldrig finnas ett scenario när en next eller previous referens pekar på ett GameObject
 		 * utan WayPoint skriptet för då blir det pannkaka av allt*/
 
 
-		//WayPoint previousWayPointScript = previousWayPoint.GetComponent<WayPoint>();
-		//WayPoint nextWayPointScript = previousWayPoint.GetComponent<WayPoint>();
-		/*if(next != null && previous != null && next.GetComponent<WayPoint>().previousBranch != null){
+        //WayPoint previousWayPointScript = previousWayPoint.GetComponent<WayPoint>();
+        //WayPoint nextWayPointScript = previousWayPoint.GetComponent<WayPoint>();
+        /*if(next != null && previous != null && next.GetComponent<WayPoint>().previousBranch != null){
 			
 		}*/
+        if (isStartNode) {
+            if(next != null)
+            {
+                next.GetComponent<WayPoint>().SetStart(true);
+            }
+
+        }
+
 		if (next != null && previous != null && previousBranch != null) {
 
 			next.GetComponent<WayPoint> ().previous = previous;
