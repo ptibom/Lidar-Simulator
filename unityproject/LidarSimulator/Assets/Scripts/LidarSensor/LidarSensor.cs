@@ -136,7 +136,7 @@ public class LidarSensor : MonoBehaviour {
         }
 
         // Check if number of steps is greater than possible calculations by unity.
-        float numberOfStepsNeededInOneLap = 360 / rotationAnglePerStep;
+        float numberOfStepsNeededInOneLap = 360 / Mathf.Abs(rotationAnglePerStep);
         float numberOfStepsPossible = 1 / Time.fixedDeltaTime / 5;
         float precalculateIterations = 1;
         // Check if we need to precalculate steps.
