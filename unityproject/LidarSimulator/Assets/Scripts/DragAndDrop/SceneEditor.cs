@@ -11,7 +11,8 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class SceneEditor : MonoBehaviour {
     public GameObject wayPoint;
-	GameObject instantiatedWayPoint;
+    public GameObject playerCar;
+	private GameObject instantiatedWayPoint;
 
     private GameObject go;
 	private GameObject placedNavObj = null;
@@ -111,7 +112,7 @@ public class SceneEditor : MonoBehaviour {
                         go.GetComponent<WayPoint>().SetColliderState(true);
                     }
                 }
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && go != playerCar)
                 {
                     if (go.GetComponent<WayPoint>() != null)
                     {
@@ -146,7 +147,7 @@ public class SceneEditor : MonoBehaviour {
 
                 }
             }
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && go != playerCar)
             {
                 Destroy(go);
                 previousMousePos = 0;
