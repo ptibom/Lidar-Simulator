@@ -25,6 +25,7 @@ public class CarMovement : MonoBehaviour {
     private bool simulationModeOn = false;
 
     private Vector3 startPos;
+    private Quaternion startRotation;
 
     private void Awake()
     {
@@ -41,8 +42,19 @@ public class CarMovement : MonoBehaviour {
         if (!simulationMode)
         {
             transform.position = startPos;
+            transform.rotation = startRotation;
+        }
+        else
+        {
+            UpdateStartPosition();
         }
         simulationModeOn = simulationMode;
+    }
+
+    void UpdateStartPosition()
+    {
+        startPos = transform.position;
+        startRotation = transform.rotation;
     }
 
 
@@ -54,7 +66,7 @@ public class CarMovement : MonoBehaviour {
         baseMoveSpeed = moveSpeed;
         moveSpeed = 0f;
         baseRotationSpeed = rotationSpeed;
-        startPos = transform.position;
+        UpdateStartPosition();
     }
 
     /// <summary>
