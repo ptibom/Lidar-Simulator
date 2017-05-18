@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class FreeFlyingCamera : MonoBehaviour {
 
+    public int flyingSpeed = 50;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -25,13 +27,13 @@ public class FreeFlyingCamera : MonoBehaviour {
         if (Input.GetButton("Vertical")) // Move forwards or backwards
         {
             float forwardMovement = Input.GetAxis("Vertical");
-            transform.position += transform.forward * forwardMovement * Time.deltaTime * 10;
+            transform.position += transform.forward * forwardMovement * Time.deltaTime * flyingSpeed;
 
         }
         if (Input.GetButton("Horizontal")) // Moving sideways.
         {
             float sidewaysMovement = Input.GetAxis("Horizontal");
-            transform.position += transform.right * sidewaysMovement * Time.deltaTime * 10;
+            transform.position += transform.right * sidewaysMovement * Time.deltaTime * flyingSpeed;
         }
     }
 }
