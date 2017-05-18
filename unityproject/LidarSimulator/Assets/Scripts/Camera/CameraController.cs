@@ -14,14 +14,27 @@ public class CameraController : MonoBehaviour
     public float roamingSpeed = 30f;
     public float roamingHeight = 30f;
 
+	public float maxZPos = 250;
+	public float minZPos = -90;
+	public float maxXPos = 410;
+	public float minXPos = 80;
+
+	public float minHeight = 1;
+	public float maxHeight = 1000;
+
+
     private float smoothingSpeed = 4f;
     private float oldSmoothingSpeed = 0f;
     private float oldSmoothingSpeed2 = 0f;
 
+	public float exponentialScrollingFactor = 1000;
+
+	public Vector3 centerPosition = new Vector3(200, 200, 65);
+
     private float timeClicked = 0f;
     private bool heldMouseLastFrame = false;
 
-
+	private float risebonus = 10;
 
     private Vector3 targetPosition;
     private Vector3 targetDirection;
@@ -96,6 +109,7 @@ public class CameraController : MonoBehaviour
     void Roam()
     {
         Vector3 moveDirection = new Vector3(0, 0, 0);
+		Vector3 riseDirection = new Vector3 (0, 0, 0);
         if (Input.GetAxis("Vertical") > 0 || Input.mousePosition.y >= Screen.height - scrollPixelMargin)
         {
             moveDirection += Vector3.up;
@@ -114,14 +128,39 @@ public class CameraController : MonoBehaviour
         }
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            moveDirection += Vector3.forward * roamingSpeed;
+            riseDirection += Vector3.forward * roamingSpeed;
         }
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            moveDirection += Vector3.back * roamingSpeed;
+            riseDirection += Vector3.back * roamingSpeed;
         }
 
         transform.Translate(moveDirection * roamingSpeed * Time.deltaTime);
+		transform.Translate(riseDirection * roamingSpeed *(Mathf.Abs((transform.position.y)/exponentialScrollingFactor)) * Time.deltaTime * risebonus);
+
+		if (transform.position.x < minXPos) {
+			transform.position = new Vector3 (minXPos, transform.position.y, transform.position.z);
+		}
+		if (transform.position.x > maxXPos) {
+			transform.position = new Vector3 (maxXPos, transform.position.y, transform.position.z);
+		}
+		if (transform.position.z < minZPos) {
+			transform.position = new Vector3 (transform.position.x, transform.position.y, minZPos);
+		}
+		if (transform.position.z > maxZPos) {
+			transform.position = new Vector3 (transform.position.x, transform.position.y, maxZPos);
+		}
+		if (transform.position.y < minHeight) {
+			transform.position = new Vector3 (transform.position.x, minHeight, transform.position.z);
+		} 
+		if (transform.position.y > maxHeight) {
+			transform.position = new Vector3 (transform.position.x, maxHeight, transform.position.z);
+		} 
+
+		if (Input.GetKey (KeyCode.Tab)) {
+			transform.position = centerPosition;
+		}
+
     }
 
 
