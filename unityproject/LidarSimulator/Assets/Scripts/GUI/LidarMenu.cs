@@ -31,9 +31,17 @@ public class LidarMenu : MonoBehaviour {
     public Slider upperNormal;
     public Slider lowerNormal;
 
-    public PreviewLidarRays lidarLinePreview;
+    public float numberOfLasersVal = 64f;
+    public float rotationSpeedHzVal = 1f;
+    public float rotationAnglePerStepVal = 0.9f;
+    public float rayDistanceVal = 200f;
+    public float upperFOVVal = 10.5f;
+    public float lowerFOVVal = 16f;
+    public float offsetVal = 7.24f;
+    public float upperNormalVal = -3.3f;
+    public float lowerNormalVal = 16.87f;
 
-    private LidarSensor sensor;
+    public PreviewLidarRays lidarLinePreview;
 
     private bool laserMimicInitialized = false;
     private bool guiValsInitialized = false;
@@ -50,7 +58,6 @@ public class LidarMenu : MonoBehaviour {
     /// </summary>
 	void Start () 
 	{
-        sensor = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarSensor>();
         InitializeGUIValues();
         if (laserMimicInitialized)
         {
@@ -58,20 +65,27 @@ public class LidarMenu : MonoBehaviour {
         }
     }
 
+    void OnDestroy()
+    {
+        EditorController.OnPointCloudToggle -= PassLidarValuesToPointCloud;
+        PlayButton.OnPlayToggled -= PassValuesToLidarSensor;
+        PreviewLidarRays.tellLidarMenuInitialized -= LaserMimicIsInitialized;
+    }
+
     /// <summary>
-    /// Initializes all the values of the lidar menu with the initial values of the lidar sensor.
+    /// Sets all initial values in the lidar menu.
     /// </summary>
 	void InitializeGUIValues()
 	{
-		numberOfLasers.value = sensor.numberOfLasers;
-		rotationSpeedHz.value = sensor.rotationSpeedHz;
-        rotationAnglePerStep.value = sensor.rotationAnglePerStep;
-        rayDistance.value = sensor.rayDistance;
-        upperFOV.value = sensor.upperFOV;
-        lowerFOV.value = sensor.lowerFOV;
-        offset.value = sensor.offset;
-        upperNormal.value = sensor.upperNormal;
-        lowerNormal.value = sensor.lowerNormal;
+		numberOfLasers.value = numberOfLasersVal;
+		rotationSpeedHz.value = rotationSpeedHzVal;
+        rotationAnglePerStep.value = rotationAnglePerStepVal;
+        rayDistance.value = rayDistanceVal;
+        upperFOV.value = upperFOVVal;
+        lowerFOV.value = lowerFOVVal;
+        offset.value = offsetVal;
+        upperNormal.value = upperNormalVal;
+        lowerNormal.value = lowerNormalVal;
 
         guiValsInitialized = true;
 	}
@@ -136,12 +150,5 @@ public class LidarMenu : MonoBehaviour {
         {
             Debug.Log("Event has no delegates: " + e);
         }
-    }
-
-    void OnDestroy()
-    {
-        EditorController.OnPointCloudToggle -= PassLidarValuesToPointCloud;
-        PlayButton.OnPlayToggled -= PassValuesToLidarSensor;
-        PreviewLidarRays.tellLidarMenuInitialized -= LaserMimicIsInitialized;
     }
 }
