@@ -196,6 +196,7 @@ public class ExternalVisualization : MonoBehaviour {
     /// </summary>
     private void Reset()
     {
+        externalPointCloud.Clear();
         SetState(State.Default);
     }
 

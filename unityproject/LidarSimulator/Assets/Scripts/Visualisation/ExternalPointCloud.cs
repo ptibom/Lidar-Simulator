@@ -5,12 +5,12 @@ using UnityEngine;
 public class ExternalPointCloud : MonoBehaviour {
     public GameObject meshObject;
     private int maxParticlesPerChunk = 65000;
-    
+    private List<GameObject> gameObjects;
 
     // Use this for initialization
     void Start()
     {
-
+        gameObjects = new List<GameObject>();
     }
 
     public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
@@ -83,6 +83,7 @@ public class ExternalPointCloud : MonoBehaviour {
             GameObject newGO = Instantiate(meshObject, new Vector3(0,0,0), Quaternion.identity);
             newGO.transform.SetParent(GameObject.Find("PSystBase").transform);
             meshFilterList.Add(newGO.GetComponent<MeshFilter>());
+            gameObjects.Add(newGO);
         }
     return meshFilterList;
     }
@@ -133,6 +134,21 @@ public class ExternalPointCloud : MonoBehaviour {
         
         return verticeList;
     }
+
+
+    /// <summary>
+    /// Clears the external visualization so it can be reused. 
+    /// </summary>
+    public void Clear()
+    {
+        foreach(GameObject gO in gameObjects)
+        {
+            gO.GetComponent<MeshFilter>().mesh = null;
+            Destroy(gO);
+        }
+        gameObjects.Clear();
+    }
+
 
 
 }
