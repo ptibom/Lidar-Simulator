@@ -38,6 +38,8 @@ public class PointCloud : MonoBehaviour
         isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
         PlayButton.OnPlayToggled += ToggleCloud;
+
+        Debug.Log("start");
     }
 
     void OnDestroy()
@@ -206,7 +208,6 @@ public class PointCloud : MonoBehaviour
         LidarSensor.OnScanned -= OnUpdatePoints;
         LidarSensor.NewRotationEvent -= NewLap;
         isEnabled = false;
-
         if(clearOnPause)
         {
             foreach (var entity in particleSystemIdMap)
@@ -230,6 +231,7 @@ public class PointCloud : MonoBehaviour
 /// </summary>
     public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep)
     {
+        /*
         this.rotationSpeed  = 1.0f / rotationSpeed;
         Debug.Log("sag");
         Pause();
@@ -251,11 +253,12 @@ public class PointCloud : MonoBehaviour
             maxParticlesPerCloud = 10000;
             particleSize = 0.01f;
         }
-        
-        maxParticleSystems = (int)Mathf.Ceil((float)maxNumParticlesPerLap / (float)maxParticlesPerCloud);
+
+        //maxParticleSystems = (int)Mathf.Ceil((float)maxNumParticlesPerLap / (float)maxParticlesPerCloud);
+        Debug.Log("MaxSystems: " + maxParticleSystems);
         CreateNeededParticleSystems();
         Play();
-
+        */
 
     }
 
@@ -266,6 +269,7 @@ public class PointCloud : MonoBehaviour
     private void CreateNeededParticleSystems()
     {
         int currentNumberOfSystems = particleSystemIdMap.Count;
+        Debug.Log("No: " + currentNumberOfSystems);
 
         if (currentNumberOfSystems < maxParticleSystems)
         {
@@ -327,4 +331,5 @@ public class PointCloud : MonoBehaviour
     {
         Play();
     }
+
 }
