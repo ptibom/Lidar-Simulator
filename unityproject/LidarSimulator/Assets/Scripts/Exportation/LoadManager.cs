@@ -45,35 +45,33 @@ public class LoadManager : MonoBehaviour
 
 
                 try
-                {
-                    /**UNCOMMENT FOR KITTY DATA
-                     * 
-                    //float id = columns[2];
-                    float radius = float.Parse(columns[2]);
-                    float inclination = float.Parse(columns[3]);
-                    float azimuth = float.Parse(columns[4]);
-                    SphericalCoordinate sc = new SphericalCoordinate(radius, inclination, azimuth); // TODO: load world coordinate and ID??
-                    coorValues.AddLast(sc);                       
-
-                **/
-                    if (columns.Length >= 4)
+                { 
+                    if (columns.Length == 4) // Kitty data
                     {
-                        key = float.Parse(columns[0]);
-                        float x = float.Parse(columns[1]);
+                        key = 1;
+                        float x = float.Parse(columns[0]);
+                        float z = float.Parse(columns[1]);
                         float y = float.Parse(columns[2]);
-                        float z = float.Parse(columns[3]);
                         Vector3 vector = new Vector3(x, y, z);
                         SphericalCoordinate sc = new SphericalCoordinate(vector);
                         coorValues.AddLast(sc);
+                    } else if(columns.Length == 8) // Data from simulation
+                    {
+                        key = float.Parse(columns[0]);
+                        float x = float.Parse(columns[1]);
+                        float z = float.Parse(columns[2]);
+                        float y = float.Parse(columns[3]);
+                        float  radius = float.Parse(columns[4]);
+                        float inclination = float.Parse(columns[5]);
+                        float azimuth = float.Parse(columns[6]);
+                        int laserId = int.Parse(columns[7]);
+                        Vector3 vector = new Vector3(x, y, z);
+                        SphericalCoordinate sc = new SphericalCoordinate(radius,inclination,azimuth,vector,laserId);
+                        coorValues.AddLast(sc);
                     } else
                     {
-                        foreach(string s in columns)
-                        {
-                            Debug.Log(s);
-                        }
-                        break;
+                        throw new FormatException();
                     }
-
 
                 }
                 catch (FormatException e)

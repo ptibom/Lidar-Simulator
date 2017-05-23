@@ -37,28 +37,6 @@ public class SphericalCoordinate
 	/// <param name="coordinates">Coordinates.</param>
     public SphericalCoordinate(Vector3 coordinates)
     {
-        // Det här är fel (todo)
-
-        this.radius = Mathf.Sqrt(Mathf.Pow(coordinates.x, 2) + Mathf.Pow(coordinates.y, 2) + Mathf.Pow(coordinates.z, 2));
-
-        if (radius == 0)
-        {
-            inclination = 0;
-            azimuth = 0;
-        }
-        else
-        {
-            this.inclination = Mathf.Acos(coordinates.z / radius);
-            if (coordinates.x != 0)
-            {
-                this.azimuth = Mathf.Atan(coordinates.y / coordinates.x);
-            }
-            else
-            {
-                this.azimuth = 0;
-            }
-        }
-
         globalWorldCoordinate = coordinates;
 
     }
@@ -104,6 +82,11 @@ public class SphericalCoordinate
     public Vector3 GetWorldCoordinate()
     {
         return this.globalWorldCoordinate;
+    }
+
+    public int GetLaserId()
+    {
+        return this.laserId;
     }
 
 

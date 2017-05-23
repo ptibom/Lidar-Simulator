@@ -141,6 +141,12 @@ public class PreviewLidarRays : MonoBehaviour {
 		lasersMimics.Clear ();
 	}
 
+    void OnDestroy()
+    {
+        LidarMenu.OnPassValuesToLaserMimic -= UpdateLidarValues;
+    }
+
+
     /// <summary>
     /// A class which mimics the parameters of the actual lidar sensor and draws lines to represent the lasers of the lidar
     /// </summary>

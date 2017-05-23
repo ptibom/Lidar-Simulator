@@ -18,13 +18,13 @@ public class ExternalVisualization : MonoBehaviour {
     private Coroutine loadingPoints;
 
 	public void Start() {
-		//pSystemGameObject  = GameObject.Find("particlesSyst");
+		pSystemGameObject  = GameObject.Find("particlesSyst");
         //nextBtn = GameObject.Find("Next");
         //prevBtn = GameObject.Find("Prev");
         backBtn = GameObject.Find("BackButton");
         mainPanel = GameObject.Find("MainPanel");
 
-        //pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
+        pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
         //nextButton = nextBtn.GetComponent<Button>();
         //prevButton = prevBtn.GetComponent<Button>();
         backButton = backBtn.GetComponent<Button>();
@@ -61,7 +61,7 @@ public class ExternalVisualization : MonoBehaviour {
     {
         if(state == State.Default)
         {
-            currentListPosition = 0;
+            //currentListPosition = 0;
             //prevBtn.SetActive(false);
             //nextBtn.SetActive(false);
             mainPanel.SetActive(true);
@@ -80,14 +80,14 @@ public class ExternalVisualization : MonoBehaviour {
         else
         {
             currentListPosition = 0;
-            prevBtn.SetActive(true);
-            nextBtn.SetActive(true);
+            //prevBtn.SetActive(true);
+            //nextBtn.SetActive(true);
             mainPanel.SetActive(false);
-            lapText.enabled = true;
+            //lapText.enabled = true;
             backBtn.SetActive(true);
-            nextButton.onClick.AddListener(LoadNext);
-            prevButton.onClick.AddListener(LoadPrev);
-            backButton.onClick.AddListener(Reset);
+            //nextButton.onClick.AddListener(LoadNext);
+            //prevButton.onClick.AddListener(LoadPrev);
+            //backButton.onClick.AddListener(Reset);
         }
     }
    
@@ -102,6 +102,7 @@ public class ExternalVisualization : MonoBehaviour {
         {
             LoadPrev();
         }
+        
 
 
     }
@@ -113,7 +114,7 @@ public class ExternalVisualization : MonoBehaviour {
 	/// </summary>
 	public void LoadPoints()
 	{
-        fileBrowser.SetActive(true);
+        fileBrowser.ToggleFileBrowser();
     }
     private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
     {
@@ -195,6 +196,7 @@ public class ExternalVisualization : MonoBehaviour {
     /// </summary>
     private void Reset()
     {
+        externalPointCloud.Clear();
         SetState(State.Default);
     }
 
@@ -257,16 +259,18 @@ public class ExternalVisualization : MonoBehaviour {
         this.pointTable = lidarStorage.GetData();
         
             SetState(State.FullCloud);
-            externalPointCloud.CreateCloud(SquashTable(pointTable));
-        /**
-        else
+        //Set Camera 
+        foreach (var v in pointTable)
         {
-            SetState(State.LapCloud);
-            currentListPosition = -1;
-            LoadNext();      
+            Vector3 firstCoordinate = v.Value.First.Value.GetWorldCoordinate();
+            GameObject.Find("Main Camera").GetComponent<Camera>().transform.position = new Vector3(firstCoordinate.x - 5, 10, firstCoordinate.y);
 
         }
     **/
+
+
+            externalPointCloud.CreateCloud(SquashTable(pointTable));
+        
 
     }
 

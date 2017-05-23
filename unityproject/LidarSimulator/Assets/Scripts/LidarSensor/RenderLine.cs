@@ -5,14 +5,6 @@
 /// </summary>
 public class RenderLine : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-    }
-	
-	// Update is called once per frame
-	void Update () {
-    }
-
     /// <summary>
     /// Draws line from object origin towards direction.
     /// </summary>

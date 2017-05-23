@@ -9,8 +9,12 @@ public class FileBrowser
 
     public ExportManager exportManager; // Prefab required to save
     BrowseState state;
-    public static event Disable DisableFilebrowseer;
-    public delegate void Disable();
+    public static event Toggle ToggleFileBrowser;
+    public delegate void Toggle();
+    public  bool showExit = false;
+    public bool showConfirm = false;
+    public bool showOverWrite = false;
+    private string filePath;
 
  
     public enum BrowseState
@@ -68,7 +72,7 @@ public class FileBrowser
 		public FileBrowser(string directory,int layoutStyle):this(directory,layoutStyle,new Rect(0,0,Screen.width,Screen.height)){}
 		public FileBrowser(string directory):this(directory,1){}
     #else
-    public FileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.75f)) { }
+    public FileBrowser(string directory, int layoutStyle) : this(directory, layoutStyle, new Rect(Screen.width * 0.13f, Screen.height * 0.13f, Screen.width * 0.42f, Screen.height * 0.42f)) { }
     public FileBrowser(string directory) : this(directory, 0) { }
     #endif
     public FileBrowser(Rect guiRect) : this() { guiSize = guiRect; }
@@ -105,7 +109,7 @@ public class FileBrowser
 
                 } else
                 {
-                    GUILayout.Label("Opening file: " + outputFile);
+                    GUILayout.Label("Opening file: " + currentDirectory.FullName + "\\" + outputFile);
 
                 }
                 GUILayout.FlexibleSpace();
@@ -171,24 +175,34 @@ public class FileBrowser
                 GUILayout.FlexibleSpace();
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
+                    showExit = true;
                     outputFile = null;
-                    return true;
+                    filePath = "";
+                    return false;
                 }                
                 if(state == BrowseState.Save)
                 {
                     if ((selectStyle == null) ? GUILayout.Button("Save") : GUILayout.Button("Save", selectStyle))
                     {
-                        //Debug.Log("writing over :" + outputFile);
-                        SaveFile(null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
-                        return true;
+                        showConfirm = true;
+                        filePath = (null + currentDirectory.FullName + "\\" + searchBarString + ".txt");
+                        return false;
                     }
                 } else
                 {
                     if ((selectStyle == null) ? GUILayout.Button("Open") : GUILayout.Button("Open", selectStyle))
                     {
-                       // Debug.Log("writing over :" + outputFile);
-                        OpenFile(null + outputFile);
-                        return true;
+                        // Debug.Log("writing over :" + outputFile);
+                        ToggleFileBrowser();
+                        if(Application.isEditor)
+                        {
+                            OpenFile(null + outputFile);
+                        } else
+                        {
+                            OpenFile(null + currentDirectory.FullName + "\\" + outputFile);
+
+                        }
+                        return false;
                     }
                     GUILayout.FlexibleSpace();
                 }
@@ -258,8 +272,8 @@ public class FileBrowser
 
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
-                    DisableFilebrowseer();
-                    return true;
+                    showExit = true ;
+                    return false;
                 }
                 break;
                 case 2:
@@ -319,12 +333,15 @@ public class FileBrowser
                 GUILayout.FlexibleSpace();
                 if ((cancelStyle == null) ? GUILayout.Button("Cancel") : GUILayout.Button("Cancel", cancelStyle))
                 {
+                    filePath = "";
+                    showExit = true;
                     outputFile = null;
-                    return true;
+                    return false;
                 }
                 GUILayout.FlexibleSpace();
                 if ((selectStyle == null) ? GUILayout.Button("Select") : GUILayout.Button("Select", selectStyle)) { return true; }
-                    SaveFile(currentDirectory + "\\" + searchBarString);
+                    showConfirm = true;
+                    filePath = (currentDirectory + "\\" + searchBarString);
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
@@ -384,22 +401,18 @@ public class FileBrowser
                 files[f] = new FileInformation1(fia[f]);
         }
     }
-    public void SaveFile(string filename)
+    public void SaveFile()
     {
         //Lägg till confirmgrejen här, om ja. kör nedanstående
         //SaveConfirm confirm = new SaveConfirm();
-        
-
-
-        DisableFilebrowseer();
-        exportManager.Save(filename);
+       
+        exportManager.Save(filePath);
+        outputFile = null;
 
     }
 
     public void OpenFile(string filePath)
     {
-        DisableFilebrowseer();
-        Debug.Log("Opening");
         exportManager.Open(filePath);
 
 

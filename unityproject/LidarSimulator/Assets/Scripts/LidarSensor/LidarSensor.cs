@@ -47,6 +47,12 @@ public class LidarSensor : MonoBehaviour {
         PlayButton.OnPlayToggled += PauseSensor;
     }
 
+    void OnDestroy()
+    {
+        LidarMenu.OnPassValuesToLidarSensor -= UpdateSettings;
+        PlayButton.OnPlayToggled -= PauseSensor;
+    }
+
     public void UpdateSettings(int numberOfLasers, float rotationSpeedHz, float rotationAnglePerStep, float rayDistance, float upperFOV,
         float lowerFOV, float offset, float upperNormal, float lowerNormal)
     {
@@ -130,7 +136,7 @@ public class LidarSensor : MonoBehaviour {
         }
 
         // Check if number of steps is greater than possible calculations by unity.
-        float numberOfStepsNeededInOneLap = 360 / rotationAnglePerStep;
+        float numberOfStepsNeededInOneLap = 360 / Mathf.Abs(rotationAnglePerStep);
         float numberOfStepsPossible = 1 / Time.fixedDeltaTime / 5;
         float precalculateIterations = 1;
         // Check if we need to precalculate steps.

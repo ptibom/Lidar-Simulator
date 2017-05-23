@@ -26,6 +26,7 @@ public class TestFileBrowser : MonoBehaviour
         fb.driveTexture = drive;
         //show the search bar
         fb.showSearch = true;
+        FileBrowser.ToggleFileBrowser += ToggleFileBrowser;
         //search recursively (setting recursive search may cause a long delay)
         fb.searchRecursively = true;
         fb.SetExportManager(exportManager); // sets the export manager in the filebrowser
@@ -38,29 +39,61 @@ public class TestFileBrowser : MonoBehaviour
             fb.SetState(FileBrowser.BrowseState.Save);
 
         }
-        FileBrowser.DisableFilebrowseer += DisableFB;
+        FileBrowser.ToggleFileBrowser += Disable;
     }
 
+    void OnDestroy()
+    {
+        FileBrowser.ToggleFileBrowser -= ToggleFileBrowser;
+        FileBrowser.ToggleFileBrowser -= Disable;
+    }
 
     void OnGUI()
     {
         if (active)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
+            if (fb.showConfirm)
+            {
 
-            GUILayout.EndVertical();
-            GUILayout.Space(80);
-            //GUILayout.Label("Overwrite exiting file: " + output);
-            GUILayout.EndHorizontal();
-            //draw and display output
+                GUI.BeginGroup(new Rect((Screen.width + 300) / 2, (Screen.height - 100) / 2, 200, 100));
+
+                GUI.Box(new Rect(0, 0, 200, 100), "");
+                GUI.Label(new Rect(10, 10, 200, 100), "Do you want to save?");
+                if (GUI.Button(new Rect(30, 40, 60, 30), "Cancel")) {
+                    fb.showConfirm = false;
+                };
+                if (GUI.Button(new Rect(100, 40, 60, 30), "Save")) {
+                    fb.SaveFile();
+                    fb.showConfirm = false;
+                    ToggleFileBrowser();
+                };
+                GUI.EndGroup();
+            }
+            if (fb.showExit)
+            {
+
+                GUI.BeginGroup(new Rect((Screen.width + 200) / 2, (Screen.height - 100) / 2, 200, 100));
+
+                GUI.Box(new Rect(0, 0, 200, 100), "");
+                GUI.Label(new Rect(10, 10, 200, 100), "Do you want to Exit?");
+                if (GUI.Button(new Rect(30, 40, 60, 30), "Cancel")) { fb.showExit = false; };
+                if (GUI.Button(new Rect(100, 40, 60, 30), "Exit")) {
+                    fb.showExit = false;
+                    ToggleFileBrowser();
+                };
+
+                GUI.EndGroup();
+            }
+
+
+
 
             if (fb.Draw())
             { //true is returned when a file has been selected
               //the output file is a member if the FileInfo class, if cancel was selected the value is null
 
-                output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
-                gameObject.SetActive(false);
+                //output = (fb.outputFile == null) ? "cancel hit" : fb.outputFile.ToString();
+                //gameObject.SetActive(false);
 
             }
         }
@@ -72,13 +105,19 @@ public class TestFileBrowser : MonoBehaviour
 
     public void DisableFB()
     {
-        Debug.Log("Disabled");
-       // this.enabled = false;
+        //this.enabled = false;
     }
 
-    public void SetActive(bool active)
+    public void ToggleFileBrowser()
     {
-        this.active = active;
+        if (active)
+        {
+            active = false;
+        }
+        else
+        {
+            active = true;
+        }
     }
 
 }
