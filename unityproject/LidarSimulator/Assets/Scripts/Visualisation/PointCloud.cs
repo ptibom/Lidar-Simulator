@@ -33,7 +33,7 @@ public class PointCloud : MonoBehaviour
     /// <summary>
     /// Initialization
     /// </summary>
-    void Start()
+    void Awake()
     {
         particleSystemIdMap = new Dictionary<int, ParticleSystem>();
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
