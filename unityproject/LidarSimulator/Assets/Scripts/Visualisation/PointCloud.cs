@@ -20,7 +20,10 @@ public class PointCloud : MonoBehaviour
     int currentNumberOfSystems;
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
 
+    private Stack<List<ParticleSystem.Particle>> particleListPool;
     private List<ParticleSystem.Particle> particleBuffer; //allows for reusing particles
+
+
 
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
@@ -38,6 +41,7 @@ public class PointCloud : MonoBehaviour
         isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
         particleBuffer = new List<ParticleSystem.Particle>();
+        particleListPool = new Stack<List<ParticleSystem.Particle>>();
 
     }
 
@@ -56,9 +60,17 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private ParticleSystem.Particle[] CreateParticles(LinkedList<SphericalCoordinate> positions, int particleSystemID)
+    private void UpdateParticle(LinkedList<SphericalCoordinate> positions, int particleSystemID)
     {
         List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
+
+        if(particleListPool.Count > 0)
+        {
+            particleCloud = particleListPool.Pop();
+        } else
+        {
+            particleCloud = new List<ParticleSystem.Particle>();
+        }
         ParticleSystem currentParticleSystem = particleSystemIdMap[usedParticleSystem];
 
         ParticleSystem.Particle[] oldParticles = new ParticleSystem.Particle[currentParticleSystem.particleCount];
@@ -72,14 +84,13 @@ public class PointCloud : MonoBehaviour
             currentParticleSystem.GetParticles(oldParticles);
             particleBuffer.AddRange(oldParticles);
         }
-        int i = 0;
         foreach (var coordinate in positions)
         {
                 ParticleSystem.Particle particle;
                 if (particleBuffer.Count > 0)
                 {
                     particle = particleBuffer[0];
-                particleBuffer.RemoveAt(0);
+                    particleBuffer.RemoveAt(0);
                 } else
                 {
                     particle = new ParticleSystem.Particle();
@@ -102,13 +113,14 @@ public class PointCloud : MonoBehaviour
                 }
 
                 particle.startSize = particleSize;
-                particle.startLifetime = 1f;
-                particle.remainingLifetime = 2f;
+                particle.startLifetime = 100f;
+                particle.remainingLifetime = 200f;
                 particleCloud.Add(particle);
 
-            i++;
         }
-        return particleCloud.ToArray();
+        particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud.ToArray(), particleCloud.Count);
+        particleCloud.Clear();
+        particleListPool.Push(particleCloud);
     }
 
     /// <summary>
@@ -121,8 +133,8 @@ public class PointCloud : MonoBehaviour
        {
          usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
        }
-            ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
-            particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
+       UpdateParticle(points, usedParticleSystem);
+            
     }
 
 
