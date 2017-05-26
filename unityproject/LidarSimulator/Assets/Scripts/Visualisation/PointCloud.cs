@@ -20,6 +20,8 @@ public class PointCloud : MonoBehaviour
     int currentNumberOfSystems;
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
 
+    private List<ParticleSystem.Particle> particleBuffer; //allows for reusing particles
+
     //private LinkedList<SphericalCoordinates> points;
     //private bool pointsUpdate = false;
 
@@ -35,6 +37,7 @@ public class PointCloud : MonoBehaviour
         LidarSensor.OnScanned += OnUpdatePoints;
         isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
+        particleBuffer = new List<ParticleSystem.Particle>();
 
     }
 
@@ -60,24 +63,23 @@ public class PointCloud : MonoBehaviour
 
         ParticleSystem.Particle[] oldParticles = new ParticleSystem.Particle[currentParticleSystem.particleCount];
 
-        bool reuse = false;
         if (currentParticleSystem.particleCount <= maxParticlesPerCloud)
         {
             currentParticleSystem.GetParticles(oldParticles);
             particleCloud.AddRange(oldParticles);
         } else
         {
-            reuse = true;
             currentParticleSystem.GetParticles(oldParticles);
-            particleCloud.Clear();
+            particleBuffer.AddRange(oldParticles);
         }
         int i = 0;
         foreach (var coordinate in positions)
         {
                 ParticleSystem.Particle particle;
-                if (reuse)
+                if (particleBuffer.Count > 0)
                 {
-                    particle = oldParticles[i];
+                    particle = particleBuffer[0];
+                particleBuffer.RemoveAt(0);
                 } else
                 {
                     particle = new ParticleSystem.Particle();
@@ -115,14 +117,12 @@ public class PointCloud : MonoBehaviour
     /// <param name="points"></param>
     public void OnUpdatePoints(LinkedList<SphericalCoordinate> points)
     {
-        if (isEnabled) {
-            if (particleSystemIdMap[usedParticleSystem].particleCount > maxParticlesPerCloud)
-            {
-                usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
-            }
+       if (particleSystemIdMap[usedParticleSystem].particleCount > maxParticlesPerCloud)
+       {
+         usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
+       }
             ParticleSystem.Particle[] particleCloud = CreateParticles(points, usedParticleSystem);
             particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud, particleCloud.Length);
-        }
     }
 
 
