@@ -1,5 +1,4 @@
-﻿ using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// Script for updating a particle system.
@@ -23,6 +22,9 @@ public class PointCloud : MonoBehaviour
     private Stack<List<ParticleSystem.Particle>> particleListPool;
     private List<ParticleSystem.Particle> particleBuffer; //allows for reusing particles
 
+    // Lagt till dessa <--------------------------------------------------------------------------------
+    private ParticleSystem.Particle[] oldParticles;
+    private List<ParticleSystem.Particle> particleCloud;
 
 
     //private LinkedList<SphericalCoordinates> points;
@@ -37,11 +39,16 @@ public class PointCloud : MonoBehaviour
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
         currentNumberOfSystems = 0;
         CreateNeededParticleSystems();
-        LidarSensor.OnScanned += OnUpdatePoints;
-        isEnabled = true;
+        // Disablade dessa, de körs i OnEnable vid start <--------------------------------------------------------------------------------
+        //LidarSensor.OnScanned += OnUpdatePoints;
+        //isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
         particleBuffer = new List<ParticleSystem.Particle>();
         particleListPool = new Stack<List<ParticleSystem.Particle>>();
+
+        // Lagt till dessa <--------------------------------------------------------------------------------
+        oldParticles = new ParticleSystem.Particle[maxParticlesPerCloud];
+        particleCloud = new List<ParticleSystem.Particle>();
 
     }
 
@@ -51,7 +58,6 @@ public class PointCloud : MonoBehaviour
         LidarMenu.OnPassLidarValuesToPointCloud -= UpdateSpecs;
     }
 
- 
 
     //TODO: Find a way to fill each system before next iteration. 
 
@@ -60,9 +66,8 @@ public class PointCloud : MonoBehaviour
     /// </summary>
     /// <param name="positions"></param>
     /// <returns></returns>
-    private void UpdateParticle(LinkedList<SphericalCoordinate> positions, int particleSystemID)
+    private void UpdateParticle(LinkedList<SphericalCoordinate> positions)
     {
-        List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
 
         if(particleListPool.Count > 0)
         {
@@ -71,9 +76,11 @@ public class PointCloud : MonoBehaviour
         {
             particleCloud = new List<ParticleSystem.Particle>();
         }
+        
         ParticleSystem currentParticleSystem = particleSystemIdMap[usedParticleSystem];
 
-        ParticleSystem.Particle[] oldParticles = new ParticleSystem.Particle[currentParticleSystem.particleCount];
+        // Här tappas en referens till en lista
+        oldParticles = new ParticleSystem.Particle[currentParticleSystem.particleCount];
 
         if (currentParticleSystem.particleCount <= maxParticlesPerCloud)
         {
@@ -133,11 +140,18 @@ public class PointCloud : MonoBehaviour
        {
          usedParticleSystem = (usedParticleSystem + 1) % maxParticleSystems;
        }
-       UpdateParticle(points, usedParticleSystem);
+       UpdateParticle(points);
             
     }
 
-
+    void OnDisable()
+    {
+        Pause();
+    }
+    void OnEnable()
+    {
+        Play();
+    }
 
     /// <summary>
     /// Resumes the point cloud after a pause
@@ -155,6 +169,7 @@ public class PointCloud : MonoBehaviour
             }
         }
     }
+    
 
     /// <summary>
     /// Pauses the visualization
@@ -179,7 +194,6 @@ public class PointCloud : MonoBehaviour
         }
 
     }
-
 
 /// <summary>
 /// This method is called when the lidar specifications are changed. Calculates the number of particle systems needed, point size and number of particles / system.
