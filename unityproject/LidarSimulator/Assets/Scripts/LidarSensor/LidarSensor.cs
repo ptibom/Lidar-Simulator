@@ -25,24 +25,27 @@ public class LidarSensor : MonoBehaviour {
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
     public static event NewPoints OnScanned;
-    public static event NewLap NewRotationEvent;
-    public delegate void NewLap();
-    public delegate void NewPoints(LinkedList<SphericalCoordinate> hits);
+    public delegate void NewPoints(float time, LinkedList<SphericalCoordinate> data);
+    LinkedList<SphericalCoordinate> hits;
+
     public float lapTime = 0;
-    private float lastLapTime = 0;
 
     private bool isPlaying = false;
 
 	public GameObject pointCloudObject;
 	private float previousUpdate;
 
+    private float lastLapTime;
+
     public GameObject lineDrawerPrefab;
 
     // Use this for initialization
     private void Start()
     {
+        lastLapTime = 0;
         LidarMenu.OnPassValuesToLidarSensor += UpdateSettings;
         PlayButton.OnPlayToggled += PauseSensor;
+        hits = new LinkedList<SphericalCoordinate>();
     }
 
     void OnDestroy()
@@ -127,6 +130,7 @@ public class LidarSensor : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        hits.Clear();
         // Do nothing, if the simulator is paused.
         if (!isPlaying)
         {
@@ -152,7 +156,6 @@ public class LidarSensor : MonoBehaviour {
         {
             // Update current execution time.
             lastUpdate = Time.fixedTime;
-            LinkedList<SphericalCoordinate> hits = new LinkedList<SphericalCoordinate>();
 
             for (int i = 0; i < precalculateIterations; i++)
             {
@@ -162,12 +165,9 @@ public class LidarSensor : MonoBehaviour {
                 if (horizontalAngle >= 360)
                 {
                     horizontalAngle -= 360;
-					//GameObject.Find("RotSpeedText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
+                    //GameObject.Find("RotSpeedText").GetComponent<Text>().text =  "" + (1/(Time.fixedTime - lastLapTime));
                     lastLapTime = Time.fixedTime;
-                    if(NewRotationEvent != null)
-                    {
-                        NewRotationEvent();
-                    }
+                   
                 }
 
 
@@ -184,12 +184,13 @@ public class LidarSensor : MonoBehaviour {
                 }
             }
 
-            
+
             // Notify listeners that the lidar sensor have scanned points. 
-			//if (OnScanned != null  && pointCloudObject != null && pointCloudObject.activeInHierarchy)
+            //if (OnScanned != null  && pointCloudObject != null && pointCloudObject.activeInHierarchy)
             //{
-                OnScanned(hits);
+                OnScanned(lastLapTime, hits);
             //}
+                
         }
     }
 }

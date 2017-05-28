@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ExternalVisualization : MonoBehaviour {
-	private Dictionary<float, LinkedList<SphericalCoordinate>> pointTable;
+	private Dictionary<float, List<LinkedList<SphericalCoordinate>>> pointTable;
     private LidarStorage lidarStorage;
     private ExternalPointCloud externalPointCloud;
 	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn, loadingPanel, loadWheel;
@@ -116,14 +116,17 @@ public class ExternalVisualization : MonoBehaviour {
 	{
         fileBrowser.ToggleFileBrowser();
     }
-    private LinkedList<SphericalCoordinate> createList(Dictionary<float, LinkedList<SphericalCoordinate>> data)
+    private LinkedList<SphericalCoordinate> createList(Dictionary<float, List<LinkedList<SphericalCoordinate>>> data)
     {
         LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
-        foreach (var entity in data)
+        foreach (var list in data.Values)
         {
-            for (LinkedListNode<SphericalCoordinate> it = entity.Value.First; it != null; it = it.Next)
+            foreach (var entity in list)
             {
-                newList.AddLast(it.Value);
+                for (LinkedListNode<SphericalCoordinate> it = entity.First; it != null; it = it.Next)
+                {
+                    newList.AddLast(it.Value);
+                }
             }
         }
         return newList;
@@ -133,16 +136,19 @@ public class ExternalVisualization : MonoBehaviour {
     /// Creates a single linked list filled with spherical coordinates from a data tablöe
     /// </summary>
     /// <returns></returns>
-    private LinkedList<SphericalCoordinate> SquashTable(Dictionary<float, LinkedList<SphericalCoordinate>> data)
+    private LinkedList<SphericalCoordinate> SquashTable(Dictionary<float, List<LinkedList<SphericalCoordinate>>> data)
     {
         Debug.Log("Squashing table for: " + data.Count);
         LinkedList<SphericalCoordinate> newList = new LinkedList<SphericalCoordinate>();
 
-        foreach(var entity in data)
+        foreach (var list in data.Values)
         {
-            foreach(SphericalCoordinate s in entity.Value)
+            foreach (var entity in list)
             {
-                newList.AddLast(s);
+                foreach (SphericalCoordinate s in entity)
+                {
+                    newList.AddLast(s);
+                }
             }
         }
         return newList;
@@ -201,19 +207,22 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-	private ParticleSystem.Particle[] CreateParticles(Dictionary<float,LinkedList<SphericalCoordinate>> data, int position)
+	private ParticleSystem.Particle[] CreateParticles(Dictionary<float,List<LinkedList<SphericalCoordinate>>> data, int position)
 	{
 		List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
         LinkedList<SphericalCoordinate> list = new LinkedList<SphericalCoordinate>();
         int pos = 0;
-        foreach(var v in data)
+        foreach (var coorlist in data)
         {
-            if(pos == position)
+            foreach (var v in coorlist.Value)
             {
-                list = v.Value;
-                break;
+                if (pos == position)
+                {
+                    list = v;
+                    break;
+                }
+                pos++;
             }
-            pos++;
         }
 
 		for (LinkedListNode<SphericalCoordinate> it = list.First; it != null; it = it.Next)
@@ -258,12 +267,16 @@ public class ExternalVisualization : MonoBehaviour {
         loadingPoints = null;
         this.pointTable = lidarStorage.GetData();
         
-            SetState(State.FullCloud);
+          SetState(State.FullCloud);
         //Set Camera 
-        foreach (var v in pointTable)
+        foreach (var v in pointTable.Values)
         {
-            Vector3 firstCoordinate = v.Value.First.Value.GetWorldCoordinate();
-            GameObject.Find("Main Camera").GetComponent<Camera>().transform.position = new Vector3(firstCoordinate.x - 5, 10, firstCoordinate.y);
+            foreach (var c in v)
+            {
+                Vector3 firstCoordinate = v[0].First.Value.GetWorldCoordinate();
+                GameObject.Find("Main Camera").GetComponent<Camera>().transform.position = new Vector3(firstCoordinate.x - 5, 10, firstCoordinate.y);
+                break;
+            }
 
         }
 

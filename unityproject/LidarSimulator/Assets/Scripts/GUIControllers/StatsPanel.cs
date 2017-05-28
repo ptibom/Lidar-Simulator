@@ -41,7 +41,7 @@ public class StatsPanel : MonoBehaviour {
         LidarSensor.OnScanned -= UpdatePointsHitCounter;
     }
 
-    void UpdatePointsHitCounter(LinkedList<SphericalCoordinate> hits)
+    void UpdatePointsHitCounter(float time, LinkedList<SphericalCoordinate> hits)
     {
         pointsHit += hits.Count;
     }

@@ -32,7 +32,7 @@ public class SaveManager : MonoBehaviour
         //SaveToCsv(someData, "/lidardata.csv");
     }
     //public void SaveToCsv(SaveObject[]  datalist, string filname){
-    public static void SaveToCsv(Dictionary<float, LinkedList<SphericalCoordinate>> data, String filename)
+    public static void SaveToCsv(Dictionary<float, List<LinkedList<SphericalCoordinate>>> data, String filename)
     {    
         if(filename.Equals(null))
         {
@@ -73,7 +73,7 @@ public class SaveManager : MonoBehaviour
 
 
             List<SaveObject> objlist = new List<SaveObject>();
-            foreach (KeyValuePair<float, LinkedList<SphericalCoordinate>> coordinatePair in data)
+            foreach (KeyValuePair<float, List<LinkedList<SphericalCoordinate>>> coordinatePair in data)
             {
                 /** UNCOMMENT THIS FOR NON-KITTY DATA
                 foreach (SphericalCoordinate coordinate in coordinatePair.Value)
@@ -87,20 +87,22 @@ public class SaveManager : MonoBehaviour
                     dataTable.Add(rows);
                 }
     **/
-
-                foreach (SphericalCoordinate coordinate in coordinatePair.Value)
-                {
-                    Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
-                    string[] rows = new string[8];
-                    rows[0] = coordinatePair.Key.ToString(); // The time
-                    rows[1] = worldCoordinate.x.ToString();
-                    rows[2] = worldCoordinate.z.ToString();
-                    rows[3] = worldCoordinate.y.ToString();
-                    rows[4] = coordinate.GetRadius().ToString();
-                    rows[5] = coordinate.GetInclination().ToString();
-                    rows[6] = coordinate.GetAzimuth().ToString();
-                    rows[7] = coordinate.GetLaserId().ToString();
-                    dataTable.Add(rows);
+                foreach (LinkedList<SphericalCoordinate> keyList in coordinatePair.Value){
+                    float time = coordinatePair.Key;
+                    foreach (SphericalCoordinate coordinate in keyList)
+                    {
+                        Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
+                        string[] rows = new string[8];
+                        rows[0] = time.ToString(); // The time
+                        rows[1] = worldCoordinate.x.ToString();
+                        rows[2] = worldCoordinate.z.ToString();
+                        rows[3] = worldCoordinate.y.ToString();
+                        rows[4] = coordinate.GetRadius().ToString();
+                        rows[5] = coordinate.GetInclination().ToString();
+                        rows[6] = coordinate.GetAzimuth().ToString();
+                        rows[7] = coordinate.GetLaserId().ToString();
+                        dataTable.Add(rows);
+                    }
                 }
 
 

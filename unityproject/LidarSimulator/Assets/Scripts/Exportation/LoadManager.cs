@@ -19,7 +19,7 @@ public class LoadManager : MonoBehaviour
     public static  IEnumerator LoadCsv(String filename, LidarStorage storage)
     {
         StreamReader sr = new StreamReader(File.OpenRead(filename));
-        Dictionary<float, LinkedList<SphericalCoordinate>> data = new Dictionary<float, LinkedList<SphericalCoordinate>>();
+        Dictionary<float, List<LinkedList<SphericalCoordinate>>> data = new Dictionary<float, List<LinkedList<SphericalCoordinate>>>();
         bool internalData = false; //The data to be read was created by our program
 
 
@@ -84,19 +84,19 @@ public class LoadManager : MonoBehaviour
                 }
             
  
-
-                    LinkedList<SphericalCoordinate> oldList;
+                    
+                    List<LinkedList<SphericalCoordinate>> oldList;
+                List<LinkedList<SphericalCoordinate>> dataList = new List<LinkedList<SphericalCoordinate>>();
+                dataList.Add(coorValues);
                     if (!data.TryGetValue(key, out oldList))
                     {
-                        data.Add(key, coorValues);
+                        data.Add(key, dataList);
 
                     }
                     else
                     {
-                        foreach (var v in coorValues)
-                        {
-                            oldList.AddLast(v);
-                        }
+                    List<LinkedList<SphericalCoordinate>> existingList = data[key];
+                    existingList.Add(coorValues);                        
 
                     }
                 

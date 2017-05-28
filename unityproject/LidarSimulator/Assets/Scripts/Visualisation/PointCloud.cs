@@ -128,13 +128,14 @@ public class PointCloud : MonoBehaviour
         particleSystemIdMap[usedParticleSystem].SetParticles(particleCloud.ToArray(), particleCloud.Count);
         particleCloud.Clear();
         particleListPool.Push(particleCloud);
+        
     }
 
     /// <summary>
     /// Updates the points to be added to the point cloud (the latest from the lidar sensor)
     /// </summary>
     /// <param name="points"></param>
-    public void OnUpdatePoints(LinkedList<SphericalCoordinate> points)
+    public void OnUpdatePoints(float time, LinkedList<SphericalCoordinate> points)
     {
        if (particleSystemIdMap[usedParticleSystem].particleCount > maxParticlesPerCloud)
        {

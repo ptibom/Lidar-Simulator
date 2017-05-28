@@ -28,7 +28,7 @@ public class ExportManager : MonoBehaviour {
     /// <param name="filePath"></param>
     public void Save(string filePath)
     {
-        Dictionary<float, LinkedList<SphericalCoordinate>> data = lidarStorage.GetData();
+        Dictionary<float, List<LinkedList<SphericalCoordinate>>> data = lidarStorage.GetData();
 
         if(data.Equals(null) || data.Count == 0)
         {
