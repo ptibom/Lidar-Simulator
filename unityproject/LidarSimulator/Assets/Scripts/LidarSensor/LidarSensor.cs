@@ -130,7 +130,7 @@ public class LidarSensor : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        hits.Clear();
+        hits = new LinkedList<SphericalCoordinate>();
         // Do nothing, if the simulator is paused.
         if (!isPlaying)
         {
