@@ -15,7 +15,7 @@ public class StatsPanel : MonoBehaviour {
 	public Text hitPText;
     public Text tickText;
 
-	private float updateDelay = 0.25f;
+	private float updateDelay = 0.25f; // The time between each updates of the values in the visual panel
 	private float updateTime = 0f;
     private bool simulationModeOn = false;
 
@@ -34,7 +34,6 @@ public class StatsPanel : MonoBehaviour {
         PlayButton.OnPlayToggled += Reset;
         LidarSensor.OnScanned += UpdatePointsHitCounter;
     }
-
     void OnDestroy()
     {
         PlayButton.OnPlayToggled -= Reset;
@@ -47,7 +46,7 @@ public class StatsPanel : MonoBehaviour {
     }
 
     /// <summary>
-    /// Resets relevant values and starts the updating of stats when simulation starts
+    /// Resets relevant values and starts the updating of the visual values when simulation starts
     /// </summary>
     /// <param name="simulationMode"></param>
     private void Reset(bool simulationMode)
@@ -82,7 +81,10 @@ public class StatsPanel : MonoBehaviour {
 
     void FixedUpdate()
     {
-        tickCounter += 1;
+        if (simulationModeOn)
+        {
+            tickCounter += 1;
+        }
     }
 
     /// <summary>
@@ -100,6 +102,10 @@ public class StatsPanel : MonoBehaviour {
 		updateTime = Time.time + updateDelay;
 	}
 
+    /// <summary>
+    /// Handles correct prefixes for the hit point counter text
+    /// </summary>
+    /// <returns></returns>
     String UpdatePointsHitPrefixText()
     {
         string pointsHitTmp;

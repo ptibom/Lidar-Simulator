@@ -18,6 +18,10 @@ public class PlayButton : MonoBehaviour {
         gameObject.GetComponent<Toggle>().onValueChanged.AddListener(OnToggle);
     }
 
+    /// <summary>
+    /// Invokes an event to tell every listener that the play button has been toggled on
+    /// </summary>
+    /// <param name="isOn"></param>
     void OnToggle(bool isOn)
     {
         try

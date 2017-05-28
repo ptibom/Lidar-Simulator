@@ -31,8 +31,12 @@ public class PreviewLidarRays : MonoBehaviour {
     {
         LidarMenu.OnPassValuesToLaserMimic += UpdateLidarValues;
     }
+    void OnDestroy()
+    {
+        LidarMenu.OnPassValuesToLaserMimic -= UpdateLidarValues;
+    }
 
-	void Start()
+    void Start()
     {
         maxLasers = (int)numberOfLasersSlider.maxValue;
         InitializeLaserMimicList();
@@ -128,24 +132,6 @@ public class PreviewLidarRays : MonoBehaviour {
             lm.DrawRay();
 		}
 	}
-
-    /// <summary>
-    /// Destroys all line renderers and deletes all instances of the LaserMimic class
-    /// </summary>
-	public void DestroyLaserMimics()
-    {
-		foreach(LaserMimic lm in lasersMimics)
-        {
-			Destroy (lm.GetLineDrawerGameObject());
-		}
-		lasersMimics.Clear ();
-	}
-
-    void OnDestroy()
-    {
-        LidarMenu.OnPassValuesToLaserMimic -= UpdateLidarValues;
-    }
-
 
     /// <summary>
     /// A class which mimics the parameters of the actual lidar sensor and draws lines to represent the lasers of the lidar

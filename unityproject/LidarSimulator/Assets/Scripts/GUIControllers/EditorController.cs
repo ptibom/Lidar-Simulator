@@ -25,10 +25,16 @@ public class EditorController : MonoBehaviour{
     public Toggle lidarSensorToggle;
     public GameObject sceneEditor;
 
-
+    /// <summary>
+    /// Adds SetMode as a delegate "listener" to the play/stop button
+    /// </summary>
     void Awake()
     {
         PlayButton.OnPlayToggled += SetMode;
+    }
+    void OnDestroy()
+    {
+        PlayButton.OnPlayToggled -= SetMode;
     }
 
     /// <summary>
@@ -100,10 +106,5 @@ public class EditorController : MonoBehaviour{
         }
 
         mainCamera.GetComponent<Camera>().enabled = true;
-    }
-
-    void OnDestroy()
-    {
-        PlayButton.OnPlayToggled -= SetMode;
     }
 }
