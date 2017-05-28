@@ -21,16 +21,7 @@ public class LidarMenu : MonoBehaviour {
     public static event StartSimulationDelegate OnPassValuesToLidarSensor;
     public static event StopSimulationDelegate OnStopSimulation;
 
-    public Slider numberOfLasers;
-    public Slider rotationSpeedHz;
-    public Slider rotationAnglePerStep;
-    public Slider rayDistance;
-    public Slider upperFOV;
-    public Slider lowerFOV;
-    public Slider offset;
-    public Slider upperNormal;
-    public Slider lowerNormal;
-
+    //Defines the initial value of the lidar sensor and the settings in the lidar menu
     public float numberOfLasersVal = 64f;
     public float rotationSpeedHzVal = 1f;
     public float rotationAnglePerStepVal = 0.9f;
@@ -41,35 +32,43 @@ public class LidarMenu : MonoBehaviour {
     public float upperNormalVal = -3.3f;
     public float lowerNormalVal = 16.87f;
 
-    public PreviewLidarRays lidarLinePreview;
+    public Slider numberOfLasers;
+    public Slider rotationSpeedHz;
+    public Slider rotationAnglePerStep;
+    public Slider rayDistance;
+    public Slider upperFOV;
+    public Slider lowerFOV;
+    public Slider offset;
+    public Slider upperNormal;
+    public Slider lowerNormal;
 
-    private bool laserMimicInitialized = false;
+    private bool laserPreviewInitialized = false;
     private bool guiValsInitialized = false;
 
     void Awake()
     {
         EditorController.OnPointCloudToggle += PassLidarValuesToPointCloud;
         PlayButton.OnPlayToggled += PassValuesToLidarSensor;
-        PreviewLidarRays.tellLidarMenuInitialized += LaserMimicIsInitialized;
+        PreviewLidarRays.tellLidarMenuInitialized += LaserPreviewIsInitialized;
     }
-
-    /// <summary>
-    /// Calls all initialization methods which syncs the lidar menu sliders with the lidar sensors initial values, and creates and updates the lidar mimic system.
-    /// </summary>
-	void Start () 
-	{
-        InitializeGUIValues();
-        if (laserMimicInitialized)
-        {
-            UpdateLaserMimicValues();
-        }
-    }
-
     void OnDestroy()
     {
         EditorController.OnPointCloudToggle -= PassLidarValuesToPointCloud;
         PlayButton.OnPlayToggled -= PassValuesToLidarSensor;
-        PreviewLidarRays.tellLidarMenuInitialized -= LaserMimicIsInitialized;
+        PreviewLidarRays.tellLidarMenuInitialized -= LaserPreviewIsInitialized;
+    }
+
+    /// <summary>
+    /// Calls the initiallization of the lidar menu values. 
+    /// If the "PreviewLidarRays" script has been initialized, it calls a function to sync the preview to the values of the lidar menu.
+    /// </summary>
+	void Start () 
+	{
+        InitializeGUIValues();
+        if (laserPreviewInitialized)
+        {
+            UpdateLaserMimicValues();
+        }
     }
 
     /// <summary>
@@ -90,9 +89,14 @@ public class LidarMenu : MonoBehaviour {
         guiValsInitialized = true;
 	}
 
-    void LaserMimicIsInitialized(bool isInitialized)
+    /// <summary>
+    /// Gets called from the "PreviewLidarRays" script when the script has been initialized.
+    /// If the "LidarMenu" script has initialized the values of the GUI, it sends the values back to the preview.
+    /// </summary>
+    /// <param name="isInitialized"></param>
+    void LaserPreviewIsInitialized(bool isInitialized)
     {
-        laserMimicInitialized = true;
+        laserPreviewInitialized = true;
         if (guiValsInitialized)
         {
             UpdateLaserMimicValues();
@@ -100,11 +104,11 @@ public class LidarMenu : MonoBehaviour {
     }
 
     /// <summary>
-    /// Invokes an event to updates the values of the lidar mimic to the values of the GUI
+    /// Invokes an event to sync the values of the lidar preview with the values of the Lidar menu GUI
     /// </summary>
     void UpdateLaserMimicValues()
     {
-        if (laserMimicInitialized)
+        if (laserPreviewInitialized)
         {
             try
             {
@@ -119,7 +123,7 @@ public class LidarMenu : MonoBehaviour {
 
 
     /// <summary>
-    /// Invokes an event with the current values set in the GUI for the lidar sensor and pointcloud to listen to
+    /// If the play button is toggled on, this method invokes an event to sync the lidar sensor with the values of the lidar menu GUI
     /// </summary>
     void PassValuesToLidarSensor(bool play)
 	{
@@ -138,7 +142,7 @@ public class LidarMenu : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Invokes an event to sync the point clouds settings with the values of the lidar menu GUI
     /// </summary>
     void PassLidarValuesToPointCloud()
     {

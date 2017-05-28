@@ -18,7 +18,7 @@ public class InputSync : MonoBehaviour {
     }
 
     /// <summary>
-    /// Corrects eventual wrong inputs from the inputfield such as "no input" and "out of bounds values"
+    /// Corrects any wrong inputs from the inputfield such as 'no input' and 'out of bounds values'
     /// </summary>
 	public void InputCorrection()
     {

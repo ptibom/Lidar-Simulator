@@ -1,8 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Syncs the size of all passed in texts
+/// 
+/// @author: Jonathan Jansson
+/// </summary>
 public class ControlFontSizes : MonoBehaviour {
 
     public Text t1;
@@ -17,6 +21,12 @@ public class ControlFontSizes : MonoBehaviour {
 
     LinkedList<Text> texts = new LinkedList<Text>();
     
+    /// <summary>
+    /// Adds the passed in texts to a list.
+    /// As the "Best Fit" function of the Text objects are run after the "Start" method of all 
+    /// scripts, this script Invokes the call to adjust according to the sizes with a delay which
+    /// will execute the method during the next frame and thus after the "Best Fit" functions is run
+    /// </summary>
     void Start () {
         texts.AddLast(t1);
         texts.AddLast(t2);
@@ -31,6 +41,9 @@ public class ControlFontSizes : MonoBehaviour {
         Invoke("SetMaxFontSizeAsSmallestFontDoubleRows", 0.01f);
     }
 	
+    /// <summary>
+    /// This method sets the size of every text in "texts" to the size of the smallest size among the texts in "texts"
+    /// </summary>
 	void SetMaxFontSizeAsSmallestFontDoubleRows () {
         int smallestFontSize = 50;
         foreach (Text t in texts)

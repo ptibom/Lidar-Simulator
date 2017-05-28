@@ -2,18 +2,21 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// Sets the with of the recttransform size as the same as the largest width of the children of the object
+/// Sets the preferredWidth of the recttransform size as the same as the largest width of the children of the object
 /// 
 /// @author: Jonathan Jansson
 /// </summary>
 public class WidthAsChildren : MonoBehaviour {
 
     /// <summary>
-    /// Waits for all other GUI initializations to be set before calling the method which sets the width
+    /// Waits for all other GUI initiations to be set before calling the method which changes the width
     /// </summary>
 	void Start ()
     {
-        Invoke("SetPreferedWidthAsChildren", 0.01f);
+        if (gameObject.GetComponent<LayoutElement>())
+        {
+            Invoke("SetPreferedWidthAsChildren", 0.01f);
+        }
     }
 
     /// <summary>
