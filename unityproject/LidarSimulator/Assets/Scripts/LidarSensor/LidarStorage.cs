@@ -25,14 +25,14 @@ public class LidarStorage : MonoBehaviour {
 	{
 		this.dataStorage = new Dictionary<float, LinkedList<SphericalCoordinate>>();
 		this.currentHits = new LinkedList<SphericalCoordinate>();
-        LidarSensor.OnScanned += AddHits;
-        LidarSensor.StoreEvent += Save;
+        //LidarSensor.OnScanned += AddHits;
+        LidarSensor.NewRotationEvent += Save;
 	}
 
     void OnDestroy()
     {
         LidarSensor.OnScanned -= AddHits;
-        LidarSensor.StoreEvent -= Save;
+        LidarSensor.NewRotationEvent -= Save;
     }
 
 	/// <summary>
@@ -58,13 +58,13 @@ public class LidarStorage : MonoBehaviour {
     /// Saves the current collected points on the given timestamp. 
     /// </summary>
     /// <param name="newTime"></param>
-    public void Save(float newTime)
+    public void Save()
 	{
         // Update the data structure if there is collected points. 
 		if (currentHits.Count != 0)
 		{
-			dataStorage[newTime] = currentHits;
-			prevTime = newTime;
+			dataStorage[prevTime] = currentHits;
+			prevTime = Time.fixedTime;
             currentHits = new LinkedList<SphericalCoordinate>();
 		}
 	}

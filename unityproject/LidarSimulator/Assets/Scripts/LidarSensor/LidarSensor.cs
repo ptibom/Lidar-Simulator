@@ -25,10 +25,8 @@ public class LidarSensor : MonoBehaviour {
     public float upperNormal = 30f;
     public float lowerNormal = 30f;
     public static event NewPoints OnScanned;
-    public static event StorePoints StoreEvent;
     public static event NewLap NewRotationEvent;
     public delegate void NewLap();
-    public delegate void StorePoints(float timeStamp);
     public delegate void NewPoints(LinkedList<SphericalCoordinate> hits);
     public float lapTime = 0;
     private float lastLapTime = 0;
@@ -169,11 +167,6 @@ public class LidarSensor : MonoBehaviour {
                     if(NewRotationEvent != null)
                     {
                         NewRotationEvent();
-                    }
-                    if(StoreEvent != null)
-                    {
-                        StoreEvent(Time.fixedTime);
-
                     }
                 }
 
