@@ -266,7 +266,7 @@ public class ExternalVisualization : MonoBehaviour {
             GameObject.Find("Main Camera").GetComponent<Camera>().transform.position = new Vector3(firstCoordinate.x - 5, 10, firstCoordinate.y);
 
         }
-    **/
+
 
 
             externalPointCloud.CreateCloud(SquashTable(pointTable));

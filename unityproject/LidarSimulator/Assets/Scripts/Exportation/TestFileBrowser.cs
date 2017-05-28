@@ -39,13 +39,12 @@ public class TestFileBrowser : MonoBehaviour
             fb.SetState(FileBrowser.BrowseState.Save);
 
         }
-        FileBrowser.ToggleFileBrowser += Disable;
+        FileBrowser.ToggleFileBrowser += ToggleFileBrowser;
     }
 
     void OnDestroy()
     {
         FileBrowser.ToggleFileBrowser -= ToggleFileBrowser;
-        FileBrowser.ToggleFileBrowser -= Disable;
     }
 
     void OnGUI()
