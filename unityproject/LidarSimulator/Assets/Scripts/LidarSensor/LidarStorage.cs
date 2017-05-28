@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// The data structure in which to save the lidar data.
@@ -17,15 +18,11 @@ public class LidarStorage : MonoBehaviour {
 	private LinkedList<SphericalCoordinate> currentHits;
 	private float prevTime; // Timestamp for previous data entry.
 
-
-
-
-
 	public LidarStorage()
 	{
 		this.dataStorage = new Dictionary<float, LinkedList<SphericalCoordinate>>();
 		this.currentHits = new LinkedList<SphericalCoordinate>();
-        //LidarSensor.OnScanned += AddHits;
+        LidarSensor.OnScanned += AddHits;
         LidarSensor.NewRotationEvent += Save;
 	}
 
@@ -48,9 +45,9 @@ public class LidarStorage : MonoBehaviour {
     /// </summary>
     public void AddHits(LinkedList<SphericalCoordinate> hits)
     {
-        foreach(SphericalCoordinate hit in hits)
+        for (LinkedListNode<SphericalCoordinate> it = hits.First; it != null; it = it.Next)
         {
-            currentHits.AddLast(hit);
+            currentHits.AddLast(it.Value);
         }
     }
 
@@ -60,6 +57,8 @@ public class LidarStorage : MonoBehaviour {
     /// <param name="newTime"></param>
     public void Save()
 	{
+
+
         // Update the data structure if there is collected points. 
 		if (currentHits.Count != 0)
 		{
@@ -93,5 +92,7 @@ public class LidarStorage : MonoBehaviour {
             HaveData();
         }
     }
+ 
+
 
 }
