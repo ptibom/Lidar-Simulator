@@ -27,6 +27,7 @@ public class StatsPanel : MonoBehaviour {
     private float startTime = 0f;
 
     private int pointsHit = 0;
+    private string pointsHitText;
 
     private void Awake()
     {
@@ -101,17 +102,34 @@ public class StatsPanel : MonoBehaviour {
 
     String UpdatePointsHitPrefixText()
     {
-        if(pointsHit < 1000)
+        string pointsHitTmp;
+        if (pointsHit < 1000)
         {
             return pointsHit.ToString();
         }
         else if(pointsHit < 1000000)
         {
-            return ((float)pointsHit / 1000).ToString().Substring(0, 4) + " K";
+            pointsHitTmp = ((float)pointsHit / 1000).ToString();
+            if (pointsHitTmp.Length <= 5)
+            {
+                return pointsHitTmp + " K";
+            }
+            else
+            {
+                return pointsHitTmp.Substring(0, 5) + " K";
+            }
         }
         else
         {
-            return ((float)pointsHit / 1000000).ToString().Substring(0, 4) + " M";
+            pointsHitTmp = ((float)pointsHit / 1000000).ToString();
+            if (pointsHitTmp.Length <= 4)
+            {
+                return pointsHitTmp + " M";
+            }
+            else
+            {
+                return pointsHitTmp.Substring(0, 4) + " M";
+            }
         }
     }
 }
