@@ -3,34 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Text;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
 using System;
 
 public class SaveManager : MonoBehaviour
 {
-    //public SaveObject [] datalist;
 
-    void Start()
-    {
-       
-        Dictionary<float, List<SphericalCoordinate>> someData = new Dictionary<float, List<SphericalCoordinate>>();
-        List<SphericalCoordinate> tempCoord = new List<SphericalCoordinate>();
-        tempCoord.Add(new SphericalCoordinate(1f, 2f, 3f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(2f, 3f, 2f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f, new Vector3(), 0));
-        someData.Add(0.1f, tempCoord);
-        tempCoord.Add(new SphericalCoordinate(2f, 5f, 3f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(3f, 4f, 2f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(3f, 4f, 3f, new Vector3(), 0));
-        someData.Add(0.2f, tempCoord);
-        tempCoord.Add(new SphericalCoordinate(1f, 5f, 3f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(2f, 5f, 2f, new Vector3(), 0));
-        tempCoord.Add(new SphericalCoordinate(4f, 2f, 3f, new Vector3(), 0));
-        someData.Add(0.3f, tempCoord);
-
-        //SaveToCsv(someData, "/lidardata.csv");
-    }
     //public void SaveToCsv(SaveObject[]  datalist, string filname){
     public static void SaveToCsv(Dictionary<float, List<LinkedList<SphericalCoordinate>>> data, String filename)
     {    
@@ -73,22 +50,10 @@ public class SaveManager : MonoBehaviour
 
 
             List<SaveObject> objlist = new List<SaveObject>();
-            foreach (KeyValuePair<float, List<LinkedList<SphericalCoordinate>>> coordinatePair in data)
+            foreach (var coordinatePair in data)
             {
-                /** UNCOMMENT THIS FOR NON-KITTY DATA
-                foreach (SphericalCoordinate coordinate in coordinatePair.Value)
-                {
-                    string[] rows = new string[5];
-                    rows[0] = coordinatePair.Key.ToString(); // The time
-                    rows[1] = 999.ToString(); // The id
-                    rows[2] = coordinate.GetRadius().ToString();
-                    rows[3] = coordinate.GetInclination().ToString();
-                    rows[4] = coordinate.GetAzimuth().ToString();
-                    dataTable.Add(rows);
-                }
-    **/
+                float time = coordinatePair.Key;
                 foreach (LinkedList<SphericalCoordinate> keyList in coordinatePair.Value){
-                    float time = coordinatePair.Key;
                     foreach (SphericalCoordinate coordinate in keyList)
                     {
                         Vector3 worldCoordinate = coordinate.GetWorldCoordinate();
@@ -104,7 +69,6 @@ public class SaveManager : MonoBehaviour
                         dataTable.Add(rows);
                     }
                 }
-
 
             }
 
