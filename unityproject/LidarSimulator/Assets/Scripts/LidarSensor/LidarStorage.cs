@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// The data structure in which to save the lidar data.
@@ -44,9 +41,7 @@ public class LidarStorage : MonoBehaviour {
             {
                 dataStorage[time].Add(hits);
             }
-        }
-			
-		
+        }		
 	}
 
 

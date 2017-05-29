@@ -8,27 +8,18 @@ public class PointCloud : MonoBehaviour
 {
     public GameObject particleGameObject;
     public GameObject pointCloudBase;
-    public bool clearOnPause = true; // clears particles on pause
 
     private int maxParticleSystems = 50;
     private int maxParticlesPerCloud = 500; // maximum number of particles in a particle system
     private float particleSize = 0.1f;
-    private int lastParticleSystemLastUpdate;
     private bool isEnabled = false;
     private int usedParticleSystem = 0;
-    int currentNumberOfSystems;
+    private int currentNumberOfSystems;
     private Dictionary<int,ParticleSystem> particleSystemIdMap;
-
     private Stack<List<ParticleSystem.Particle>> particleListPool;
     private List<ParticleSystem.Particle> particleBuffer; //allows for reusing particles
-
-    // Lagt till dessa <--------------------------------------------------------------------------------
     private ParticleSystem.Particle[] oldParticles;
     private List<ParticleSystem.Particle> particleCloud;
-
-
-    //private LinkedList<SphericalCoordinates> points;
-    //private bool pointsUpdate = false;
 
     /// <summary>
     /// Initialization
@@ -39,14 +30,9 @@ public class PointCloud : MonoBehaviour
         pointCloudBase = GameObject.FindGameObjectWithTag("PointCloudBase");
         currentNumberOfSystems = 0;
         CreateNeededParticleSystems();
-        // Disablade dessa, de körs i OnEnable vid start <--------------------------------------------------------------------------------
-        //LidarSensor.OnScanned += OnUpdatePoints;
-        //isEnabled = true;
         LidarMenu.OnPassLidarValuesToPointCloud += UpdateSpecs;
         particleBuffer = new List<ParticleSystem.Particle>();
         particleListPool = new Stack<List<ParticleSystem.Particle>>();
-
-        // Lagt till dessa <--------------------------------------------------------------------------------
         oldParticles = new ParticleSystem.Particle[maxParticlesPerCloud];
         particleCloud = new List<ParticleSystem.Particle>();
 
@@ -161,14 +147,11 @@ public class PointCloud : MonoBehaviour
     {
         LidarSensor.OnScanned += OnUpdatePoints;
         isEnabled = true;
-
-        if(clearOnPause == false)
-        {
-            foreach (var entity in particleSystemIdMap)
+        foreach (var entity in particleSystemIdMap)
             {
                 entity.Value.Play();
             }
-        }
+        
     }
     
 
@@ -178,21 +161,12 @@ public class PointCloud : MonoBehaviour
     public void Pause()
     {
         LidarSensor.OnScanned -= OnUpdatePoints;
-        isEnabled = false;
-        if(clearOnPause)
+        isEnabled = false;          
+        foreach (var entity in particleSystemIdMap)
         {
-            foreach (var entity in particleSystemIdMap)
-            {
-                entity.Value.Clear();
-            }
-            usedParticleSystem = 0;
-        } else
-        {
-            foreach (var entity in particleSystemIdMap)
-            {
-                entity.Value.Pause();
-            }
-        }
+            entity.Value.Clear();
+            entity.Value.Pause();
+        }        
 
     }
 
@@ -201,10 +175,7 @@ public class PointCloud : MonoBehaviour
 /// </summary>
     public void UpdateSpecs(int numberOfLasers, float rotationSpeed, float rotationAnglePerStep)
     {
-        
-
         int maxNumParticlesPerLap = (int) Mathf.Ceil((360 * numberOfLasers) / rotationAnglePerStep); // maximum number of raycast hits per lap
-
 
         if(maxNumParticlesPerLap < 250000)
         {

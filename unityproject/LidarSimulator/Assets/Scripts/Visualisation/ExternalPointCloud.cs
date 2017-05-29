@@ -1,18 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script for creating
+/// @author Tobias Alldén
+/// </summary>
 public class ExternalPointCloud : MonoBehaviour {
     public GameObject meshObject;
     private int maxParticlesPerChunk = 65000;
     private List<GameObject> gameObjects;
 
-    // Use this for initialization
+    
     void Start()
     {
         gameObjects = new List<GameObject>();
     }
 
+    /// <summary>
+    /// Creates the meshes and renders them from the given data
+    /// </summary>
+    /// <param name="coordinates"></param>
     public void CreateCloud(LinkedList<SphericalCoordinate> coordinates)
     {
         Debug.Log("Creating Chunks for :" + coordinates.Count + " coordinates");
@@ -117,7 +124,11 @@ public class ExternalPointCloud : MonoBehaviour {
         return colorList;
     }
 
-
+    /// <summary>
+    /// Creates the vertices for the meshes, the id of the points. 
+    /// </summary>
+    /// <param name="chunks"></param>
+    /// <returns></returns>
     private List<int[]> CreateVertices(List<List<Vector3>> chunks)
     {
         List<int[]> verticeList = new List<int[]>();

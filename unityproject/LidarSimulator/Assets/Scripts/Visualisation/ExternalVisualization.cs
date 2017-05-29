@@ -1,40 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Controls the external visualization
+/// </summary>
 public class ExternalVisualization : MonoBehaviour {
-	private Dictionary<float, List<LinkedList<SphericalCoordinate>>> pointTable;
-    private LidarStorage lidarStorage;
-    private ExternalPointCloud externalPointCloud;
+	
 	public GameObject pSystemGameObject, nextBtn, prevBtn, mainPanel,backBtn, loadingPanel, loadWheel;
-	private ParticleSystem pSystem;
-	private int currentListPosition; 
 	public Button nextButton,prevButton,openButton,backButton;
     public Text lapText;
     public Toggle fullCloudToggle, lapToggle;
     public TestFileBrowser fileBrowser;
 
+	private int currentListPosition; 
     private Coroutine loadingPoints;
+    private Dictionary<float, List<LinkedList<SphericalCoordinate>>> pointTable;
+    private LidarStorage lidarStorage;
+    private ExternalPointCloud externalPointCloud;
+    private ParticleSystem pSystem;
 
-	public void Start() {
+
+
+    public void Start() {
 		pSystemGameObject  = GameObject.Find("particlesSyst");
-        //nextBtn = GameObject.Find("Next");
-        //prevBtn = GameObject.Find("Prev");
         backBtn = GameObject.Find("BackButton");
         mainPanel = GameObject.Find("MainPanel");
-
         pSystem = pSystemGameObject.GetComponent<ParticleSystem>();
-        //nextButton = nextBtn.GetComponent<Button>();
-        //prevButton = prevBtn.GetComponent<Button>();
         backButton = backBtn.GetComponent<Button>();
         openButton = GameObject.Find("Open").GetComponent<Button>();
-        //lapText = GameObject.Find("LapText").GetComponent<Text>();
         fileBrowser = GameObject.Find("FileBrowser").GetComponent<TestFileBrowser>();
         lidarStorage = GameObject.FindGameObjectWithTag("Lidar").GetComponent<LidarStorage>(); ;
         externalPointCloud = GetComponent<ExternalPointCloud>();
-        //loadingPanel = GameObject.Find("LoadingPanel");
-        //loadWheel = GameObject.Find("LoadImage");
 
 
         openButton.onClick.AddListener(LoadPoints);
@@ -61,52 +58,20 @@ public class ExternalVisualization : MonoBehaviour {
     {
         if(state == State.Default)
         {
-            //currentListPosition = 0;
-            //prevBtn.SetActive(false);
-            //nextBtn.SetActive(false);
             mainPanel.SetActive(true);
-            //lapText.enabled = false;
             backBtn.SetActive(false);
         } else if(state == State.FullCloud)
         {
-            //prevBtn.SetActive(false);
-            //nextBtn.SetActive(false);
-            //lapText.enabled = false;
             mainPanel.SetActive(false);
             backBtn.SetActive(true);
             backButton.onClick.AddListener(Reset);
-
         }
         else
         {
-            currentListPosition = 0;
-            //prevBtn.SetActive(true);
-            //nextBtn.SetActive(true);
             mainPanel.SetActive(false);
-            //lapText.enabled = true;
             backBtn.SetActive(true);
-            //nextButton.onClick.AddListener(LoadNext);
-            //prevButton.onClick.AddListener(LoadPrev);
-            //backButton.onClick.AddListener(Reset);
         }
     }
-   
-
-    public void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            LoadNext();
-        }
-        if(Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            LoadPrev();
-        }
-        
-
-
-    }
-
 
 
 	/// <summary>
@@ -155,48 +120,6 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-
-	/// <summary>
-	/// Tells the particle system to load the next set of points. 
-	/// </summary>
-	public void LoadNext()
-	{
-        if (pointTable != null && pointTable.Count != 0) {
-            if (currentListPosition + 1 < pointTable.Count) {
-                currentListPosition += 1;
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
-                pSystem.SetParticles(particles, particles.Length);
-                lapText.text = "Lap: " + currentListPosition;
-            }
-        } else
-        {
-            pointTable = lidarStorage.GetData();
-        }
-    }
-	/// <summary>
-	/// Tells the particle system to load the previous set of points. 
-	/// </summary>
-	public void LoadPrev()
-	{
-        if (pointTable != null)
-        {
-            if (currentListPosition - 1 >= 0)
-            {
-                currentListPosition -= 1;
-                
-                ParticleSystem.Particle[] particles = CreateParticles(pointTable, currentListPosition);
-                pSystem.Clear();
-                pSystem.SetParticles(particles, particles.Length);
-                pSystem.Play();
-                lapText.text = "Lap: " + currentListPosition;
-
-            }
-        } else
-        {
-            this.pointTable = lidarStorage.GetData();
-        }
-    }
-
     /// <summary>
     /// Resets the visualization to it's initial state
     /// </summary>
@@ -206,7 +129,12 @@ public class ExternalVisualization : MonoBehaviour {
         SetState(State.Default);
     }
 
-
+    /// <summary>
+    /// Creates a a set of particles from the data.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
 	private ParticleSystem.Particle[] CreateParticles(Dictionary<float,List<LinkedList<SphericalCoordinate>>> data, int position)
 	{
 		List<ParticleSystem.Particle> particleCloud = new List<ParticleSystem.Particle>();
@@ -261,13 +189,14 @@ public class ExternalVisualization : MonoBehaviour {
     }
 
 
-
+    /// <summary>
+    /// Is called when the data structure have data, in order to load the data to the visualization when it have been loaded in the data structure
+    /// </summary>
     private void DataExists()
     {
         loadingPoints = null;
-        this.pointTable = lidarStorage.GetData();
-        
-          SetState(State.FullCloud);
+        this.pointTable = lidarStorage.GetData();        
+        SetState(State.FullCloud);
         //Set Camera 
         foreach (var v in pointTable.Values)
         {
@@ -279,11 +208,7 @@ public class ExternalVisualization : MonoBehaviour {
             }
 
         }
-
-
-
-            externalPointCloud.CreateCloud(SquashTable(pointTable));
-        
+            externalPointCloud.CreateCloud(SquashTable(pointTable));               
 
     }
 
