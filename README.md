@@ -3,7 +3,12 @@
 Group number: DATX02-17-10
 
 #### Group members  
+<<<<<<< HEAD
 Tobias Alldén
+=======
+Philip Tibom  
+Tobias Alldén  
+>>>>>>> develop
 Martin Chemander  
 Sherry Davar  
 Jonathan Jansson  
