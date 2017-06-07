@@ -10,6 +10,9 @@ Sherry Davar
 Jonathan Jansson  
 Rickard Laurenius  
 
+#### Website & Trailer
+https://lidar.computerscience.se/
+
 
 ## How to Compile  
 Load the project in Unity 5.6 and use the build tool. 
@@ -22,8 +25,9 @@ Add the following scenes in order:
 Project is only tested for Windows but OSX and Linux should work too, although untested.
 
 ## How to Install and Run
-You can download a compiled version here:
-Extract it anywhere and run the EXE.
+You can download a compiled version here:  
+https://github.com/ptibom/DATX02-17-10/raw/master/build/Build.rar  
+Extract it anywhere and run the EXE.  
 
 ### Dependencies
 Unity Engine 5.6
