@@ -1,6 +1,12 @@
 # Virtual Generation of Lidar Data for Autonomous Vehicles
-### Bachelor Thesis project at Chalmers University of Technology and University of Gothenburg
-Group number: DATX02-17-10  
+*Note that this project is no longer maintained, but should still be functional.*
+
+This is a Lidar simulator created in the game engine Unity, its purpose is to generate lidar data virtually, without access to a real Lidar sensor. 
+
+## About
+This project was part of a Bachelor thesis and project conducted at the Computer Science and Engineering department at Chalmers University of Technology and University of Gothenburg, Sweden, during the spring 2017.
+
+Thesis: http://publications.lib.chalmers.se/records/fulltext/251700/251700.pdf  
 
 #### Group members  
 Philip Tibom  
@@ -13,7 +19,6 @@ Rickard Laurenius
 #### Website & Trailer
 https://lidar.computerscience.se/
 
-
 ## How to Compile  
 Load the project in Unity 5.6 and use the build tool. 
 Add the following scenes in order:  
@@ -22,7 +27,7 @@ Add the following scenes in order:
 2: ExternalVisualization  
 3: Credits  
 
-Project is only tested for Windows but OSX and Linux should work too, although untested.
+**The project is only tested for Windows but OSX and Linux should work too, although untested.**
 
 ## How to Install and Run
 You can download a compiled version here:  
