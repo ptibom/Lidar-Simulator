@@ -29,15 +29,17 @@ Add the following scenes in order:
 2: ExternalVisualization  
 3: Credits  
 
+Then build.
+
 **The project is only tested for Windows but OSX and Linux should work too, although untested.**
 
 ## How to Install and Run
 You can download a compiled version here:  
-https://github.com/ptibom/DATX02-17-10/raw/master/build/Build.rar  
+https://github.com/ptibom/Lidar-Simulator/raw/master/build/Build.rar  
 Extract it anywhere and run the EXE.  
 
 ### Dependencies
-Unity Engine 5.6
+Unity Engine 5.6 (Might work for newer versions)
 
 ## License
 
