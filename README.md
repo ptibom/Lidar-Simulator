@@ -1,7 +1,7 @@
 # Virtual Generation of Lidar Data for Autonomous Vehicles
 *Note that this project is no longer maintained, but should still be functional.*
 
-This is a Lidar simulator created in the game engine Unity, its purpose is to generate lidar data virtually, without access to a real Lidar sensor. 
+This is a Lidar simulator created in the game engine Unity, its purpose is to generate lidar data virtually, without the need of a real Lidar sensor. 
 
 ## About
 This project was part of a Bachelor thesis and project conducted at the Computer Science and Engineering department at Chalmers University of Technology and University of Gothenburg, Sweden, during the spring 2017.
